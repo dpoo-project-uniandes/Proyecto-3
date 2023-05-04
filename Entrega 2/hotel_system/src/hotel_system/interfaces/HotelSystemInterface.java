@@ -1,8 +1,8 @@
 package hotel_system.interfaces;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 
 public class HotelSystemInterface extends JFrame {
@@ -21,11 +21,11 @@ public class HotelSystemInterface extends JFrame {
 	
 	private void loginConfigurationFrame() {
 		// LAYOUT CONFIGURATION
-		this.setLayout(new FlowLayout());
+		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.add(login);
 		
 		// SETTINGS
-		this.getContentPane().setBackground(Color.WHITE);
+		this.getContentPane().setBackground(Color.BLUE);
 		this.setSize(600, 700);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);

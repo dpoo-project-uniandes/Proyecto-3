@@ -13,7 +13,7 @@ import javax.swing.border.EmptyBorder;
 public class Input extends JPanel {
 	
 	private JLabel title;
-	private JTextField input;
+	private RoundJTextField input;
 	
 	public Input(String title) {
 		configPanel();
@@ -32,7 +32,7 @@ public class Input extends JPanel {
 		this.title.setBackground(Color.WHITE);
 		this.title.setForeground(Color.BLACK);
 		this.title.setOpaque(true);
-		this.title.setFont(new Font(getName(), Font.PLAIN, 16));
+		this.title.setFont(new Font(getName(), Font.BOLD, 16));
 		this.title.setHorizontalAlignment(SwingConstants.LEFT);
 		this.title.setAlignmentX(LEFT_ALIGNMENT);
 		this.title.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -40,10 +40,9 @@ public class Input extends JPanel {
 	}
 	
 	private void configInput() {
-		this.input = new JTextField();
+		this.input = new RoundJTextField();
 		this.input.setOpaque(true);
 		this.input.setBackground(Color.WHITE);
-//		this.input.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.input.setHorizontalAlignment(SwingConstants.LEFT);
 		this.input.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(this.input);
