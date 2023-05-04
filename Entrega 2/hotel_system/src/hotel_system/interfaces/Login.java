@@ -81,8 +81,8 @@ public class Login extends JPanel {
 	}
 	
 	private void configInputs() {
-		this.userInput = new Input("Usuario");
-		this.passwordInput = new Input("Contraseña");
+		this.userInput = Input.Instance("Usuario", "text");
+		this.passwordInput = Input.Instance("Contraseña", "secret");
 		this.userInput.setAlignmentX(CENTER_ALIGNMENT);
 		this.passwordInput.setAlignmentX(CENTER_ALIGNMENT);
 	}

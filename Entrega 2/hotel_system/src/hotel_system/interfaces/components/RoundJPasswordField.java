@@ -3,14 +3,14 @@ package hotel_system.interfaces.components;
 import java.awt.Graphics;
 import java.awt.Shape;
 
-import javax.swing.JTextField;
+import javax.swing.JPasswordField;
 
-public class RoundJTextField extends JTextField {
-    
+public class RoundJPasswordField extends JPasswordField {
+
 	private Shape shape;
 	private RoundInputField roundInput;
     
-    public RoundJTextField() {
+    public RoundJPasswordField() {
         super();
         this.roundInput = new RoundInputField(this);
     }

@@ -12,13 +12,24 @@ import javax.swing.border.EmptyBorder;
 
 public class Input extends JPanel {
 	
-	private JLabel title;
-	private RoundJTextField input;
+	public static Input Instance(String title, String type) {
+		switch (type) {
+		case "secret":
+			return new Input(title, new RoundJPasswordField());
+		case "text":
+			return new Input(title, new RoundJTextField());
+		default:
+			return new Input(title, new RoundJTextField());
+		}	
+	}
 	
-	public Input(String title) {
+	private JLabel title;
+	private JTextField input;
+	
+	private Input(String title, JTextField input) {
 		configPanel();
 		configTitle(title);
-		configInput();
+		configInput(input);
 	}
 	
 	private void configPanel() {
@@ -39,8 +50,8 @@ public class Input extends JPanel {
 		this.add(this.title);
 	}
 	
-	private void configInput() {
-		this.input = new RoundJTextField();
+	private void configInput(JTextField input) {
+		this.input = input;
 		this.input.setOpaque(true);
 		this.input.setBackground(Color.WHITE);
 		this.input.setHorizontalAlignment(SwingConstants.LEFT);
@@ -48,4 +59,12 @@ public class Input extends JPanel {
 		this.add(this.input);
 	}
 
+	public JLabel getTitle() {
+		return title;
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends JTextField> T getInput() {
+		return (T) input;
+	}
 }
