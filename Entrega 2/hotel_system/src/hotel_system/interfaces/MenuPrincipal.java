@@ -63,7 +63,7 @@ import hotel_system.interfaces.components.Button;
 	    	title.setOpaque(true);
 	    	title.setFont(new Font(getName(), Font.BOLD, 15));
 	    	title.setHorizontalAlignment(SwingConstants.LEFT);
-	    	title.setAlignmentX(Component.LEFT_ALIGNMENT);
+	    	title.setAlignmentX(Component.RIGHT_ALIGNMENT);
 	    }
 	    
 

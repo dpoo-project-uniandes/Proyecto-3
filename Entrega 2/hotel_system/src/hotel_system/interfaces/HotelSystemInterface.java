@@ -14,7 +14,8 @@ public class HotelSystemInterface extends JFrame {
 	
 	private Login login;
 	private MenuPrincipal menuP;
-
+	private MenuAdmin menuA;
+	
 	public HotelSystemInterface() throws IOException {
 		this.login = new Login();
 		loginConfigurationFrame();
