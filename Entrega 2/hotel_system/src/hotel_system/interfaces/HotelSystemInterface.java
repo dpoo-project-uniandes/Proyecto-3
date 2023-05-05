@@ -8,6 +8,7 @@ import java.util.function.Function;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 public class HotelSystemInterface extends JFrame {
 
@@ -16,12 +17,11 @@ public class HotelSystemInterface extends JFrame {
 	}
 
 	private Login login;
-	private MenuPrincipal menuP;
-	private MenuAdmin menuA;
-	private MenuCargaAdmin menuCA;
+	private MenuRecepcionista menuRecepcionista;
 
 	public HotelSystemInterface() throws IOException {
 		configLogin();
+		configMenuRecepcionista("Juan Rojas", "Menu Principal");
 		componentsFrame();
 	}
 
@@ -38,7 +38,7 @@ public class HotelSystemInterface extends JFrame {
 					if (!authenticated)
 						panel.displayUnauthorizedWarning();
 					else
-						dispose();
+						configMainFrame(configMenuRecepcionista("Juan Rojas", "Menu Principal"));
 				}
 			};
 		};
@@ -68,6 +68,28 @@ public class HotelSystemInterface extends JFrame {
 
 	private Boolean login(String user, String password) {
 		return true;
+	}
+
+	private void configMainFrame(JPanel panel) {
+		// CLEAN
+		this.setContentPane(panel);
+
+		// LAYOUT CONFIGURATION
+		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+
+		// SETTINGS
+		this.getContentPane().setBackground(Color.WHITE);
+		this.setSize(1416, 800);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
+		this.setTitle("Hotel System Management");
+		this.setResizable(false);
+	}
+
+	private MenuRecepcionista configMenuRecepcionista(String user, String title) {
+		this.menuRecepcionista = new MenuRecepcionista(user, title);
+		return this.menuRecepcionista;
 	}
 
 	private void componentsFrame() {
