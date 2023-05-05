@@ -1,29 +1,26 @@
 package hotel_system.interfaces;
 
-import java.awt.Color;
+import hotel_system.interfaces.components.MenuButton;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
+public class MenuRecepcionista extends MainMenu {
 
-public class MenuRecepcionista extends JPanel {
+    private MenuButton bookingBtn;
+    private MenuButton staysBtn;
+    private MenuButton consumiblesBtn;
 
-    private MainHeader header;
-
-    public MenuRecepcionista(String user, String title) {
-        configPanel();
-        configHeader(user, title);
+    public MenuRecepcionista(String user) {
+    	super(user, "Menu Principal", 3);
+        configMenu();
     }
-
-    private void configPanel() {
-        this.setOpaque(true);
-        this.setBackground(Color.WHITE);
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setBorder(new EmptyBorder(50, 50, 50, 52));
-    }
-
-    private void configHeader(String user, String title) {
-    	this.header = new MainHeader(user, title);
-    	this.add(header);
+    
+    private void configMenu() {    	
+    	// BUTTONS
+    	this.bookingBtn = new MenuButton("Reservas", "booking");
+    	this.staysBtn = new MenuButton("Estadias", "accommodation");
+    	this.consumiblesBtn = new MenuButton("Consumibles", "consumible");
+    	
+    	addButton(this.bookingBtn);
+    	addButton(this.staysBtn);
+    	addButton(this.consumiblesBtn);
     }
 }

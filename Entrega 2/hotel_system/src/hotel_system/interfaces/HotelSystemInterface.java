@@ -18,11 +18,10 @@ public class HotelSystemInterface extends JFrame {
 
 	private Login login;
 	private MenuRecepcionista menuRecepcionista;
+	private String user;
 
 	public HotelSystemInterface() throws IOException {
 		configLogin();
-		configMenuRecepcionista("Juan Rojas", "Menu Principal");
-		componentsFrame();
 	}
 
 	private void configLogin() {
@@ -38,7 +37,7 @@ public class HotelSystemInterface extends JFrame {
 					if (!authenticated)
 						panel.displayUnauthorizedWarning();
 					else
-						configMainFrame(configMenuRecepcionista("Juan Rojas", "Menu Principal"));
+						configMenuRecepcionista(user);
 				}
 			};
 		};
@@ -87,12 +86,8 @@ public class HotelSystemInterface extends JFrame {
 		this.setResizable(false);
 	}
 
-	private MenuRecepcionista configMenuRecepcionista(String user, String title) {
-		this.menuRecepcionista = new MenuRecepcionista(user, title);
-		return this.menuRecepcionista;
-	}
-
-	private void componentsFrame() {
-
+	private void configMenuRecepcionista(String user) {
+		this.menuRecepcionista = new MenuRecepcionista(user);
+		configMainFrame(this.menuRecepcionista);
 	}
 }

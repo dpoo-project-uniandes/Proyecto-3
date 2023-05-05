@@ -29,11 +29,11 @@ public class MainHeader extends JPanel {
 	
 	private void configComponents() {
 		this.add(this.userDataPanel);
+		this.add(Box.createRigidArea(new Dimension(0, 40)));
 		this.add(this.title);
 	}
 
 	private void configPanel() {
-		this.setOpaque(true);
 		this.setBackground(Color.WHITE);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
@@ -41,32 +41,27 @@ public class MainHeader extends JPanel {
 	private void configDataUser(String user) {
 		// LOGO
 		this.userIcon = new JLabel();
-		this.userIcon.setIcon(
-			ImagesManager.resizeIcon(ImagesManager.ImageIcon("icon-login"), 60, 60)
-		);
-		this.userIcon.setBackground(Color.WHITE);
+		this.userIcon.setIcon(ImagesManager.resizeIcon(ImagesManager.ImageIcon("icon-login"), 60, 60));
 
 		// NAME USER
 		this.user = new JLabel(user);
-		this.user.setOpaque(true);
-		this.user.setBackground(Color.WHITE);
 		this.user.setForeground(Color.BLACK);
 		this.user.setFont(new Font(getName(), Font.BOLD, 25));
 
 		// PANEL DATA USER
-		this.userDataPanel = new JPanel(new FlowLayout(0, 10, 0));
-		this.userDataPanel.setBackground(Color.WHITE);
+		this.userDataPanel = new JPanel();
+		this.userDataPanel.setLayout(new BoxLayout(this.userDataPanel, BoxLayout.X_AXIS));
+		this.userDataPanel.setOpaque(false);
 		this.userDataPanel.add(this.userIcon);
+		this.userDataPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 		this.userDataPanel.add(this.user);
 		this.userDataPanel.setAlignmentX(LEFT_ALIGNMENT);
 	}
 
 	private void configTitle(String title) {
 		this.title = new JLabel(title);
-		this.title.setOpaque(true);
-		this.title.setBackground(Color.WHITE);
 		this.title.setForeground(Color.BLACK);
-		this.title.setFont(new Font(getName(), Font.BOLD, 20));
+		this.title.setFont(new Font(getName(), Font.BOLD, 22));
 		this.title.setAlignmentX(LEFT_ALIGNMENT);
 	}
 }
