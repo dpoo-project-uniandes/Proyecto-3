@@ -11,7 +11,7 @@ public class Usuario {
 		this.password = password;
 		this.rol = rol;
 	}
-
+  
 	public String getLogin() {
 		return login;
 	}

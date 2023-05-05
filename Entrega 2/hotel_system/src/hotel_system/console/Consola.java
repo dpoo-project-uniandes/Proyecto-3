@@ -74,7 +74,7 @@ public class Consola {
 							int opcion_seleccionada = Integer.parseInt(input("¿Deseas intentarlo de nuevo?\n1)Si\n2)No"));
 							if (opcion_seleccionada == 1) {continue;}
 							else if (opcion_seleccionada == 2) {obtenerContra = false;registrando = false;}
-					}
+					}  
 					}
 					}
 
@@ -100,7 +100,7 @@ public class Consola {
 					boolean accediendo = true;
 					while (accediendo) {
 						String password = input("Por favor ingrese su contraseña");
-						String rol = hotelSystem.validarContrasenia(user, password);
+						String rol = hotelSystem.getUsuario(user, password).getRol().toString();
 						if (rol != null) {
 							if (rol.equals("ADMIN")) {admin();}
 							else if (rol.equals("RECEPCIONISTA")) {recepcionista();}

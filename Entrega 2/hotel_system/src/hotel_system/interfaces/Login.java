@@ -84,8 +84,8 @@ public class Login extends JPanel {
 
 	private void configIconLogin() {
 		this.iconLogin = new JLabel();
-		try {
-			this.userIcon = ImageIO.read(new File("./assets/icon-login.png"));
+		try {  
+			this.userIcon = ImageIO.read(new File(System.getProperty("user.dir")+"/Entrega 2/hotel_system/assets/icon-login.png"));
 			ImageIcon icon = new ImageIcon(
 					new ImageIcon(userIcon)
 						.getImage()
