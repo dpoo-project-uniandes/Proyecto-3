@@ -6,8 +6,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.function.Function;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -25,6 +27,7 @@ public class Login extends JPanel {
 	
 	private JLabel title;
 	private JLabel iconLogin;
+	private JLabel unauthorizedUser;
 	private Input userInput;
 	private Input passwordInput;
 	private Button loginBtn;
@@ -37,7 +40,20 @@ public class Login extends JPanel {
 		configTitle();
 		configIconLogin();
 		configInputs();
-		configButtons();
+		configButtons(null, null);
+		configComponents();
+	}
+	
+	public Login(
+		Function<Login, ActionListener> loginAction, 
+		Function<Login, ActionListener> signUpAction
+	) {
+		configPanel();
+		configTitle();
+		configIconLogin();
+		configUnauthorizedUser();
+		configInputs();
+		configButtons(loginAction, signUpAction);
 		configComponents();
 	}
 	
@@ -49,7 +65,10 @@ public class Login extends JPanel {
 		this.add(userInput);
 		this.add(Box.createRigidArea(new Dimension(0, 10)));
 		this.add(passwordInput);
-		this.add(Box.createRigidArea(new Dimension(0, 40)));
+		this.add(Box.createRigidArea(new Dimension(0, 10)));
+		this.add(unauthorizedUser);
+		Integer isDisplayWarning = this.unauthorizedUser.isVisible() ? 20 : 40;
+		this.add(Box.createRigidArea(new Dimension(0, isDisplayWarning)));
 		this.add(buttonsPanel);
 	}
 	
@@ -80,6 +99,18 @@ public class Login extends JPanel {
 		}
 	}
 	
+	private void configUnauthorizedUser() {
+		this.unauthorizedUser = new JLabel("usuario o contraseña incorrectos");
+		this.unauthorizedUser.setBackground(new Color(252, 88, 88));
+		this.unauthorizedUser.setForeground(Color.WHITE);
+		this.unauthorizedUser.setOpaque(true);
+		this.unauthorizedUser.setFont(new Font(getName(), Font.PLAIN, 10));
+		this.unauthorizedUser.setHorizontalAlignment(SwingConstants.CENTER);
+		this.unauthorizedUser.setAlignmentX(Component.CENTER_ALIGNMENT);
+		this.unauthorizedUser.setBorder(new EmptyBorder(5, 10, 5 ,10));
+		this.unauthorizedUser.setVisible(false);
+	}
+	
 	private void configInputs() {
 		this.userInput = Input.Instance("Usuario", "text");
 		this.passwordInput = Input.Instance("Contraseña", "secret");
@@ -87,7 +118,10 @@ public class Login extends JPanel {
 		this.passwordInput.setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
-	private void configButtons() {
+	private void configButtons(
+		Function<Login, ActionListener> loginAction, 
+		Function<Login, ActionListener> signUpAction
+	) {
 		this.loginBtn = new Button("Ingresar", new Dimension(130, 40));
 		this.signUpBtn = new Button("Registrarse", new Dimension(130, 40));
 		
@@ -95,6 +129,11 @@ public class Login extends JPanel {
 		this.buttonsPanel.setBackground(Color.WHITE);
 		this.buttonsPanel.add(this.loginBtn);
 		this.buttonsPanel.add(this.signUpBtn);
+		
+		if (loginAction != null)
+			this.loginBtn.addActionListener(loginAction.apply(this));
+		if (signUpAction != null)
+			this.signUpBtn.addActionListener(signUpAction.apply(this));
 	}
 	
 	private void configPanel() {
@@ -102,5 +141,20 @@ public class Login extends JPanel {
 		this.setBackground(Color.WHITE);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBorder(new EmptyBorder(70, 120, 90, 120));
+	}
+	
+	public void displayUnauthorizedWarning() {
+		this.unauthorizedUser.setVisible(true);
+		this.removeAll();
+		configComponents();
+		this.revalidate();
+	}
+
+	public Input getUserInput() {
+		return userInput;
+	}
+
+	public Input getPasswordInput() {
+		return passwordInput;
 	}
 }
