@@ -24,7 +24,7 @@ import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.Input;
 
 public class Login extends JPanel {
-	
+
 	private JLabel title;
 	private JLabel iconLogin;
 	private JLabel unauthorizedUser;
@@ -34,7 +34,7 @@ public class Login extends JPanel {
 	private Button signUpBtn;
 	private JPanel buttonsPanel;
 	private BufferedImage userIcon;
-	
+
 	public Login() {
 		configPanel();
 		configTitle();
@@ -43,9 +43,9 @@ public class Login extends JPanel {
 		configButtons(null, null);
 		configComponents();
 	}
-	
+
 	public Login(
-		Function<Login, ActionListener> loginAction, 
+		Function<Login, ActionListener> loginAction,
 		Function<Login, ActionListener> signUpAction
 	) {
 		configPanel();
@@ -56,7 +56,7 @@ public class Login extends JPanel {
 		configButtons(loginAction, signUpAction);
 		configComponents();
 	}
-	
+
 	private void configComponents() {
 		this.add(title);
 		this.add(Box.createRigidArea(new Dimension(0, 30)));
@@ -71,7 +71,7 @@ public class Login extends JPanel {
 		this.add(Box.createRigidArea(new Dimension(0, isDisplayWarning)));
 		this.add(buttonsPanel);
 	}
-	
+
 	private void configTitle() {
 		title = new JLabel("Hotel System Management");
 		title.setBackground(Color.WHITE);
@@ -81,7 +81,7 @@ public class Login extends JPanel {
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		title.setAlignmentX(Component.CENTER_ALIGNMENT);
 	}
-	
+
 	private void configIconLogin() {
 		this.iconLogin = new JLabel();
 		try {
@@ -98,7 +98,7 @@ public class Login extends JPanel {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void configUnauthorizedUser() {
 		this.unauthorizedUser = new JLabel("usuario o contraseña incorrectos");
 		this.unauthorizedUser.setBackground(new Color(252, 88, 88));
@@ -110,39 +110,39 @@ public class Login extends JPanel {
 		this.unauthorizedUser.setBorder(new EmptyBorder(5, 10, 5 ,10));
 		this.unauthorizedUser.setVisible(false);
 	}
-	
+
 	private void configInputs() {
 		this.userInput = Input.Instance("Usuario", "text");
 		this.passwordInput = Input.Instance("Contraseña", "secret");
 		this.userInput.setAlignmentX(CENTER_ALIGNMENT);
 		this.passwordInput.setAlignmentX(CENTER_ALIGNMENT);
 	}
-	
+
 	private void configButtons(
-		Function<Login, ActionListener> loginAction, 
+		Function<Login, ActionListener> loginAction,
 		Function<Login, ActionListener> signUpAction
 	) {
 		this.loginBtn = new Button("Ingresar", new Dimension(130, 40));
 		this.signUpBtn = new Button("Registrarse", new Dimension(130, 40));
-		
+
 		this.buttonsPanel = new JPanel(new FlowLayout(1, 30, 1));
 		this.buttonsPanel.setBackground(Color.WHITE);
 		this.buttonsPanel.add(this.loginBtn);
 		this.buttonsPanel.add(this.signUpBtn);
-		
+
 		if (loginAction != null)
 			this.loginBtn.addActionListener(loginAction.apply(this));
 		if (signUpAction != null)
 			this.signUpBtn.addActionListener(signUpAction.apply(this));
 	}
-	
+
 	private void configPanel() {
 		this.setOpaque(true);
 		this.setBackground(Color.WHITE);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBorder(new EmptyBorder(70, 120, 90, 120));
 	}
-	
+
 	public void displayUnauthorizedWarning() {
 		this.unauthorizedUser.setVisible(true);
 		this.removeAll();

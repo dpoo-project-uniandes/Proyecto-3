@@ -17,7 +17,7 @@ public class FileManager {
 		bw.write(content);
 		bw.newLine();
 		bw.close();
-		
+
 	}
 	public static BufferedReader obtenerArchivo(String dir) throws IOException {
 		File archivo = new File(PATH+dir+".txt");

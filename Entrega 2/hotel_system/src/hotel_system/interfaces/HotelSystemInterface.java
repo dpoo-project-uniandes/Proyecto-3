@@ -7,26 +7,24 @@ import java.io.IOException;
 import java.util.function.Function;
 
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JTextField;
 
 public class HotelSystemInterface extends JFrame {
-	
+
 	public static void main(String[] args) throws IOException  {
 		HotelSystemInterface HotelSystemInterface = new HotelSystemInterface();
 	}
-	
+
 	private Login login;
 	private MenuPrincipal menuP;
 	private MenuAdmin menuA;
 	private MenuCargaAdmin menuCA;
-	
+
 	public HotelSystemInterface() throws IOException {
 		configLogin();
 		componentsFrame();
 	}
-	
+
 	private void configLogin() {
 		// ACTIONS LISTENERS
 		Function<Login, ActionListener> loginAction = (panel) -> {
@@ -34,10 +32,10 @@ public class HotelSystemInterface extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					Boolean authenticated = login(
-						panel.getUserInput().getInput().getText(), 
+						panel.getUserInput().getInput().getText(),
 						panel.getPasswordInput().getInput().getText()
 					);
-					if (!authenticated) 
+					if (!authenticated)
 						panel.displayUnauthorizedWarning();
 					else
 						dispose();
@@ -53,11 +51,11 @@ public class HotelSystemInterface extends JFrame {
 			};
 		};
 		this.login = new Login(loginAction, signUpAction);
-		
+
 		// LAYOUT CONFIGURATION
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 		this.add(login);
-		
+
 		// SETTINGS
 		this.getContentPane().setBackground(Color.WHITE);
 		this.setSize(600, 700);
@@ -67,12 +65,12 @@ public class HotelSystemInterface extends JFrame {
 		this.setTitle("Hotel System Management");
 		this.setResizable(false);
 	}
-	
+
 	private Boolean login(String user, String password) {
 		return true;
 	}
-	
+
 	private void componentsFrame() {
-		
+
 	}
 }

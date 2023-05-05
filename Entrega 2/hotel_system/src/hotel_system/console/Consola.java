@@ -15,9 +15,9 @@ import hotel_system.models.TipoHabitacion;
 import services.SecValidation;
 
 public class Consola {
-	
+
 	public static HotelManagementSystem hotelSystem = new HotelManagementSystem();
-	
+
 	public static void main(String[] args ) throws Exception {
 		bienvenida();
 		boolean escogiendo = true;
@@ -34,9 +34,9 @@ public class Consola {
 			}
 		}
 		System.out.println("Gracias por usar nuestro sistema");
-		
+
 	}
-	
+
 	private static void registrar() throws Exception {
 		boolean registrando = true;
 		while(registrando) {
@@ -77,7 +77,7 @@ public class Consola {
 					}
 					}
 					}
-				
+
 				else {System.out.println("El usuario "+user+" no es un usuario válido en el sistema.");
 					System.out.println("Debe empezar con una letra");
 					int opcion_seleccionada = Integer.parseInt(input("¿Deseas intentarlo de nuevo?\n1)Si\n2)No"));
@@ -88,7 +88,7 @@ public class Consola {
 				System.out.println("Por favor digite un Número Válido entre 1 y 2");
 			}
 		}
-		
+
 	}
 
 	public static void ingresar() throws Exception {
@@ -112,7 +112,7 @@ public class Consola {
 					}
 					}
 					}
-				
+
 				else {System.out.println("El usuario "+user+" no es un usuario válido en el sistema.");
 					int opcion_seleccionada = Integer.parseInt(input("¿Deseas intentarlo de nuevo?\n1)Si\n2)No"));
 					if (opcion_seleccionada == 1) {continue;}
@@ -122,7 +122,7 @@ public class Consola {
 				System.out.println("Por favor digite un Número Válido entre 1 y 2");
 			}
 		}
-		
+
 	}
 
 	private static void recepcionista() throws Exception {
@@ -160,9 +160,9 @@ public class Consola {
 			catch (NumberFormatException e) {
 				System.out.println("Por favor digite un Número Válido");
 			}
-			
+
 		}
-		
+
 	}
 
 	private static void iniciarEstadia() {
@@ -185,7 +185,7 @@ public class Consola {
 		}catch (Exception e) {
 			System.out.println("No se encontró la reserva, por favor, inténtelo de nuevo");
 		}
-		
+
 	}
 
 	private static void cancelarReserva() {
@@ -196,7 +196,7 @@ public class Consola {
 		}catch (Exception e) {
 			System.out.println("No se encontró la reserva, por favor, inténtelo de nuevo");
 		}
-		
+
 	}
 	private static void finalizarEstadia() {
 		try {
@@ -206,11 +206,11 @@ public class Consola {
 		}catch (Exception e) {
 			System.out.println("No se encontró la estadia, por favor, inténtelo de nuevo");
 		}
-		
+
 	}
 
 	private static void registrarConsumible() {
-		Boolean escogiendo = true;
+		boolean escogiendo = true;
 		while (escogiendo) {
 			printConsumos();
 			try {
@@ -230,23 +230,23 @@ public class Consola {
 					default:
 						System.out.println("Por favor, ingrese un número de 1 a 4");
 						break;
-						
+
 				}
-				
+
 			}
 			catch (NumberFormatException e) {
 				System.out.println("Por favor, ingrese un Numero Válido");
 			}
 		}
-		
+
 	}
-	
+
 	private static void producto() {
-		Boolean consumiendo = true;
+		boolean consumiendo = true;
 		List<Consumible> consumos = new ArrayList<>();
 		List<Producto> productos = hotelSystem.getInventarioProductos();
 		while (consumiendo) {
-			Integer count = 0;
+			int count = 0;
 			for(Producto producto: productos){
 				System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
 				count++;
@@ -259,10 +259,10 @@ public class Consola {
 				System.out.println("Selcciona un numero entre 1 y " +count);
 				continue;
 			}
-			if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) 
+			if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1"))
 				continue;
-			else 
-				consumiendo=false;	
+			else
+				consumiendo=false;
 		}
 		Boolean pagar = (input("¿Deseas pagar ahora?\n1) Si\n2) No").equals("1")) ? true : false;
 		String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
@@ -270,11 +270,11 @@ public class Consola {
 	}
 
 	private static void productoRestaurante() {
-		Boolean consumiendo = true;
+		boolean consumiendo = true;
 		List<Producto> consumos = new ArrayList<>();
 		List<ProductoRestaurante> productos = hotelSystem.getServicioRestaurante().getProductos();
 		while (consumiendo) {
-			Integer count = 0;
+			int count = 0;
 			for(Producto producto: productos){
 				System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
 				count++;
@@ -287,10 +287,10 @@ public class Consola {
 				System.out.println("Selcciona un numero entre 1 y " +count);
 				continue;
 			}
-			if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) 
+			if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1"))
 				continue;
-			else 
-				consumiendo=false;	
+			else
+				consumiendo=false;
 		}
 		Boolean pagar = (input("¿Deseas pagar ahora?\n1) Si\n2) No").equals("1")) ? true : false;
 		String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
@@ -298,11 +298,11 @@ public class Consola {
 	}
 
 	private static void productoSpa() {
-		Boolean consumiendo = true;
+		boolean consumiendo = true;
 		List<Producto> consumos = new ArrayList<>();
 		List<Producto> productos = hotelSystem.getServicioSpa().getProductosYServicios();
 		while (consumiendo) {
-			Integer count = 0;
+			int count = 0;
 			for(Producto producto: productos){
 				System.out.println(count+1+") "+producto.getNombre() +" ; precio -> "+producto.getPrecio());
 				count++;
@@ -315,10 +315,10 @@ public class Consola {
 				System.out.println("Selcciona un numero entre 1 y " +count);
 				continue;
 			}
-			if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1")) 
+			if (input("¿Deseas escoger otro producto\n1)Si\n2)No?").equals("1"))
 				continue;
-			else 
-				consumiendo=false;	
+			else
+				consumiendo=false;
 		}
 		Boolean pagar = (input("¿Deseas pagar ahora?\n1) Si\n2) No").equals("1")) ? true : false;
 		String hab = input("Ingrese el número de habitacion, si tiene varias ingrese solo uno, el que desee");
@@ -340,7 +340,7 @@ public class Consola {
 		String dni = input("Ingrese el dni del titular");
 		Integer edad = Integer.parseInt(input("Ingrese la edad del titular"));
 		String telefono = input("Ingrese el teléfono del titular");
-		
+
 		Integer cantidad = Integer.parseInt(input("Ingrese la cantidad de personas"));
 		System.out.println("Note que la disponibilidad de fechas empieza desde hoy");
 		String fechaLlegada = fechaValida("Llegada");
@@ -348,12 +348,12 @@ public class Consola {
 		List<Integer> habitaciones = escogerHabitacion(cantidad, fechaLlegada, fechaSalida);
 		hotelSystem.reservar(nombre, email, dni, telefono, edad, cantidad, habitaciones, fechaLlegada, fechaSalida);
 	}
-	
-	public static List<Integer> escogerHabitacion(Integer cantidad, String fecha1, String fecha2) throws Exception{
-		List<Integer> ids = new ArrayList<Integer>();
 
-		Boolean escogiendo = true;
-		
+	public static List<Integer> escogerHabitacion(Integer cantidad, String fecha1, String fecha2) throws Exception{
+		List<Integer> ids = new ArrayList<>();
+
+		boolean escogiendo = true;
+
 		while (escogiendo) {
 			Integer idHabitacion = selectHabs(fecha1, fecha2);
 			if (idHabitacion == 0) {
@@ -376,22 +376,22 @@ public class Consola {
 				break;
 			}
 		}
-		
+
 		return ids;
 	}
-	
+
 	private static Integer selectHabs(String desde, String hasta) {
-		Integer count = 0;
-		
+		int count = 0;
+
 		for (TipoHabitacion hab:hotelSystem.getOpcionesHabitacion()) {
 			System.out.println((count+1)+") nombre:"+hab.getAlias()
-			+"; capacidad:"+hab.getCapacidad() 
-			+ (hab.getConCocina()? "; Con Cocina":"") 
-			+ (hab.getConBalcon()? "; Con Balcón":"") 
+			+"; capacidad:"+hab.getCapacidad()
+			+ (hab.getConCocina()? "; Con Cocina":"")
+			+ (hab.getConBalcon()? "; Con Balcón":"")
 			+ (hab.getConVista()? "; Con Vista":""));
 			count++;
 		}
-		
+
 		Integer seleccion = Integer.parseInt(input("Selecciona la habitación, digite un número entre 1 y "+count));
 		if (seleccion <= count && seleccion>=1) {
 			try {
@@ -405,11 +405,11 @@ public class Consola {
 			selectHabs(desde, hasta);
 		}
 		return seleccion;
-		
+
 	}
 
 	private static String fechaValida(String message) {
-		Boolean escogiendo = true;
+		boolean escogiendo = true;
 		String fecha;
 		while (escogiendo) {
 			fecha = input("Ingrese la fecha de "+message);
@@ -418,10 +418,10 @@ public class Consola {
 		}
 		return null;
 	}
-	
+
 	private static void admin() {
 		printMenuAdministrador();
-		
+
 	}
 
 	public static void printMenuIngreso() {
@@ -449,9 +449,9 @@ public class Consola {
 	}
 	public static void bienvenida() {
 		System.out.println("Hola! Este es el Hotel Management System");
-		
+
 	}
-	
+
 	public static String input(String message) {
 		try
 		{
@@ -466,5 +466,5 @@ public class Consola {
 		}
 		return null;
 	}
-	
+
 }

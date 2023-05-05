@@ -4,18 +4,18 @@ import java.util.List;
 import java.util.Objects;
 
 public class Producto implements Consumible{
-	
+
 	private Long id;
 	private String nombre;
 	private Double precio;
-	
+
 	public Producto(Long id, String nombre, Double precio) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.precio = precio;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (getClass() != obj.getClass())
@@ -30,12 +30,14 @@ public class Producto implements Consumible{
 		return "Producto [id=" + id + ", nombre=" + nombre + ", precio=" + precio + "]";
 	}
 
+	@Override
 	public Factura facturar(Huesped titular) {
 	    Factura factura = new Factura(titular, List.of(this));
 	    factura.procesarPago();
 	    return factura;
 	}
-	
+
+	@Override
 	public Double valor() {
 		return getPrecio();
 	}

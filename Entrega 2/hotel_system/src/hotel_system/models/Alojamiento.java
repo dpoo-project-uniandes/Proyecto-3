@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Alojamiento extends Servicio {
-	
+
     private List<Habitacion> habitaciones;
     private Date fechaIngreso;
     private Date fechaSalida;
@@ -24,19 +24,20 @@ public class Alojamiento extends Servicio {
 
     @Override
     public Double valor() {
-    	Double valorTotal = 0.0;
+    	double valorTotal = 0.0;
         for(Habitacion habitacion: habitaciones) {
         	valorTotal += habitacion.calcularTarifa(fechaIngreso, fechaSalida);
         }
         return valorTotal;
     }
-    
-    public List<Consumible> getConsumo() {
+
+    @Override
+	public List<Consumible> getConsumo() {
     	List<Consumible> habitaciones = new ArrayList<>();
     	for(Habitacion habitacion: this.habitaciones) {
     		habitaciones.add(new Producto(
-    				Integer.toUnsignedLong(habitacion.getNumero()), 
-    				habitacion.getTipo().getAlias(), 
+    				Integer.toUnsignedLong(habitacion.getNumero()),
+    				habitacion.getTipo().getAlias(),
     				habitacion.calcularTarifa(fechaIngreso, fechaSalida))
 				);
     	}

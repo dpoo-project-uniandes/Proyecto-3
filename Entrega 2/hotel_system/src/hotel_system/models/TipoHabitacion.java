@@ -1,7 +1,7 @@
 package hotel_system.models;
 
 public class TipoHabitacion {
-	
+
 	private String alias;
 	private Integer capacidad;
 	private Boolean conBalcon;
@@ -11,7 +11,7 @@ public class TipoHabitacion {
 	private Integer camasDobles;
 	private Integer camasQueen;
 	private Double precio;
-	
+
 	public TipoHabitacion(String alias, Integer capacidad, Boolean conBalcon, Boolean conVista, Boolean conCocina,
 			Integer camasSencillas, Integer camasDobles, Integer camasQueen, Double precio) {
 		this.alias = alias;

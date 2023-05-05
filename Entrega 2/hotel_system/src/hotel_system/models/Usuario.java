@@ -1,11 +1,11 @@
 package hotel_system.models;
 
 public class Usuario {
-	
+
 	private String login;
 	private String password;
 	private Rol rol;
-	
+
 	public Usuario(String login, String password, Rol rol) {
 		this.login = login;
 		this.password = password;
