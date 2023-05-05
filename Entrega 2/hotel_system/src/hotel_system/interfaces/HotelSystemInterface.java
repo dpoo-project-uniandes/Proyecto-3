@@ -9,10 +9,8 @@ import java.util.function.Function;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-<<<<<<< Updated upstream
-=======
+
 import javax.swing.JTextField;
->>>>>>> Stashed changes
 
 import hotel_system.controllers.HotelManagementSystem;
 import hotel_system.models.Usuario;
@@ -21,31 +19,22 @@ public class HotelSystemInterface extends JFrame {
 
 	public static void main(String[] args) throws IOException  {
 		HotelSystemInterface HotelSystemInterface = new HotelSystemInterface();
-<<<<<<< Updated upstream
-	}
-
-=======
 	}  
+
+	 
 	private HotelManagementSystem pms;
 	private MenuAdmin menuAdmin;
->>>>>>> Stashed changes
 	private Login login;
 	private MenuRecepcionista menuRecepcionista;
 	private BookingManagement bookingManagement;
 	private String user;
 
 	public HotelSystemInterface() throws IOException {
-<<<<<<< Updated upstream
 		this.user = "Juan Rojas";
-=======
 		this.pms = new HotelManagementSystem();
->>>>>>> Stashed changes
 		configLogin();
 	}
-<<<<<<< Updated upstream
 
-	private void configLogin() {
-=======
 	 
 	private void configSingUp(JPanel panel) {
 		// LAYOUT CONFIGURATION
@@ -86,22 +75,11 @@ public class HotelSystemInterface extends JFrame {
 	}
 
 	private void configLogin() {  
->>>>>>> Stashed changes
 		// ACTIONS LISTENERS
 		Function<Login, ActionListener> loginAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-<<<<<<< Updated upstream
-					Boolean authenticated = login(
-						panel.getUserInput().getInput().getText(),
-						panel.getPasswordInput().getInput().getText()
-					);
-					if (!authenticated)
-						panel.displayUnauthorizedWarning();
-					else
-						configMenuRecepcionista(user);
-=======
 					Usuario authenticated = getLogin(
 						panel.getUserInput().getInput().getText(), 
 						panel.getPasswordInput().getInput().getText()
@@ -111,6 +89,7 @@ public class HotelSystemInterface extends JFrame {
 					else {
 						String nombreUsuario = authenticated.getLogin();
 						String rol = authenticated.getRol().toString();
+						user = nombreUsuario;
 						if (rol == "RECEPCIONISTA") {
 							
 						}else {
@@ -123,10 +102,10 @@ public class HotelSystemInterface extends JFrame {
 						}
 						
 					}
->>>>>>> Stashed changes
 				}
 			};
 		};
+		
 		Function<Login, ActionListener> signUpAction = (panel) -> {
 			return new ActionListener() {
 				@Override
@@ -152,15 +131,9 @@ public class HotelSystemInterface extends JFrame {
 		this.setTitle("Hotel System Management");
 		this.setResizable(false);
 	}
-<<<<<<< Updated upstream
 
-	private Boolean login(String user, String password) {
-		return true;
-=======
-	
 	private Usuario getLogin(String user, String password) {
 		return pms.getUsuario(user, password);
->>>>>>> Stashed changes
 	}
 
 	private void configMainFrame(JPanel panel) {

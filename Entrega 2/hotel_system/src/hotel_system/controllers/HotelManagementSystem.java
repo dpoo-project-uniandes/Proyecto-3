@@ -42,7 +42,7 @@ public class HotelManagementSystem {
 			cargarTipoHabitaciones();
 			cargarDisponibilidades();
 			cargarHabitaciones();
-			cargarReservas();
+			cargarReservas();  
 			cargarEstadias();  
 			cargarProductos();
 			cargarServicios();
@@ -313,15 +313,12 @@ public class HotelManagementSystem {
 	public boolean validadUsuario(String user) {
 		return usuarios.containsKey(user);
 	}
-<<<<<<< Updated upstream
 
 	public String validarContrasenia(String user, String password) {
-		if (usuarios.get(user).getPassword().equals(password)) return usuarios.get(user).getRol().toString();
-=======
+		if (usuarios.get(user).getPassword().equals(password)) return usuarios.get(user).getRol().toString();else return null;}
 	
 	public Usuario getUsuario(String user, String password) {
 		if (usuarios.get(user).getPassword().equals(password)) return usuarios.get(user); 
->>>>>>> Stashed changes
 		else return null;
 	}
 
