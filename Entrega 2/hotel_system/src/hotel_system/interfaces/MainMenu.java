@@ -16,7 +16,7 @@ public abstract class MainMenu extends JPanel {
 
     public MainMenu(String user, String title, Integer quantityButtons) {
         configPanel();
-        configHeader(user, "Menu Principal");
+        configHeader(user, title);
         configButtonsPanel(quantityButtons);
         configComponents();
     }

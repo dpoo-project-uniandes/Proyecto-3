@@ -18,9 +18,11 @@ public class HotelSystemInterface extends JFrame {
 
 	private Login login;
 	private MenuRecepcionista menuRecepcionista;
+	private BookingManagement bookingManagement;
 	private String user;
 
 	public HotelSystemInterface() throws IOException {
+		this.user = "Juan Rojas";
 		configLogin();
 	}
 
@@ -49,6 +51,8 @@ public class HotelSystemInterface extends JFrame {
 				}
 			};
 		};
+		
+		// INITIALIZE
 		this.login = new Login(loginAction, signUpAction);
 
 		// LAYOUT CONFIGURATION
@@ -87,7 +91,47 @@ public class HotelSystemInterface extends JFrame {
 	}
 
 	private void configMenuRecepcionista(String user) {
-		this.menuRecepcionista = new MenuRecepcionista(user);
+		// ACTIONS LISTENERS
+		Function<MenuRecepcionista, ActionListener> bookingAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configBookingManagement(user);
+				}
+			};
+		};
+		Function<MenuRecepcionista, ActionListener> staysAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		
+		Function<MenuRecepcionista, ActionListener> consumiblesAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		
+		// INITIALIZE
+		this.menuRecepcionista = new MenuRecepcionista(user, bookingAction, staysAction, consumiblesAction);
 		configMainFrame(this.menuRecepcionista);
+	}
+	
+	private void configBookingManagement(String user) {
+		// ACTIONS LISTENERS
+		Function<Finder, ActionListener> findAction = (btn) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("btn buscar presionado");
+				}
+			};
+		};
+		
+		// INITIALIZE
+		this.bookingManagement = new BookingManagement(user, findAction);
+		configMainFrame(bookingManagement);
 	}
 }
