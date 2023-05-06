@@ -7,7 +7,7 @@ import java.util.List;
 import hotel_system.utils.Utils;
 
 public class Estadia {
-	
+
 	Long id;
 	Reserva reserva;
 	Date fechaIngreso;
@@ -15,7 +15,7 @@ public class Estadia {
 	Factura facturaTotal;
 	List<Factura> facturas;
 	List<Huesped> huespedes;
-	
+
 	public Estadia(Reserva reserva, Date fechaIngreso, Date fechaSalida, List<Huesped> huespedes) {
 		this.id = Utils.generateId();
 		this.reserva = reserva;
@@ -25,7 +25,7 @@ public class Estadia {
 		this.huespedes = huespedes;
 		this.facturas = new ArrayList<>();
 	}
-	
+
 	public void facturarEstadia() {
 		Alojamiento alojamiento = new Alojamiento(Utils.generateId(), reserva.getHabitaciones(), fechaIngreso, fechaSalida);
 		for (Consumible c : alojamiento.getConsumo()) {
@@ -35,11 +35,11 @@ public class Estadia {
 		this.facturaTotal.calcularValorTotal();
 		this.facturaTotal.procesarPago();
 	}
-	
+
 	public void cargarFactura(Factura factura) {
 		this.facturas.add(factura);
 	}
-	
+
 	public List<Huesped> getHuespedes() {
 		return huespedes;
 	}

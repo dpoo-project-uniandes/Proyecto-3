@@ -3,21 +3,19 @@ package hotel_system.models;
 import java.sql.Date;
 import java.util.Objects;
 
-import hotel_system.utils.Utils;
-
 public class Disponibilidad {
-	
+
 	private Double precio;
 	private Boolean estado;
 	private Date fecha;
 	private Reserva reserva;
-	
+
 	public Disponibilidad(Double precio, Boolean estado, Date fecha) {
 		this.precio = precio;
 		this.estado = estado;
 		this.fecha = fecha;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (getClass() != obj.getClass()) {
@@ -25,7 +23,7 @@ public class Disponibilidad {
 		}
 		Disponibilidad other = (Disponibilidad) obj;
 		return Objects.equals(fecha, other.fecha);
-	}	
+	}
 
 	@Override
 	public String toString() {

@@ -1,5 +1,6 @@
 package hotel_system.interfaces.components;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -10,42 +11,51 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class Button extends JButton {
+import services.ImagesManager;
 
+public class MenuButton extends JButton {
+	
 	private String text;
+	private ImageIcon icon;
 	private Integer radius;
 	private Dimension dimension;
 	private Shape shape;
-
-	public Button(String text) {
-		super(text);
+	
+	public MenuButton(String text, String icon) {
 		this.text = text;
-		this.radius = 20;
+		this.icon = ImagesManager.resizeIcon(ImagesManager.ImageIcon(icon), 90, 90);
+		this.radius = 25;
 		this.dimension = getPreferredSize();
 		configButton();
-  }
-
-	public Button(String text, Dimension dimension) {
-		super(text);
+	}
+	
+	public MenuButton(String text, String icon, Dimension dimension) {
 		this.text = text;
-		this.radius = 20;
+		this.icon = ImagesManager.resizeIcon(ImagesManager.ImageIcon(icon), 90, 90);
+		this.radius = 25;
 		this.dimension = dimension;
 		configButton();
 	}
-
+	
 	private void configButton() {
 		setOpaque(true);
-	    setBackground(Color.BLACK);
-	    setFocusable(false);
+		setFocusable(false);
+		setContentAreaFilled(false);
+	    setBackground(Color.WHITE);
+	    setForeground(Color.BLACK);
 	    setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-	    setContentAreaFilled(false);
-	    setBorder(new EmptyBorder(10,20,10,20));
-	    setForeground(Color.WHITE);
-	    setFont(new Font(getName(), Font.BOLD, getFont().getSize()));
+	    setBorder(new EmptyBorder(0,0,0,0));
+	    setFont(new Font(getName(), Font.BOLD, 30));
 	    setPreferredSize(dimension);
+	    setIcon(icon);
+	    setText(text);
+	    setVerticalTextPosition(SwingConstants.BOTTOM);
+	    setHorizontalTextPosition(SwingConstants.CENTER);
 	}
 
 	@Override
@@ -62,7 +72,8 @@ public class Button extends JButton {
 	@Override
 	protected void paintBorder(Graphics g) {
   	    ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g.setColor(getBackground());
+  	    ((Graphics2D)g).setStroke(new BasicStroke(6));
+		g.setColor(getForeground());
     	g.drawRoundRect(0, 0, getWidth(), getHeight(), radius, radius);
 	}
 
@@ -73,4 +84,5 @@ public class Button extends JButton {
 		}
 		return shape.contains(x, y);
 	}
+
 }

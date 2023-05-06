@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 public class FileManager {
 	
 	private static final String path = "./data/";
-	
+
 	private static String buildPath(String fileName) {
 		return String.format("%s%s", path, fileName);
 	}
-	
+
 	public static File cargarArchivo(String name) {
 		try {
 			return new File(buildPath(name));
@@ -27,7 +27,7 @@ public class FileManager {
 			throw e;
 		}
 	}
-	
+
 	public static void eliminarArchivo(String name) {
 		try {
 			new File(buildPath(name)).delete();
@@ -36,7 +36,7 @@ public class FileManager {
 			throw e;
 		}
 	}
-	
+
 	public static List<Map<String, String>> cargarArchivoCSV(String name) throws Exception {
 		try {
 			List<Map<String, String>> data = new ArrayList<>();
@@ -49,7 +49,7 @@ public class FileManager {
 				Map<String, String> rowMap = new HashMap<>();
 				for(int i = 0; i < headers.length; i++) {
 					rowMap.put(headers[i],row[i]);
-				}
+				}  
 				data.add(rowMap);
 				linea = br.readLine();
 			}
@@ -60,7 +60,7 @@ public class FileManager {
 			throw e;
 		}
 	}
-	
+
 	public static void agregarLineasCSV(String name, List<List<String>> filas) throws Exception {
 		try {
 			File file = cargarArchivo(name);

@@ -11,7 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 public class Input extends JPanel {
-	
+
 	public static Input Instance(String title, String type) {
 		switch (type) {
 		case "secret":
@@ -20,24 +20,24 @@ public class Input extends JPanel {
 			return new Input(title, new RoundJTextField());
 		default:
 			return new Input(title, new RoundJTextField());
-		}	
+		}
 	}
-	
+
 	private JLabel title;
 	private JTextField input;
-	
+
 	private Input(String title, JTextField input) {
 		configPanel();
 		configTitle(title);
 		configInput(input);
 	}
-	
+
 	private void configPanel() {
 		this.setOpaque(true);
 		this.setBackground(Color.WHITE);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
-	
+
 	private void configTitle(String title) {
 		this.title = new JLabel(title + ":");
 		this.title.setBackground(Color.WHITE);
@@ -49,7 +49,7 @@ public class Input extends JPanel {
 		this.title.setBorder(new EmptyBorder(5, 5, 5, 5));
 		this.add(this.title);
 	}
-	
+
 	private void configInput(JTextField input) {
 		this.input = input;
 		this.input.setOpaque(true);

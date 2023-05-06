@@ -1,23 +1,23 @@
 package hotel_system.models;
 
 public class Usuario {
-	
-	private String login;
+
+	private String alias;
 	private String password;
 	private Rol rol;
-	
+
 	public Usuario(String login, String password, Rol rol) {
-		this.login = login;
+		this.alias = login;
 		this.password = password;
 		this.rol = rol;
 	}
-
-	public String getLogin() {
-		return login;
+  
+	public String getAlias() {
+		return alias;
 	}
 
-	public void setLogin(String login) {
-		this.login = login;
+	public void setAlias(String login) {
+		this.alias = login;
 	}
 
 	public String getPassword() {

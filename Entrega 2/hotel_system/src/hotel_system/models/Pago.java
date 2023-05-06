@@ -5,10 +5,10 @@ import java.sql.Date;
 import hotel_system.utils.Utils;
 
 public class Pago {
-	
+
 	private Double monto;
 	private Date fecha;
-	
+
 	public Pago(Double monto) {
 		super();
 		this.monto = monto;

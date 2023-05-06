@@ -29,13 +29,15 @@ package hotel_system.interfaces;
 		public class MenuAdmin extends JPanel implements ActionListener{
 		    
 		    private BufferedImage iconoR;
-		    private Button BotonCargar;
+			private String usuario;
+			private Button BotonCargar;
 		    private Button BotonModificar;
 		    private Button BotonConsultar;
 		    private JLabel title;
 		    private JPanel PanelOpciones;
 		    
-		    public 	MenuAdmin()  {
+		    public 	MenuAdmin(String user)  {
+		    		this.usuario = user;
 	                configPanel();
 	                configTitle();
 		            configOpciones();
@@ -91,6 +93,13 @@ package hotel_system.interfaces;
 		    public void actionPerformed(ActionEvent e) {
 		    }
 		    
+		    public String getUsuario() {
+		    	return usuario;
+		    }
+		    
+		    public void setUsuario(String usuario) {
+		    	this.usuario = usuario;
+		    }
 	}
 
 
