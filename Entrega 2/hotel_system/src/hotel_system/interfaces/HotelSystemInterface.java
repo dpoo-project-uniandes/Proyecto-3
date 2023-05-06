@@ -1,6 +1,6 @@
 package hotel_system.interfaces;
 
-import services.SecValidation;
+import services.*;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -15,12 +15,18 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 
+import hotel_system.controllers.HotelManagementSystem;
+
 public class HotelSystemInterface extends JFrame {
 	
 	public static void main(String[] args) throws IOException  {
 		HotelSystemInterface HotelSystemInterface = new HotelSystemInterface();
-	}
-	
+
+	}  
+
+	 
+	private HotelManagementSystem pms;
+	private MenuAdmin menuAdmin;
 	private Login login;
 	private MenuPrincipal menuP;
 	private MenuAdmin menuA;
@@ -29,6 +35,95 @@ public class HotelSystemInterface extends JFrame {
 	public HotelSystemInterface() throws IOException {
 		configLogin();
 		componentsFrame();
+		this.user = "Juan Rojas";
+		this.pms = new HotelManagementSystem();
+		configLogin();
+	}
+
+	 
+	private void configSingUp(JPanel panel) {
+		// LAYOUT CONFIGURATION
+		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+		this.add(menuAdmin);
+		  
+		// SETTINGS
+		this.getContentPane().setBackground(Color.WHITE);
+		this.setSize(600, 700);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
+		this.setTitle("Hotel System Management");
+		this.setResizable(false);
+	
+		
+	}
+
+	private void configAdminOptions(JPanel panel) {
+		// LAYOUT CONFIGURATION
+		setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+		add(panel);
+		  
+		// SETTINGS
+		getContentPane().setBackground(Color.WHITE);
+		setSize(600, 700);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		setVisible(true);
+		setTitle("Hotel System Management");
+		setResizable(false);
+		
+	}
+
+	private void configRecepcionistaOptions() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void configLogin() {  
+		// ACTIONS LISTENERS
+		Function<Login, ActionListener> loginAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Usuario authenticated = getUser(
+							panel.getUserInput().getInput().getText(), 
+							panel.getPasswordInput().getInput().getText()
+					);
+					if (authenticated == null) 
+						panel.displayUnauthorizedWarning();
+					else 
+						login(authenticated);	
+				}
+			};
+		};
+		Function<Login, ActionListener> signUpAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("funciono");
+				}
+			};
+		};
+		
+		// INITIALIZE
+		this.login = new Login(loginAction, signUpAction);
+
+		// LAYOUT CONFIGURATION
+		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+		this.add(login);
+
+		// SETTINGS
+		this.getContentPane().setBackground(Color.WHITE);
+		this.setSize(600, 700);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
+		this.setTitle("Hotel System Management");
+		this.setResizable(false);
+	}
+
+	private Usuario getUser(String user, String password) {
+		return pms.userLogin(user, password);
 	}
 	
 
