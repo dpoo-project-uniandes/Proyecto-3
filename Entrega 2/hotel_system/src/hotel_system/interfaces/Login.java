@@ -5,13 +5,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.function.Function;
 
-import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -22,6 +18,7 @@ import javax.swing.border.EmptyBorder;
 
 import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.Input;
+import services.ImagesManager;
 
 public class Login extends JPanel {
 	
@@ -33,7 +30,7 @@ public class Login extends JPanel {
 	private Button loginBtn;
 	private Button signUpBtn;
 	private JPanel buttonsPanel;
-	private BufferedImage userIcon;
+	private ImageIcon userIcon;
 	
 	public Login() {
 		configPanel();
@@ -85,13 +82,8 @@ public class Login extends JPanel {
 	private void configIconLogin() {
 		this.iconLogin = new JLabel();
 		try {
-			this.userIcon = ImageIO.read(new File(System.getProperty("user.dir")+"/Entrega 2/hotel_system/assets/icon-login.png"));
-			ImageIcon icon = new ImageIcon(
-					new ImageIcon(userIcon)
-						.getImage()
-						.getScaledInstance(200, 200, Image.SCALE_DEFAULT)
-			);
-			this.iconLogin.setIcon(icon);
+			this.userIcon = ImagesManager.ImageIcon("icon-login");
+			this.iconLogin.setIcon(this.userIcon);
 			this.iconLogin.setAlignmentX(CENTER_ALIGNMENT);
 		} catch (Exception e) {
 			System.out.println("Error cargando la imagen de userIcon");

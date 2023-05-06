@@ -24,12 +24,13 @@ import javax.swing.border.EmptyBorder;
 
 import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.Input;
+import services.ImagesManager;
 
 public class Registrarse extends JPanel {
 
     private JLabel title;
 	private JLabel iconLogin;
-	private BufferedImage userIcon;
+	private ImageIcon userIcon;
     private Input userInput;
     private Input passwordInput;
     private Button registerBtn;
@@ -44,23 +45,7 @@ public class Registrarse extends JPanel {
         configIconLogin();
         configComponents();
     }
-	private void configIconLogin() {
-		this.iconLogin = new JLabel();
-		try {
-			this.userIcon = ImageIO.read(new File(System.getProperty("user.dir")+"/Entrega 2/hotel_system/assets/icon-login.png"));
-			ImageIcon icon = new ImageIcon(
-					new ImageIcon(userIcon)
-						.getImage()
-						.getScaledInstance(200, 200, Image.SCALE_DEFAULT)
-			);
-			this.iconLogin.setIcon(icon);
-			this.iconLogin.setAlignmentX(CENTER_ALIGNMENT);
-		} catch (Exception e) {
-			System.out.println("Error cargando la imagen de userIcon");
-			e.printStackTrace();
-		}
-	}
-	
+    
     private void configComponents() {
         this.add(title);
         this.add(Box.createRigidArea(new Dimension(0, 30)));
@@ -74,6 +59,25 @@ public class Registrarse extends JPanel {
         this.add(Box.createRigidArea(new Dimension(0, 20)));
         this.add(registerBtn);
     }
+    
+    private void configPanel() {
+        this.setOpaque(true);
+        this.setBackground(Color.WHITE);
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        this.setBorder(new EmptyBorder(70, 120, 90, 120));
+    }
+    
+	private void configIconLogin() {
+		this.iconLogin = new JLabel();
+		try {
+			this.userIcon = ImagesManager.ImageIcon("icon-login");
+			this.iconLogin.setIcon(this.userIcon);
+			this.iconLogin.setAlignmentX(CENTER_ALIGNMENT);
+		} catch (Exception e) {
+			System.out.println("Error cargando la imagen de userIcon");
+			e.printStackTrace();
+		}
+	}
 
     private void configTitle() {
         title = new JLabel("Registro de Usuario");
@@ -113,22 +117,13 @@ public class Registrarse extends JPanel {
             });
         }
     }
-
-
-
+    
     private void configPasswordRequirements() {
         this.passwordRequirements = new JLabel("La contraseña debe tener de 6 a 14 caracteres, incluir al menos 1 letra, 1 número y 1 caracter especial.");
         this.passwordRequirements.setFont(new Font(getName(), Font.PLAIN, 7));
         this.passwordRequirements.setForeground(Color.RED);
         this.passwordRequirements.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.passwordRequirements.setVisible(false);
-    }
-
-    private void configPanel() {
-        this.setOpaque(true);
-        this.setBackground(Color.WHITE);
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setBorder(new EmptyBorder(70, 120, 90, 120));
     }
 
     public void displayPasswordRequirementsWarning() {

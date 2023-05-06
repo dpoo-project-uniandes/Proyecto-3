@@ -1,82 +1,55 @@
 package hotel_system.interfaces;
 
-import services.*;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JTextField;
+import javax.swing.JPanel;
 
 import hotel_system.controllers.HotelManagementSystem;
+import hotel_system.models.Rol;
+import hotel_system.models.Usuario;
+import services.SecValidation;
 
 public class HotelSystemInterface extends JFrame {
 	
 	public static void main(String[] args) throws IOException  {
 		HotelSystemInterface HotelSystemInterface = new HotelSystemInterface();
 
-	}  
-
+	} 
 	 
 	private HotelManagementSystem pms;
-	private MenuAdmin menuAdmin;
 	private Login login;
-	private MenuPrincipal menuP;
-	private MenuAdmin menuA;
-	private MenuCargaAdmin menuCA;
+	private Registrarse registrarse;
+	private MenuRecepcionista menuRecepcionista;
+	private BookingManagement bookingManagement;
+	private String user;
 	
 	public HotelSystemInterface() throws IOException {
-		configLogin();
-		componentsFrame();
 		this.user = "Juan Rojas";
 		this.pms = new HotelManagementSystem();
 		configLogin();
 	}
 
-	 
-	private void configSingUp(JPanel panel) {
+	private void configMainFrame(JPanel panel) {
+		// CLEAN
+		this.setContentPane(panel);
+
 		// LAYOUT CONFIGURATION
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-		this.add(menuAdmin);
-		  
+
 		// SETTINGS
 		this.getContentPane().setBackground(Color.WHITE);
-		this.setSize(600, 700);
+		this.setSize(1416, 800);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		this.setTitle("Hotel System Management");
 		this.setResizable(false);
-	
-		
-	}
-
-	private void configAdminOptions(JPanel panel) {
-		// LAYOUT CONFIGURATION
-		setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-		add(panel);
-		  
-		// SETTINGS
-		getContentPane().setBackground(Color.WHITE);
-		setSize(600, 700);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
-		setVisible(true);
-		setTitle("Hotel System Management");
-		setResizable(false);
-		
-	}
-
-	private void configRecepcionistaOptions() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	private void configLogin() {  
@@ -85,10 +58,11 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Usuario authenticated = getUser(
-							panel.getUserInput().getInput().getText(), 
-							panel.getPasswordInput().getInput().getText()
-					);
+//					Usuario authenticated = getUser(
+//							panel.getUserInput().getInput().getText(), 
+//							panel.getPasswordInput().getInput().getText()
+//					);
+					Usuario authenticated = getUser("juan", "juan");
 					if (authenticated == null) 
 						panel.displayUnauthorizedWarning();
 					else 
@@ -100,17 +74,17 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("funciono");
+					configSignUp();
 				}
 			};
 		};
 		
 		// INITIALIZE
 		this.login = new Login(loginAction, signUpAction);
-
-		// LAYOUT CONFIGURATION
+		
+		// LAYOUT CONFIGURATION & CLEAN
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-		this.add(login);
+		this.setContentPane(this.login);
 
 		// SETTINGS
 		this.getContentPane().setBackground(Color.WHITE);
@@ -126,90 +100,90 @@ public class HotelSystemInterface extends JFrame {
 		return pms.userLogin(user, password);
 	}
 	
-
-	private void configLogin() {
-	    // ACTIONS LISTENERS
-	    Function<Login, ActionListener> loginAction = (panel) -> {
-	        return new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                Boolean authenticated = login(
-	                    panel.getUserInput().getInput().getText(),
-	                    panel.getPasswordInput().getInput().getText()
-	                );
-	                if (!authenticated)
-	                    panel.displayUnauthorizedWarning();
-	                else
-	                    dispose();
-	            }
-	        };
-	    };
-	    Function<Login, ActionListener> signUpAction = (panel) -> {
-	        return new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                showRegistrarse();
-	            }
-	        };
-	    };
-	    this.login = new Login(loginAction, signUpAction);
-
-	    // LAYOUT CONFIGURATION
-	    this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-	    this.add(login);
-
-	    // SETTINGS
-	    this.getContentPane().setBackground(Color.WHITE);
-	    this.setSize(600, 700);
-	    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-	    this.setLocationRelativeTo(null);
-	    this.setVisible(true);
-	    this.setTitle("Hotel System Management");
-	    this.setResizable(false);
-	}
-	
-	private void showLogin() {
-	    this.getContentPane().removeAll();
-	    this.add(login);
-	    this.revalidate();
-	    this.repaint();
-	}
-
-	private void showRegistrarse() {
-	    this.remove(login);
-
+	private void configSignUp() {
+		// ACTION LISTENERS
 	    Function<Registrarse, ActionListener> registerAction = (panel) -> {
 	        return new ActionListener() {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                String password = panel.getPasswordInput().getInput().getText();
-	                if (!isValidPassword(password)) {
+	                if (!SecValidation.checkPassword(password)) {
 	                    panel.displayPasswordRequirementsWarning();
 	                } else {
 	                    System.out.println("Usuario registrado correctamente");
-	                    showLogin();
+	                    configLogin();
 	                }
 	            }
 	        };
 	    };
-	    Registrarse registrarse = new Registrarse(registerAction);
-	    this.add(registrarse);
-
-	    this.revalidate();
-	    this.repaint();
-	}
-
-	
-	private boolean isValidPassword(String password) {
-	    return SecValidation.checkPassword(password);
-	}
-	
-	private Boolean login(String user, String password) {
-		return true;
-	}
-	
-	private void componentsFrame() {
 		
+		// INITIALIZE
+	    this.registrarse = new Registrarse(registerAction);
+		
+		// LAYOUT CONFIGURATION & CLEAN
+		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+	    this.setContentPane(this.registrarse);
+		  
+		// SETTINGS
+		this.getContentPane().setBackground(Color.WHITE);
+		this.setSize(600, 700);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
+		this.setTitle("Hotel System Management");
+		this.setResizable(false);
+	}
+	
+	private void login(Usuario usuario) {
+		this.user = usuario.getAlias();
+		if (usuario.getRol() == Rol.RECEPCIONISTA) {
+			configMenuRecepcionista(user);
+		}
+	}
+
+	private void configMenuRecepcionista(String user) {
+		// ACTIONS LISTENERS
+		Function<MenuRecepcionista, ActionListener> bookingAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configBookingManagement(user);
+				}
+			};
+		};
+		Function<MenuRecepcionista, ActionListener> staysAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		
+		Function<MenuRecepcionista, ActionListener> consumiblesAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		
+		// INITIALIZE
+		this.menuRecepcionista = new MenuRecepcionista(user, bookingAction, staysAction, consumiblesAction);
+		configMainFrame(this.menuRecepcionista);
+	}
+	
+	private void configBookingManagement(String user) {
+		// ACTIONS LISTENERS
+		Function<Finder, ActionListener> findAction = (btn) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("btn buscar presionado");
+				}
+			};
+		};
+		
+		// INITIALIZE
+		this.bookingManagement = new BookingManagement(user, findAction);
+		configMainFrame(bookingManagement);
 	}
 }
 
