@@ -12,15 +12,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class FileManager {
-<<<<<<< Updated upstream
-
+	
 	private static final String path = "./data/";
 
-=======
-	
-	private static final String path = System.getProperty("user.dir")+"/Entrega 2/hotel_system/data/";
-	
->>>>>>> Stashed changes
 	private static String buildPath(String fileName) {
 		return String.format("%s%s", path, fileName);
 	}

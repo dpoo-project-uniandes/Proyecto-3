@@ -310,18 +310,6 @@ public class HotelManagementSystem {
 		else {return null;}
 	}
 
-	public boolean validadUsuario(String user) {
-		return usuarios.containsKey(user);
-	}
-
-	public String validarContrasenia(String user, String password) {
-		if (usuarios.get(user).getPassword().equals(password)) return usuarios.get(user).getRol().toString();else return null;}
-	
-	public Usuario getUsuario(String user, String password) {
-		if (usuarios.get(user).getPassword().equals(password)) return usuarios.get(user); 
-		else return null;
-	}
-
 	public void registrarUsuario(String user, String password, Rol rol) throws Exception {
 		usuarios.put(user, new Usuario(user, password, rol));
 		List<List<String>> rowUser = List.of(List.of(user, password, rol.toString()));
@@ -432,5 +420,19 @@ public class HotelManagementSystem {
 
 	public Integer cantidadReserva(String dni) {
 		return getReservaByDNI(dni).getCantidadPersonas();
+	}
+	
+	// LOGIIN ====================================================================================================================
+	
+	public boolean userExists(String user) {
+		return usuarios.containsKey(user);
+	}
+
+	public Usuario userLogin(String user, String password) {
+		Usuario usuario = usuarios.get(user);
+		if (usuario != null && usuario.getPassword().equals(password)) {
+			return usuario;
+		}
+		return null;
 	}
 }

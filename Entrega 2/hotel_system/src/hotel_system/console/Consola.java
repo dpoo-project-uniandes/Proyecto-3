@@ -96,11 +96,11 @@ public class Consola {
 		while(ingresando) {
 			try {
 				String user = input("Por favor ingrese su nombre de usuario");
-				if (hotelSystem.validadUsuario(user)) {
+				if (hotelSystem.userExists(user)) {
 					boolean accediendo = true;
 					while (accediendo) {
 						String password = input("Por favor ingrese su contraseña");
-						String rol = hotelSystem.getUsuario(user, password).getRol().toString();
+						String rol = hotelSystem.userLogin(user, password).getRol().toString();
 						if (rol != null) {
 							if (rol.equals("ADMIN")) {admin();}
 							else if (rol.equals("RECEPCIONISTA")) {recepcionista();}

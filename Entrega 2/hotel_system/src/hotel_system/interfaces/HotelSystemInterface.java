@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import hotel_system.controllers.HotelManagementSystem;
+import hotel_system.models.Rol;
 import hotel_system.models.Usuario;
 
 public class HotelSystemInterface extends JFrame {
@@ -80,32 +81,17 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Usuario authenticated = getLogin(
-						panel.getUserInput().getInput().getText(), 
-						panel.getPasswordInput().getInput().getText()
+					Usuario authenticated = getUser(
+							panel.getUserInput().getInput().getText(), 
+							panel.getPasswordInput().getInput().getText()
 					);
 					if (authenticated == null) 
 						panel.displayUnauthorizedWarning();
-					else {
-						String nombreUsuario = authenticated.getLogin();
-						String rol = authenticated.getRol().toString();
-						user = nombreUsuario;
-						if (rol == "RECEPCIONISTA") {
-							
-						}else {
-							MenuAdmin adminn = new MenuAdmin(nombreUsuario);
-							configAdminOptions(adminn);
-							remove(login);
-							setContentPane(adminn);
-							revalidate();
-							repaint();
-						}
-						
-					}
+					else 
+						login(authenticated);	
 				}
 			};
 		};
-		
 		Function<Login, ActionListener> signUpAction = (panel) -> {
 			return new ActionListener() {
 				@Override
@@ -132,8 +118,15 @@ public class HotelSystemInterface extends JFrame {
 		this.setResizable(false);
 	}
 
-	private Usuario getLogin(String user, String password) {
-		return pms.getUsuario(user, password);
+	private Usuario getUser(String user, String password) {
+		return pms.userLogin(user, password);
+	}
+	
+	private void login(Usuario usuario) {
+		this.user = usuario.getAlias();
+		if (usuario.getRol() == Rol.RECEPCIONISTA) {
+			configMenuRecepcionista(user);
+		}
 	}
 
 	private void configMainFrame(JPanel panel) {
