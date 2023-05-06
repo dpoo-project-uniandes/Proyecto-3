@@ -22,57 +22,16 @@ public class HotelSystemInterface extends JFrame {
 		HotelSystemInterface HotelSystemInterface = new HotelSystemInterface();
 	}  
 
-	 
 	private HotelManagementSystem pms;
-	private MenuAdmin menuAdmin;
 	private Login login;
 	private MenuRecepcionista menuRecepcionista;
 	private BookingManagement bookingManagement;
 	private String user;
 
 	public HotelSystemInterface() throws IOException {
-		this.user = "Juan Rojas";
+		this.user = "";
 		this.pms = new HotelManagementSystem();
 		configLogin();
-	}
-
-	 
-	private void configSingUp(JPanel panel) {
-		// LAYOUT CONFIGURATION
-		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-		this.add(menuAdmin);
-		  
-		// SETTINGS
-		this.getContentPane().setBackground(Color.WHITE);
-		this.setSize(600, 700);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setLocationRelativeTo(null);
-		this.setVisible(true);
-		this.setTitle("Hotel System Management");
-		this.setResizable(false);
-	
-		
-	}
-
-	private void configAdminOptions(JPanel panel) {
-		// LAYOUT CONFIGURATION
-		setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-		add(panel);
-		  
-		// SETTINGS
-		getContentPane().setBackground(Color.WHITE);
-		setSize(600, 700);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
-		setVisible(true);
-		setTitle("Hotel System Management");
-		setResizable(false);
-		
-	}
-
-	private void configRecepcionistaOptions() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	private void configLogin() {  
@@ -81,9 +40,13 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+//					Usuario authenticated = getUser(
+//							panel.getUserInput().getInput().getText(), 
+//							panel.getPasswordInput().getInput().getText()
+//					);
 					Usuario authenticated = getUser(
-							panel.getUserInput().getInput().getText(), 
-							panel.getPasswordInput().getInput().getText()
+							"juan", 
+							"juan"
 					);
 					if (authenticated == null) 
 						panel.displayUnauthorizedWarning();

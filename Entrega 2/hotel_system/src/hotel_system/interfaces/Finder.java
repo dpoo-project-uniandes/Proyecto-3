@@ -44,5 +44,6 @@ public class Finder extends JPanel {
 	private void configButton(Function<Finder, ActionListener> findAction) {
 		this.button = new Button("Buscar");
 		this.button.addActionListener(findAction.apply(this));
+		this.button.setAlignmentY(TOP_ALIGNMENT);
 	}
 }
