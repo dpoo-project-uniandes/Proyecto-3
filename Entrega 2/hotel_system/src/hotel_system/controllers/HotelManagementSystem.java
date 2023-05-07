@@ -101,7 +101,7 @@ public class HotelManagementSystem {
 		FileManager.agregarLineasCSV("disponibilidades.csv", datos);
 		return disponibilidad;
 	}
-
+	
 	private void cargarDisponibilidades() throws Exception {
 		FileManager.eliminarArchivo("disponibilidades.csv");
 		FileManager.agregarLineasCSV("disponibilidades.csv", List.of(List.of("numero_habitacion","fecha","estado","precio")));
@@ -234,7 +234,37 @@ public class HotelManagementSystem {
 
 		FileManager.agregarLineasCSV("reservas.csv", rowReserva);
 	}
+	//Funciones de reservas
+	public void cancelarReserva(String dni) {
+		getReservaByDNI(dni).cancelarReserva();
+	}
+	public void eliminarReserva(Reserva reserva) {
+		//TODO eliminarReservaEnCsv
+		this.reservas.remove(reserva);
+	}
+	public void modificarReserva(Reserva reservaNueva) {
+		Reserva reservaVieja = getReservaById(""+reservaNueva.getNumero());
+		this.reservas.remove(reservaVieja);
+		this.reservas.add(reservaNueva);
+	}
+	
+		//getters
+	public Reserva getReservaById(String id) {
+		Optional<Reserva> reservacion = reservas.stream()
+				.filter(res -> (""+res.getNumero()).equals(id))
+				.findAny();
+		if (reservacion.isPresent()) {return reservacion.get();}
+		else {return null;}
+	}
+	public Reserva getReservaByHabitacion(String id) {
+		Optional<Habitacion> reservacion = inventarioHabitaciones
+				.stream().filter(hab -> (hab.getReservaActual().getNumero()+"").equals(id))
+				.findAny();
+		if (reservacion.isPresent()) {return reservacion.get().getReservaActual();}
+		else {return null;}
+	}
 
+	
 	public Integer seleccionarHab(Integer select, String desde, String hasta) {
 		String alias = opcionesHabitacion.get(select).getAlias();
 		return inventarioHabitaciones.stream()
@@ -254,13 +284,6 @@ public class HotelManagementSystem {
 		return res;
 	}
 
-	public Reserva getReservaById(String id) {
-		Optional<Reserva> reservacion = reservas.stream()
-				.filter(res -> (""+res.getNumero()).equals(id))
-						.findAny();
-		if (reservacion.isPresent()) {return reservacion.get();}
-		else {return null;}
-	}
 
 	public Estadia getEstadiaById(String id) {
 		Optional<Estadia> registro = registros.stream()
@@ -294,14 +317,7 @@ public class HotelManagementSystem {
 		else {return null;}
 	}
 
-	public Reserva getReservaByHabitacion(String id) {
-		Optional<Habitacion> reservacion = inventarioHabitaciones
-				.stream().filter(hab -> (hab.getReservaActual().getNumero()+"").equals(id))
-				.findAny();
-		if (reservacion.isPresent()) {return reservacion.get().getReservaActual();}
-		else {return null;}
-	}
-
+	
 	public Estadia getEstadiaByHabitacion(String id) {
 		Optional<Habitacion> habitacion = inventarioHabitaciones.stream()
 				.filter(hab -> (hab.getNumero().toString()).equals(id))
@@ -311,9 +327,7 @@ public class HotelManagementSystem {
 	}
 
 
-	public void cancelarReserva(String dni) {
-		getReservaByDNI(dni).cancelarReserva();
-	}
+	
 
 	public List<Habitacion> getInventarioHabitaciones() {
 		return inventarioHabitaciones;
