@@ -22,6 +22,7 @@ import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.Input;
 import hotel_system.interfaces.components.Select;
 import services.ImagesManager;
+import services.SecValidation;
 
 public class Registrarse extends JPanel {
 
@@ -110,16 +111,15 @@ public class Registrarse extends JPanel {
         this.registerBtn.setAlignmentX(CENTER_ALIGNMENT);
         if (registerAction != null) {
             this.registerBtn.addActionListener(e -> {
-                if (userInput.getInput().getText().length() < 3) {
+            	String user = userInput.getInput().getText();
+                if (user.length() < 3) {
                     JOptionPane.showMessageDialog(null, "El nombre de usuario debe tener al menos 3 caracteres.");
                 } else {
-                    // Expresión regular para validar la contraseña
-                    Pattern passwordPattern = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,14}$");
-                    Matcher passwordMatcher = passwordPattern.matcher(passwordInput.getInput().getText());
-
-                    if (!passwordMatcher.matches()) {
+                    String password = passwordInput.getInput().getText();
+                    if (! SecValidation.checkPassword(password)) {
                         JOptionPane.showMessageDialog(null, "La contraseña debe tener de 6 a 14 caracteres, incluir al menos 1 letra, 1 número y 1 caracter especial.");
                     } else {
+                        JOptionPane.showMessageDialog(null, "El usuario "+user + " ha sido registrado correctamente.");
                         registerAction.apply(this).actionPerformed(e);
                     }
                 }
