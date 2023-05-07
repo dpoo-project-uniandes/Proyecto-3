@@ -1,5 +1,9 @@
-package hotel_system.interfaces;
+package hotel_system.interfaces.components;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+
+import hotel_system.interfaces.Utils;
 
 public class Tabla extends JPanel {
 	
@@ -26,11 +32,11 @@ public class Tabla extends JPanel {
     }
     
     private void configComponents() {
-    	this.add(scrollPane);
+    	this.add(scrollPane, BorderLayout.CENTER);
     }
     
     private void configPanel() {
-    	this.setLayout(new GridLayout(1, 0));
+    	this.setLayout(new BorderLayout());
     }
     
     private void configTable() {
@@ -44,6 +50,14 @@ public class Tabla extends JPanel {
     	// TABLE
         this.table = new JTable(new TableModel(this.headers, this.data));
         this.table.setFillsViewportHeight(true);
+        
+        // CUSTOMIZATION
+        TableCell cellRenderer = new TableCell();
+        for (int i = 0; i < this.headers.size(); i++) {
+            this.table.getColumnModel().getColumn(i).setCellRenderer(cellRenderer);
+		}
+        this.table.getTableHeader().setDefaultRenderer(new TableHeader());
+        this.table.setRowHeight(35);
 
         this.scrollPane = new JScrollPane(this.table);
     }

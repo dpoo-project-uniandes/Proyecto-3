@@ -7,8 +7,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -18,11 +21,11 @@ import javax.swing.border.EmptyBorder;
 import hotel_system.interfaces.DataPanel;
 import hotel_system.interfaces.Finder;
 import hotel_system.interfaces.MainHeader;
-import hotel_system.interfaces.Tabla;
 import hotel_system.interfaces.Utils;
 import hotel_system.interfaces.VerticalButtons;
 import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.Input;
+import hotel_system.interfaces.components.Tabla;
 import hotel_system.models.Reserva;
 
 public class BookingManagement extends JPanel {
@@ -177,7 +180,14 @@ public class BookingManagement extends JPanel {
 		this.formSelectionRooms.setLayout(new GridBagLayout());
 		
 		// CELLS HEADERS
-		this.selectRoomsTable = new Tabla(this.headersFormNewBooking, this.dataFormNewBooking);
+		List<String> headers = new ArrayList<>(this.headersFormNewBooking);
+		headers.add("Opciones");
+		List<List<String>> data = this.dataFormNewBooking.stream().map(row -> { 
+			List<String> rn = new ArrayList<>(row);
+			rn.add("");
+			return rn;
+		}).toList();
+ 		this.selectRoomsTable = new Tabla(headers, data);
 		
 		this.formSelectionRooms.add(this.selectRoomsTable);
 		this.formNewBooking.add(this.selectRoomsTable);
