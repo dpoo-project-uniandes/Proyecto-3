@@ -156,7 +156,8 @@ public class HotelSystemInterface extends JFrame {
 			configMenuAdmin(user);
 		}
 	}
-//Funciones, configs y paneles para admin
+	
+	// Funciones, configs y paneles para admin
 	private void configMenuAdmin(String user) {
 		// ACTIONS LISTENERS
 		Function<MenuAdministrador, ActionListener> loadAction = (panel) -> {
@@ -165,8 +166,6 @@ public class HotelSystemInterface extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					configLoadingManagement(user);
 				}
-
-				
 			};
 		};
 		Function<MenuAdministrador, ActionListener> modifyAction = (panel) -> {
@@ -176,8 +175,6 @@ public class HotelSystemInterface extends JFrame {
 					configModifingManagement(user);
 
 				}
-
-				
 			};
 		};
 		
@@ -187,8 +184,6 @@ public class HotelSystemInterface extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					configSearchingManagement(user);
 				}
-
-				
 			};
 		};
 		
@@ -197,7 +192,8 @@ public class HotelSystemInterface extends JFrame {
 		configMainFrame(this.menuAdmin);
 		
 	}
-	//Función carga de datos admin
+	
+	// Función carga de datos admin
 	private void configLoadingManagement(String user) {
 		Function<MenuCargaAdministrador, ActionListener> RestauranteAction = (panel) -> {
 			return new ActionListener() {
@@ -220,11 +216,10 @@ public class HotelSystemInterface extends JFrame {
 		};
 		
 		// INITIALIZE
-		this.MenuCargaAdministrador = new MenuCargaAdministrador(user, RestauranteAction, SpaAction, HabitacionesAction);
-		configMainFrame(this.MenuCargaAdministrador);
+		this.menuCargaAdministrador = new MenuCargaAdministrador(user, RestauranteAction, SpaAction, HabitacionesAction);
+		configMainFrame(this.menuCargaAdministrador);
 	}
-		
-	}
+	
 	private void configModifingManagement(String user) {
 		// TODO Auto-generated method stub
 		
@@ -234,7 +229,7 @@ public class HotelSystemInterface extends JFrame {
 		
 	}
 	
-//Funciones, configs y paneles para recepcionista
+	// Funciones, configs y paneles para recepcionista
 	private void configMenuRecepcionista(String user) {
 		// ACTIONS LISTENERS
 		Function<MenuRecepcionista, ActionListener> bookingAction = (panel) -> {
@@ -250,20 +245,15 @@ public class HotelSystemInterface extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					configStayingManagement(user);
-				}
-
-				
+				}	
 			};
 		};
-		
 		Function<MenuRecepcionista, ActionListener> consumiblesAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					configConsumingManagement(user);
-				}
-
-				
+				}		
 			};
 		};
 		
@@ -313,14 +303,12 @@ public class HotelSystemInterface extends JFrame {
 		this.bookingManagement = new BookingManagement(user, findAction, deleteAction, updateAction);
 		configMainFrame(bookingManagement);
 	}
+	
 	private void configStayingManagement(String user) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
+	
 	private void configConsumingManagement(String user) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
 }
-
-
