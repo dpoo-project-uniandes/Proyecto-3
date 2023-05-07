@@ -1,38 +1,35 @@
 package hotel_system.interfaces.components;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-public class Input extends JPanel {
-
-	public static Input Instance(String title, String type) {
-		switch (type) {
-		case "secret":
-			return new Input(title, new RoundJPasswordField());
-		case "text":
-			return new Input(title, new RoundJTextField());
-		default:
-			return new Input(title, new RoundJTextField());
-		}
-	}
-
+public class Select extends JPanel {
+	
 	private JLabel title;
-	private JTextField input;
-
-	private Input(String title, JTextField input) {
+	private JComboBox<String> select;
+	
+	public Select(String title, String[] options) {
 		configPanel();
 		configTitle(title);
-		configInput(input);
+		configSelect(options, null);
+	}
+	
+	public Select(String title, String[] options, Dimension dimension) {
+		configPanel();
+		configTitle(title);
+		configSelect(options, dimension);
 	}
 
 	private void configPanel() {
+		this.setOpaque(true);
 		this.setBackground(Color.WHITE);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
@@ -47,19 +44,21 @@ public class Input extends JPanel {
 		this.add(this.title);
 	}
 
-	private void configInput(JTextField input) {
-		this.input = input;
-		this.input.setHorizontalAlignment(SwingConstants.LEFT);
-		this.input.setAlignmentX(LEFT_ALIGNMENT);
-		this.add(this.input);
+	private void configSelect(String[] options, Dimension dimension) {
+		if (dimension == null) 
+			this.select = new RoundJComboBox(options);
+		else 
+			this.select = new RoundJComboBox(options, dimension);
+		this.select.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(this.select);
 	}
 
 	public JLabel getTitle() {
 		return title;
 	}
-
-	@SuppressWarnings("unchecked")
-	public <T extends JTextField> T getInput() {
-		return (T) input;
+	
+	public String optioinSelected() {
+		return (String) this.select.getSelectedItem();
 	}
+
 }

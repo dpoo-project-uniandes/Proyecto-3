@@ -45,7 +45,7 @@ public class Button extends JButton {
 	    setBorder(new EmptyBorder(10,20,10,20));
 	    setForeground(Color.WHITE);
 	    setFont(new Font(getName(), Font.BOLD, getFont().getSize()));
-	    setPreferredSize(dimension);
+	    this.setMinimumSize(dimension);
 	}
 
 	@Override

@@ -4,15 +4,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -24,6 +20,7 @@ import javax.swing.border.EmptyBorder;
 
 import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.Input;
+import hotel_system.interfaces.components.Select;
 import services.ImagesManager;
 
 public class Registrarse extends JPanel {
@@ -31,14 +28,19 @@ public class Registrarse extends JPanel {
     private JLabel title;
 	private JLabel iconLogin;
 	private ImageIcon userIcon;
+	private Select rolSelect;
     private Input userInput;
     private Input passwordInput;
     private Button registerBtn;
     private JLabel passwordRequirements;
 
-    public Registrarse(Function<Registrarse, ActionListener> registerAction) {
+    public Registrarse(
+    		String[] roles,
+    		Function<Registrarse, ActionListener> registerAction
+	) {
         configPanel();
         configTitle();
+        configSelect(roles);
         configInputs();
         configButtons(registerAction);
         configPasswordRequirements();
@@ -51,6 +53,8 @@ public class Registrarse extends JPanel {
         this.add(Box.createRigidArea(new Dimension(0, 30)));
 		this.add(iconLogin);
         this.add(Box.createRigidArea(new Dimension(0, 30)));
+        this.add(rolSelect);
+        this.add(Box.createRigidArea(new Dimension(0, 10)));
         this.add(userInput);
         this.add(Box.createRigidArea(new Dimension(0, 10)));
         this.add(passwordInput);
@@ -71,7 +75,7 @@ public class Registrarse extends JPanel {
 		this.iconLogin = new JLabel();
 		try {
 			this.userIcon = ImagesManager.ImageIcon("icon-login");
-			this.iconLogin.setIcon(this.userIcon);
+			this.iconLogin.setIcon(ImagesManager.resizeIcon(userIcon, 180, 180));
 			this.iconLogin.setAlignmentX(CENTER_ALIGNMENT);
 		} catch (Exception e) {
 			System.out.println("Error cargando la imagen de userIcon");
@@ -94,6 +98,11 @@ public class Registrarse extends JPanel {
         this.passwordInput = Input.Instance("Contraseña", "secret");
         this.userInput.setAlignmentX(CENTER_ALIGNMENT);
         this.passwordInput.setAlignmentX(CENTER_ALIGNMENT);
+    }
+    
+    private void configSelect(String[] roles) {
+    	this.rolSelect = new Select("Rol", roles);
+    	this.rolSelect.setAlignmentX(CENTER_ALIGNMENT);
     }
 
     private void configButtons(Function<Registrarse, ActionListener> registerAction) {
@@ -139,5 +148,9 @@ public class Registrarse extends JPanel {
 
     public Input getPasswordInput() {
         return passwordInput;
+    }
+    
+    public Select getRolSelect() {
+    	return rolSelect;
     }
 }

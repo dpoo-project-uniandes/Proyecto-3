@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.List;
 import java.util.function.Function;
 
 import javax.swing.BoxLayout;
@@ -118,7 +119,8 @@ public class HotelSystemInterface extends JFrame {
 	    };
 		
 		// INITIALIZE
-	    this.registrarse = new Registrarse(registerAction);
+	    String[] roles = List.of(Rol.values()).stream().map(r -> r.toString()).toArray(String[]::new);
+	    this.registrarse = new Registrarse(roles, registerAction);
 		
 		// LAYOUT CONFIGURATION & CLEAN
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
