@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -215,7 +217,24 @@ public class HotelSystemInterface extends JFrame {
 		};
 		
 		// INITIALIZE
-		this.bookingManagement = new BookingManagement(user, findAction, deleteAction, updateAction);
+		List<String> headers = Arrays.asList("Habitacion", "Capacidad", "Balcon", "Vista", "Cocina", "Precio");
+		List<List<String>> data = pms.getOpcionesHabitacion().stream().map(opt -> Arrays.asList(
+				opt.getAlias(), 
+				opt.getCapacidad().toString(), 
+				opt.getConBalcon().toString(), 
+				opt.getConVista().toString(), 
+				opt.getConCocina().toString(), 
+				opt.getPrecio().toString()
+			)
+		).toList();
+		this.bookingManagement = new BookingManagement(
+				user,
+				headers,
+				data,
+				findAction, 
+				deleteAction, 
+				updateAction
+		);
 		configMainFrame(bookingManagement);
 	}
 }

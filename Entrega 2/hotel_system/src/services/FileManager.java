@@ -75,4 +75,25 @@ public class FileManager {
 			throw e;
 		}
 	}
+	
+	public static List<List<String>> cargarArchivoListCSV(String name) throws Exception {
+		try {
+			List<List<String>> data = new ArrayList<>();
+			File file = cargarArchivo(name);
+			BufferedReader br = new BufferedReader(new FileReader(file));
+			String[] headers = br.readLine().split(",");
+			data.add(List.of(headers));
+			String linea = br.readLine();
+			while (linea != null) {
+				String[] row = linea.split(",");
+				data.add(List.of(row));
+				linea = br.readLine();
+			}
+			br.close();
+			return data;
+		} catch (Exception e) {
+			System.out.println("Fallo el cargado del archivo csv " + name);
+			throw e;
+		}
+	}
 }

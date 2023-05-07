@@ -17,14 +17,14 @@ public class DataPanel extends JPanel {
 	
 	private JPanel titlePanel;
 	private JLabel title;
-	private JLabel withoutResultsLabel;
+	private JLabel emptyResultsLabel;
 	private JPanel dataPanel;
 		
 	public DataPanel(String title) {
 		configPanel();
 		configTitlePanel(title);
 		configDataPanel();
-		configWithoutResults();
+		configEmptyResults();
 		configComponents();
 	}
 	
@@ -37,6 +37,7 @@ public class DataPanel extends JPanel {
 		this.setOpaque(true);
 		this.setBackground(Color.WHITE);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 	}
 	
 	private void configTitlePanel(String title) {
@@ -59,15 +60,20 @@ public class DataPanel extends JPanel {
 		this.dataPanel = new JPanel();
 		this.dataPanel.setOpaque(false);
 		this.dataPanel.setLayout(new GridBagLayout());
-		this.dataPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		this.dataPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
 	}
 	
-	private void configWithoutResults() {
+	private void configEmptyResults() {
 		// WITHOUT RESULTS LABEL
-		this.withoutResultsLabel = new JLabel("Sin Resultados");
-		this.withoutResultsLabel.setFont(new Font(getName(), Font.PLAIN, 20));
-		this.withoutResultsLabel.setForeground(Color.GRAY);
-		this.dataPanel.add(this.withoutResultsLabel, Utils.getConstraints(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
+		this.emptyResultsLabel = new JLabel("Sin Resultados");
+		this.emptyResultsLabel.setFont(new Font(getName(), Font.PLAIN, 20));
+		this.emptyResultsLabel.setForeground(Color.GRAY);
+		this.dataPanel.add(this.emptyResultsLabel, Utils.getConstraints(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
 	}
-
+	
+	public void injectDataPanel(JPanel panel) {
+		this.dataPanel.removeAll();
+		this.dataPanel.add(panel, Utils.getConstraints(0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
+		this.revalidate();
+	}
 }
