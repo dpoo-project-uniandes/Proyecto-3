@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -112,8 +110,8 @@ public class Registrarse extends JPanel {
         if (registerAction != null) {
             this.registerBtn.addActionListener(e -> {
             	String user = userInput.getInput().getText();
-                if (user.length() < 3) {
-                    JOptionPane.showMessageDialog(null, "El nombre de usuario debe tener al menos 3 caracteres.");
+                if (! SecValidation.checkUser(user)) {
+                    JOptionPane.showMessageDialog(null, "El nombre de usuario debe empezar por una letra y tener entre 3 a 11 caracteres.");
                 } else {
                     String password = passwordInput.getInput().getText();
                     if (! SecValidation.checkPassword(password)) {

@@ -111,13 +111,14 @@ public class HotelSystemInterface extends JFrame {
 	                    panel.displayPasswordRequirementsWarning();
 	                } else {
 	                    try {
-							pms.registrarUsuario(panel.getUserInput().getInput().getText(), password, Rol.ADMIN);
+							pms.registrarUsuario(panel.getUserInput().getInput().getText(), 
+									password, Rol.valueOf(panel.getRolSelect().optionSelected()) );
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
 	                    configLogin();
 	                }
-	            }
+	            }  
 	        };
 	    };
 		
