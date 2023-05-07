@@ -41,7 +41,8 @@ public class Producto implements Consumible{
 	public Double valor() {
 		return getPrecio();
 	}
-
+	
+	@Override
 	public Long getId() {
 		return id;
 	}

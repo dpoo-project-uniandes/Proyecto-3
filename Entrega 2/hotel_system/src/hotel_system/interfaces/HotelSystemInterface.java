@@ -16,12 +16,16 @@ import javax.swing.JPanel;
 import hotel_system.controllers.HotelManagementSystem;
 import hotel_system.interfaces.admin.MenuAdministrador;
 import hotel_system.interfaces.admin.MenuCargaAdministrador;
+import hotel_system.interfaces.admin.MenuModificarAdmin;
 import hotel_system.interfaces.recepcionista.BookingManagement;
 import hotel_system.interfaces.recepcionista.MenuConsumible;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
+import hotel_system.models.Consumible;
+import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
 import hotel_system.models.Usuario;
+import services.Dupla;
 import services.SecValidation;
 
 public class HotelSystemInterface extends JFrame {
@@ -39,6 +43,7 @@ public class HotelSystemInterface extends JFrame {
 	private MenuConsumible menuConsumible;
 	private BookingManagement bookingManagement;
 	private String user;
+	private MenuModificarAdmin menuModificarAdmin;
 	
 	public HotelSystemInterface() throws IOException {
 		this.user = "Juan Rojas";
@@ -73,7 +78,7 @@ public class HotelSystemInterface extends JFrame {
 //							panel.getUserInput().getInput().getText(), 
 //							panel.getPasswordInput().getInput().getText()
 //					);
-					Usuario authenticated = getUser("juan", "juan");
+					Usuario authenticated = getUser("admin", "admin");
 					if (authenticated == null) 
 						panel.displayUnauthorizedWarning();
 					else 
@@ -202,20 +207,26 @@ public class HotelSystemInterface extends JFrame {
 		Function<MenuCargaAdministrador, ActionListener> RestauranteAction = (panel) -> {
 			return new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {}
+				public void actionPerformed(ActionEvent e) {
+                    JOptionPane.showMessageDialog(null, "Datos del restaurante cargados con éxito");
+				}
 			};
 		};
 		Function<MenuCargaAdministrador, ActionListener> SpaAction = (panel) -> {
 			return new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {}
+				public void actionPerformed(ActionEvent e) {
+                    JOptionPane.showMessageDialog(null, "Datos del spa cargados con éxito");
+				}
 			};
 		};
 		
 		Function<MenuCargaAdministrador, ActionListener> HabitacionesAction = (panel) -> {
 			return new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {}
+				public void actionPerformed(ActionEvent e) {
+                    JOptionPane.showMessageDialog(null, "Datos de las habitaciones cargados con éxito");
+				}
 			};
 		};
 		
@@ -225,7 +236,61 @@ public class HotelSystemInterface extends JFrame {
 	}
 	
 	private void configModifingManagement(String user) {
-		// TODO Auto-generated method stub
+		// ACTIONS LISTENERS
+		Function<Finder, ActionListener> findAction = (finder) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String id = finder.getInput().getInput().getText();
+					Dupla<Producto, String> dupla = pms.getProductoByID(id);
+					Producto producto = dupla.getPrimero();
+					String tipo = dupla.getSegundo();
+					if (dupla == null)
+						menuModificarAdmin.withoutResults();
+					else
+						menuModificarAdmin.setTipoProducto(tipo);
+						menuModificarAdmin.injectData(id);
+				}
+			};
+		};
+		Function<Finder, ActionListener> deleteAction = (btn) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Producto producto = menuModificarAdmin.getProductoActual();
+					pms.eliminarProducto(producto, menuModificarAdmin.getTipoProducto());
+				}
+			};
+		};
+		Function<Finder, ActionListener> updateAction = (btn) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					//TODO
+					
+				}
+			};
+		
+		};
+		Function<Finder, ActionListener> createAction = (btn) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						//pms.nuevoProducto(,"");
+					} catch (Exception e1) {
+						e1.printStackTrace();
+	                    JOptionPane.showMessageDialog(null, "Se produjo un error creando la reserva");
+
+					}
+				}
+			};
+		
+		};
+				
+		// INITIALIZE
+		this.menuModificarAdmin = new MenuModificarAdmin(user, findAction, deleteAction ,updateAction, createAction);
+		configMainFrame(this.menuModificarAdmin);
 		
 	}
 	private void configSearchingManagement(String user) {
