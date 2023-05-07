@@ -57,8 +57,8 @@ public class Select extends JPanel {
 		return title;
 	}
 	
-	public String optioinSelected() {
-		return (String) this.select.getSelectedItem();
+	public String optionSelected() {
+		return new String( (String) this.select.getSelectedItem());
 	}
 
 }

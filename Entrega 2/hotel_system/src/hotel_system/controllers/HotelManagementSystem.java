@@ -310,11 +310,6 @@ public class HotelManagementSystem {
 		else {return null;}
 	}
 
-	public void registrarUsuario(String user, String password, Rol rol) throws Exception {
-		usuarios.put(user, new Usuario(user, password, rol));
-		List<List<String>> rowUser = List.of(List.of(user, password, rol.toString()));
-		FileManager.agregarLineasCSV("usuarios.csv", rowUser);
-	}
 
 	public void cancelarReserva(String dni) {
 		getReservaByDNI(dni).cancelarReserva();
@@ -434,5 +429,10 @@ public class HotelManagementSystem {
 			return usuario;
 		}
 		return null;
+	}
+	public void registrarUsuario(String user, String password, Rol rol) throws Exception {
+		usuarios.put(user, new Usuario(user, password, rol));
+		List<List<String>> rowUser = List.of(List.of(user, password, rol.toString()));
+		FileManager.agregarLineasCSV("usuarios.csv", rowUser);
 	}
 }
