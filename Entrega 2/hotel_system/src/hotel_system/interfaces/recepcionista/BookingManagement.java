@@ -1,4 +1,4 @@
-package hotel_system.interfaces;
+package hotel_system.interfaces.recepcionista;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,6 +15,11 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import hotel_system.interfaces.DataPanel;
+import hotel_system.interfaces.Finder;
+import hotel_system.interfaces.MainHeader;
+import hotel_system.interfaces.Utils;
+import hotel_system.interfaces.VerticalButtons;
 import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.Input;
 import hotel_system.models.Reserva;

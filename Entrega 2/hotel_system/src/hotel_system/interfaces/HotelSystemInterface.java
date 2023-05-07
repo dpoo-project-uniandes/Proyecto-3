@@ -11,9 +11,14 @@ import java.util.function.Function;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import hotel_system.controllers.HotelManagementSystem;
+import hotel_system.interfaces.admin.MenuAdministrador;
+import hotel_system.interfaces.admin.MenuCargaAdministrador;
+import hotel_system.interfaces.recepcionista.BookingManagement;
+import hotel_system.interfaces.recepcionista.MenuRecepcionista;
 import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
 import hotel_system.models.Usuario;
@@ -29,6 +34,8 @@ public class HotelSystemInterface extends JFrame {
 	private Login login;
 	private Registrarse registrarse;
 	private MenuRecepcionista menuRecepcionista;
+	private MenuAdministrador menuAdmin;
+	private MenuCargaAdministrador menuCargaAdministrador;
 	private BookingManagement bookingManagement;
 	private String user;
 	
@@ -37,7 +44,7 @@ public class HotelSystemInterface extends JFrame {
 		this.pms = new HotelManagementSystem();
 		configLogin();
 	}
-
+	
 	private void configMainFrame(JPanel panel) {
 		// CLEAN
 		this.setContentPane(panel);
@@ -53,7 +60,7 @@ public class HotelSystemInterface extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		this.setResizable(true);
-	}
+	}  
 
 	private void configLogin() {  
 		// ACTIONS LISTENERS
@@ -65,7 +72,7 @@ public class HotelSystemInterface extends JFrame {
 //							panel.getUserInput().getInput().getText(), 
 //							panel.getPasswordInput().getInput().getText()
 //					);
-					Usuario authenticated = getUser("juan", "juan");
+					Usuario authenticated = getUser("admin", "admin");
 					if (authenticated == null) 
 						panel.displayUnauthorizedWarning();
 					else 
@@ -148,8 +155,84 @@ public class HotelSystemInterface extends JFrame {
 		if (usuario.getRol() == Rol.RECEPCIONISTA) {
 			configMenuRecepcionista(user);
 		}
+		else {
+			configMenuAdmin(user);
+		}
 	}
+	
+	// Funciones, configs y paneles para admin
+	private void configMenuAdmin(String user) {
+		// ACTIONS LISTENERS
+		Function<MenuAdministrador, ActionListener> loadAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configLoadingManagement(user);
+				}
+			};
+		};
+		Function<MenuAdministrador, ActionListener> modifyAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configModifingManagement(user);
 
+				}
+			};
+		};
+		
+		Function<MenuAdministrador, ActionListener> searchAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configSearchingManagement(user);
+				}
+			};
+		};
+		
+		// INITIALIZE
+		this.menuAdmin = new MenuAdministrador(user, loadAction, modifyAction, searchAction);
+		configMainFrame(this.menuAdmin);
+		
+	}
+	
+	// Función carga de datos admin
+	private void configLoadingManagement(String user) {
+		Function<MenuCargaAdministrador, ActionListener> RestauranteAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		Function<MenuCargaAdministrador, ActionListener> SpaAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		
+		Function<MenuCargaAdministrador, ActionListener> HabitacionesAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		
+		// INITIALIZE
+		this.menuCargaAdministrador = new MenuCargaAdministrador(user, RestauranteAction, SpaAction, HabitacionesAction);
+		configMainFrame(this.menuCargaAdministrador);
+	}
+	
+	private void configModifingManagement(String user) {
+		// TODO Auto-generated method stub
+		
+	}
+	private void configSearchingManagement(String user) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	// Funciones, configs y paneles para recepcionista
 	private void configMenuRecepcionista(String user) {
 		// ACTIONS LISTENERS
 		Function<MenuRecepcionista, ActionListener> bookingAction = (panel) -> {
@@ -163,14 +246,17 @@ public class HotelSystemInterface extends JFrame {
 		Function<MenuRecepcionista, ActionListener> staysAction = (panel) -> {
 			return new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {}
+				public void actionPerformed(ActionEvent e) {
+					configStayingManagement(user);
+				}	
 			};
 		};
-		
 		Function<MenuRecepcionista, ActionListener> consumiblesAction = (panel) -> {
 			return new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {}
+				public void actionPerformed(ActionEvent e) {
+					configConsumingManagement(user);
+				}		
 			};
 		};
 		
@@ -203,7 +289,9 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("btn buscar presionado");
+					Reserva booking = new Reserva(null, null, null, null, null);
+					pms.eliminarReserva(booking);
+					
 				}
 			};
 		};
@@ -211,9 +299,35 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("btn buscar presionado");
+					Reserva booking = new Reserva(null, null, null, null, null);
+					pms.modificarReserva(booking);
+					
 				}
 			};
+		
+		};
+		Function<Finder, ActionListener> createAction = (btn) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						pms.reservar("",
+								"",
+								"",
+								"", 
+								null, 
+								null, 
+								null, 
+								"", 
+								"");
+					} catch (Exception e1) {
+						e1.printStackTrace();
+	                    JOptionPane.showMessageDialog(null, "Se produjo un error creando la reserva");
+
+					}
+				}
+			};
+		
 		};
 		
 		// INITIALIZE
@@ -237,6 +351,12 @@ public class HotelSystemInterface extends JFrame {
 		);
 		configMainFrame(bookingManagement);
 	}
+	
+	private void configStayingManagement(String user) {
+		// TODO Auto-generated method stub	
+	}
+	
+	private void configConsumingManagement(String user) {
+		// TODO Auto-generated method stub	
+	}
 }
-
-

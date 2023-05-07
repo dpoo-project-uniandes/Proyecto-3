@@ -1,8 +1,9 @@
-package hotel_system.interfaces;
+package hotel_system.interfaces.recepcionista;
 
 import java.awt.event.ActionListener;
 import java.util.function.Function;
 
+import hotel_system.interfaces.MainMenu;
 import hotel_system.interfaces.components.MenuButton;
 
 public class MenuRecepcionista extends MainMenu {
