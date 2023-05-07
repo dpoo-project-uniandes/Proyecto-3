@@ -22,6 +22,7 @@ import hotel_system.interfaces.recepcionista.MenuConsumible;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
 import hotel_system.models.Consumible;
 import hotel_system.models.Producto;
+import hotel_system.models.ProductoRestaurante;
 import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
 import hotel_system.models.Usuario;
@@ -78,7 +79,7 @@ public class HotelSystemInterface extends JFrame {
 //							panel.getUserInput().getInput().getText(), 
 //							panel.getPasswordInput().getInput().getText()
 //					);
-					Usuario authenticated = getUser("admin", "admin");
+					Usuario authenticated = getUser("juan", "juan");
 					if (authenticated == null) 
 						panel.displayUnauthorizedWarning();
 					else 
@@ -242,14 +243,18 @@ public class HotelSystemInterface extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					String id = finder.getInput().getInput().getText();
-					Dupla<Producto, String> dupla = pms.getProductoByID(id);
-					Producto producto = dupla.getPrimero();
-					String tipo = dupla.getSegundo();
+					Dupla<Producto, String> dupla = pms.getProductoByID(id);	
 					if (dupla == null)
 						menuModificarAdmin.withoutResults();
-					else
-						menuModificarAdmin.setTipoProducto(tipo);
-						menuModificarAdmin.injectData(id);
+					else {
+						Producto producto = dupla.getPrimero();
+						String tipo = dupla.getSegundo();
+						menuModificarAdmin.setProducto(id, producto.getNombre(), producto.getPrecio().toString(), tipo);;
+						if (tipo.equals("restaurante")) {
+							ProductoRestaurante productoRest = (ProductoRestaurante) producto;
+							menuModificarAdmin.setProductoRest(productoRest.getAlCuarto()? "Si":"No" , productoRest.getRangoHorarioStr());}
+						menuModificarAdmin.injectData();
+						}
 				}
 			};
 		};

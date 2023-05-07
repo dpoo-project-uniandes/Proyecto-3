@@ -32,7 +32,13 @@ public class MenuModificarAdmin extends JPanel{
 	private VerticalButtons verticalButtons;
 	private JPanel finderAndNewBookingPanel;
 	private String title;
-	private String setTipoProducto;
+	private String tipoProducto;
+	// PARA LA RESERVA
+	private String id;	
+	private String nombre;
+	private String precio;
+	private String rangoHorario;
+	private String alCuarto;
 	
 
 	public MenuModificarAdmin(
@@ -116,17 +122,33 @@ public class MenuModificarAdmin extends JPanel{
 			configDataPanel(title);
 		}
 		
-		public void injectData(String booking) {
-			System.out.println(booking);
+		public void injectData() {
+			this.dataPanel.add()
 		}
+		
+		public void setProducto(String id, String nombre, String precio, String tipo) {
+			setTipoProducto(tipo);
+			this.id=id;
+			this.nombre=nombre;
+			this.precio = precio;
+			
+			
+			
+		}
+		
+		public void setProductoRest(String alCuarto, String rango) {
+			this.alCuarto = alCuarto;
+			this.rangoHorario = rango;
 
+		}
+		
 
 		public void setTipoProducto(String tipo) {
-			this.setTipoProducto = tipo;
+			this.tipoProducto = tipo;
 			
 		}
 		public String getTipoProducto() {
-			return this.setTipoProducto;
+			return this.tipoProducto;
 			
 		}
 		

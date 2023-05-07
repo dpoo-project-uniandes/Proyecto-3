@@ -32,6 +32,9 @@ public class ProductoRestaurante extends Producto {
 	public void setAlCuarto(Boolean alCuarto) {
 		this.alCuarto = alCuarto;
 	}
+	public String getRangoHorarioStr() {
+		return null;
+	}
 
 	public String getTipo() {
 		return tipo;
