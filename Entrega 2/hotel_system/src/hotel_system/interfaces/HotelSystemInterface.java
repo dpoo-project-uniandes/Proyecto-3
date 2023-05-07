@@ -19,7 +19,6 @@ public class HotelSystemInterface extends JFrame {
 	
 	public static void main(String[] args) throws IOException  {
 		HotelSystemInterface HotelSystemInterface = new HotelSystemInterface();
-
 	} 
 	 
 	private HotelManagementSystem pms;
@@ -110,7 +109,11 @@ public class HotelSystemInterface extends JFrame {
 	                if (!SecValidation.checkPassword(password)) {
 	                    panel.displayPasswordRequirementsWarning();
 	                } else {
-	                    System.out.println("Usuario registrado correctamente");
+	                    try {
+							pms.registrarUsuario(panel.getUserInput().getInput().getText(), password, Rol.ADMIN);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
 	                    configLogin();
 	                }
 	            }
