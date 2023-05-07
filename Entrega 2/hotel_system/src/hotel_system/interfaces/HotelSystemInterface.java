@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import hotel_system.controllers.HotelManagementSystem;
@@ -286,7 +287,9 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("btn buscar presionado");
+					Reserva booking = new Reserva(null, null, null, null, null);
+					pms.eliminarReserva(booking);
+					
 				}
 			};
 		};
@@ -294,9 +297,35 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					System.out.println("btn buscar presionado");
+					Reserva booking = new Reserva(null, null, null, null, null);
+					pms.modificarReserva(booking);
+					
 				}
 			};
+		
+		};
+		Function<Finder, ActionListener> createAction = (btn) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						pms.reservar("",
+								"",
+								"",
+								"", 
+								null, 
+								null, 
+								null, 
+								"", 
+								"");
+					} catch (Exception e1) {
+						e1.printStackTrace();
+	                    JOptionPane.showMessageDialog(null, "Se produjo un error creando la reserva");
+
+					}
+				}
+			};
+		
 		};
 		
 		// INITIALIZE
