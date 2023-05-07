@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import hotel_system.controllers.HotelManagementSystem;
+import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
 import hotel_system.models.Usuario;
 import services.SecValidation;
@@ -43,13 +44,13 @@ public class HotelSystemInterface extends JFrame {
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
 
 		// SETTINGS
+		this.setTitle("Hotel System Management");
 		this.getContentPane().setBackground(Color.WHITE);
 		this.setSize(1416, 800);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
-		this.setTitle("Hotel System Management");
-		this.setResizable(false);
+		this.setResizable(true);
 	}
 
 	private void configLogin() {  
@@ -177,7 +178,33 @@ public class HotelSystemInterface extends JFrame {
 	
 	private void configBookingManagement(String user) {
 		// ACTIONS LISTENERS
-		Function<Finder, ActionListener> findAction = (btn) -> {
+		Function<Finder, ActionListener> findAction = (finder) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Reserva booking;
+					String text = finder.getInput().getInput().getText();
+					System.out.println(text);
+					booking = pms.getReservaByDNI(text);
+					System.out.println(booking);
+					if (booking == null) 
+						booking = pms.getReservaById(text);
+					if (booking == null)
+						bookingManagement.withoutResults();
+					else
+						bookingManagement.injectData(booking);
+				}
+			};
+		};
+		Function<Finder, ActionListener> deleteAction = (btn) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("btn buscar presionado");
+				}
+			};
+		};
+		Function<Finder, ActionListener> updateAction = (btn) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -187,7 +214,7 @@ public class HotelSystemInterface extends JFrame {
 		};
 		
 		// INITIALIZE
-		this.bookingManagement = new BookingManagement(user, findAction);
+		this.bookingManagement = new BookingManagement(user, findAction, deleteAction, updateAction);
 		configMainFrame(bookingManagement);
 	}
 }

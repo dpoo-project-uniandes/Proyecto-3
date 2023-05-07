@@ -39,10 +39,16 @@ public class Finder extends JPanel {
 
 	private void configInput(String text) {
 		this.input = Input.Instance(text, "text");
+		this.input.setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
 	private void configButton(Function<Finder, ActionListener> findAction) {
 		this.button = new Button("Buscar");
 		this.button.addActionListener(findAction.apply(this));
+		this.button.setAlignmentY(TOP_ALIGNMENT);
+	}
+	
+	public Input getInput() {
+		return input;
 	}
 }

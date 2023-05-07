@@ -33,7 +33,7 @@ public class Input extends JPanel {
 	}
 
 	private void configPanel() {
-		this.setBackground(Color.WHITE);
+		this.setOpaque(false);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 	}
 
