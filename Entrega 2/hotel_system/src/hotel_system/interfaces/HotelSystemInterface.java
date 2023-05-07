@@ -18,6 +18,7 @@ import hotel_system.controllers.HotelManagementSystem;
 import hotel_system.interfaces.admin.MenuAdministrador;
 import hotel_system.interfaces.admin.MenuCargaAdministrador;
 import hotel_system.interfaces.recepcionista.BookingManagement;
+import hotel_system.interfaces.recepcionista.MenuConsumible;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
 import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
@@ -36,6 +37,7 @@ public class HotelSystemInterface extends JFrame {
 	private MenuRecepcionista menuRecepcionista;
 	private MenuAdministrador menuAdmin;
 	private MenuCargaAdministrador menuCargaAdministrador;
+	private MenuConsumible menuConsumible;
 	private BookingManagement bookingManagement;
 	private String user;
 	
@@ -152,7 +154,7 @@ public class HotelSystemInterface extends JFrame {
 	
 	private void login(Usuario usuario) {
 		this.user = usuario.getAlias();
-		if (usuario.getRol() == Rol.RECEPCIONISTA) {
+		if (usuario.getRol() == Rol.RECEPCIONISTA) { 
 			configMenuRecepcionista(user);
 		}
 		else {
@@ -357,6 +359,27 @@ public class HotelSystemInterface extends JFrame {
 	}
 	
 	private void configConsumingManagement(String user) {
-		// TODO Auto-generated method stub	
+		Function<MenuConsumible, ActionListener> ProductosAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		Function<MenuConsumible, ActionListener> ServiciosAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		
+		
+		// INITIALIZE
+		this.menuConsumible = new MenuConsumible(user, ProductosAction, ServiciosAction);
+		configMainFrame(this.menuConsumible);
 	}
+	
+		
+		
+		
+		
 }
