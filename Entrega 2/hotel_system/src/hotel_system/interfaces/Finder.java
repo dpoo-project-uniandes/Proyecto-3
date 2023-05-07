@@ -51,4 +51,7 @@ public class Finder extends JPanel {
 	public Input getInput() {
 		return input;
 	}
+	public void setButtonText(String text) {
+		this.button.setText(text);
+	}
 }
