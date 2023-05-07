@@ -18,12 +18,12 @@ import javax.swing.border.EmptyBorder;
 import hotel_system.interfaces.DataPanel;
 import hotel_system.interfaces.Finder;
 import hotel_system.interfaces.MainHeader;
+import hotel_system.interfaces.Tabla;
 import hotel_system.interfaces.Utils;
 import hotel_system.interfaces.VerticalButtons;
 import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.Input;
 import hotel_system.models.Reserva;
-import hotel_system.models.TipoHabitacion;
 
 public class BookingManagement extends JPanel {
 	

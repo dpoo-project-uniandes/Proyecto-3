@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
@@ -74,7 +73,7 @@ public class HotelSystemInterface extends JFrame {
 //							panel.getUserInput().getInput().getText(), 
 //							panel.getPasswordInput().getInput().getText()
 //					);
-					Usuario authenticated = getUser("admin", "admin");
+					Usuario authenticated = getUser("juan", "juan");
 					if (authenticated == null) 
 						panel.displayUnauthorizedWarning();
 					else 
@@ -372,14 +371,8 @@ public class HotelSystemInterface extends JFrame {
 			};
 		};
 		
-		
 		// INITIALIZE
 		this.menuConsumible = new MenuConsumible(user, ProductosAction, ServiciosAction);
 		configMainFrame(this.menuConsumible);
-	}
-	
-		
-		
-		
-		
+	}	
 }
