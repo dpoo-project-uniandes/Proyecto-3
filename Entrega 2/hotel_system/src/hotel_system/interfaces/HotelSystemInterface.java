@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import hotel_system.controllers.HotelManagementSystem;
 import hotel_system.interfaces.admin.MenuAdministrador;
+import hotel_system.interfaces.admin.MenuCargaAdministrador;
 import hotel_system.interfaces.recepcionista.BookingManagement;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
 import hotel_system.models.Reserva;
@@ -31,6 +32,7 @@ public class HotelSystemInterface extends JFrame {
 	private Registrarse registrarse;
 	private MenuRecepcionista menuRecepcionista;
 	private MenuAdministrador menuAdmin;
+	private MenuCargaAdministrador menuCargaAdministrador;
 	private BookingManagement bookingManagement;
 	private String user;
 	
@@ -195,8 +197,32 @@ public class HotelSystemInterface extends JFrame {
 		configMainFrame(this.menuAdmin);
 		
 	}
+	//Función carga de datos admin
 	private void configLoadingManagement(String user) {
-		// TODO Auto-generated method stub
+		Function<MenuCargaAdministrador, ActionListener> RestauranteAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		Function<MenuCargaAdministrador, ActionListener> SpaAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		
+		Function<MenuCargaAdministrador, ActionListener> HabitacionesAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {}
+			};
+		};
+		
+		// INITIALIZE
+		this.MenuCargaAdministrador = new MenuCargaAdministrador(user, RestauranteAction, SpaAction, HabitacionesAction);
+		configMainFrame(this.MenuCargaAdministrador);
+	}
 		
 	}
 	private void configModifingManagement(String user) {
