@@ -35,6 +35,14 @@ public class Button extends JButton {
 		this.dimension = dimension;
 		configButton();
 	}
+	
+	public Button(String text, Dimension dimension, Integer radius) {
+		super(text);
+		this.text = text;
+		this.radius = radius;
+		this.dimension = dimension;
+		configButton();
+	}
 
 	private void configButton() {
 		setOpaque(true);
@@ -45,7 +53,8 @@ public class Button extends JButton {
 	    setBorder(new EmptyBorder(10,20,10,20));
 	    setForeground(Color.WHITE);
 	    setFont(new Font(getName(), Font.BOLD, getFont().getSize()));
-	    this.setMinimumSize(dimension);
+	    setSize(dimension);
+	    setMinimumSize(dimension);
 	}
 
 	@Override

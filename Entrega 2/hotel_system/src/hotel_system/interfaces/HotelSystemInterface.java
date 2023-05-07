@@ -56,7 +56,7 @@ public class HotelSystemInterface extends JFrame {
 		// SETTINGS
 		this.setTitle("Hotel System Management");
 		this.getContentPane().setBackground(Color.WHITE);
-		this.setSize(1416, 800);
+		this.setSize(1530, 900);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);

@@ -8,14 +8,14 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import hotel_system.interfaces.DataPanel;
@@ -23,9 +23,10 @@ import hotel_system.interfaces.Finder;
 import hotel_system.interfaces.MainHeader;
 import hotel_system.interfaces.Utils;
 import hotel_system.interfaces.VerticalButtons;
+import hotel_system.interfaces.components.AddItems;
 import hotel_system.interfaces.components.Button;
+import hotel_system.interfaces.components.DynamicTable;
 import hotel_system.interfaces.components.Input;
-import hotel_system.interfaces.components.Tabla;
 import hotel_system.models.Reserva;
 
 public class BookingManagement extends JPanel {
@@ -42,7 +43,6 @@ public class BookingManagement extends JPanel {
 	// FORM NEW BOOKING
 	private JPanel formNewBooking;
 	private JPanel inputsPanel;
-	private JPanel formSelectionRooms;
 	private Input guest;
 	private Input checkout;
 	private Input email;
@@ -51,7 +51,8 @@ public class BookingManagement extends JPanel {
 	private Input dni;
 	private Input age;
 	private Input phone;
-	private Tabla selectRoomsTable;
+	private DynamicTable selectRoomsTable;
+	private Button booking;
 	private List<String> headersFormNewBooking;
 	private List<List<String>> dataFormNewBooking;
 	
@@ -141,6 +142,9 @@ public class BookingManagement extends JPanel {
 		// FORM SELECT ROOMS
 		configFormNewBookingSelectRooms();
 		
+		// BUTTON
+		configButtonBooking();
+		
 		// INJECT
 		this.dataPanel.injectDataPanel(this.formNewBooking);
 	}
@@ -174,23 +178,27 @@ public class BookingManagement extends JPanel {
 		this.formNewBooking.add(Box.createRigidArea(new Dimension(0, 40)));
 	}
 	
-	private void configFormNewBookingSelectRooms() {
-		// PANEL
-		this.formSelectionRooms = new JPanel();
-		this.formSelectionRooms.setLayout(new GridBagLayout());
-		
+	private void configFormNewBookingSelectRooms() {		
 		// CELLS HEADERS
 		List<String> headers = new ArrayList<>(this.headersFormNewBooking);
 		headers.add("Opciones");
-		List<List<String>> data = this.dataFormNewBooking.stream().map(row -> { 
-			List<String> rn = new ArrayList<>(row);
-			rn.add("");
+		List<List<Object>> data = this.dataFormNewBooking.stream().map(row -> { 
+			List<Object> rn = new ArrayList<>(row);
+			rn.add(new AddItems());
 			return rn;
 		}).toList();
- 		this.selectRoomsTable = new Tabla(headers, data);
+ 		this.selectRoomsTable = new DynamicTable(headers, data);
+ 		JScrollPane scrollPane = new JScrollPane(this.selectRoomsTable);
+ 		scrollPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
-		this.formSelectionRooms.add(this.selectRoomsTable);
-		this.formNewBooking.add(this.selectRoomsTable);
+		this.formNewBooking.add(scrollPane);
+		this.formNewBooking.add(Box.createRigidArea(new Dimension(0, 20)));
+	}
+	
+	private void configButtonBooking() {
+		this.booking = new Button("Reservar", new Dimension(200, 50));
+		this.booking.setAlignmentX(CENTER_ALIGNMENT);
+		this.formNewBooking.add(this.booking);
 	}
 	
 	private void configDataPanel(String title) {

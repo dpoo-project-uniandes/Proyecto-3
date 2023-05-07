@@ -49,10 +49,11 @@ public class DataPanel extends JPanel {
 		// TITLE TEXT
 		this.title = new JLabel(title);
 	    this.title.setFont(new Font(getName(), Font.BOLD, 20));
-	    this.title.setBorder(new EmptyBorder(10,20,10,20));
+	    this.title.setBorder(new EmptyBorder(5,20,5,20));
 	    this.title.setForeground(Color.WHITE);
 	    
 	    this.titlePanel.add(this.title);
+	    this.titlePanel.setMinimumSize(new Dimension(1000, 40));
 	    this.titlePanel.setMaximumSize(new Dimension(5000, 50));
 	}
 	
