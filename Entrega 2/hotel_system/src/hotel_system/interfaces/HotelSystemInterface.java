@@ -20,6 +20,8 @@ import hotel_system.interfaces.admin.MenuModificarAdmin;
 import hotel_system.interfaces.recepcionista.BookingManagement;
 import hotel_system.interfaces.recepcionista.MenuConsumible;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
+import hotel_system.interfaces.recepcionista.MenuServicios;
+import hotel_system.interfaces.recepcionista.MenuProductosServicios;
 import hotel_system.models.Consumible;
 import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
@@ -27,6 +29,7 @@ import hotel_system.models.Rol;
 import hotel_system.models.Usuario;
 import services.Dupla;
 import services.SecValidation;
+
 
 public class HotelSystemInterface extends JFrame {
 	
@@ -44,6 +47,8 @@ public class HotelSystemInterface extends JFrame {
 	private BookingManagement bookingManagement;
 	private String user;
 	private MenuModificarAdmin menuModificarAdmin;
+	private MenuServicios menuServicios;
+	private MenuProductosServicios menuProductosServicios;
 	
 	public HotelSystemInterface() throws IOException {
 		this.user = "Juan Rojas";
@@ -78,7 +83,7 @@ public class HotelSystemInterface extends JFrame {
 //							panel.getUserInput().getInput().getText(), 
 //							panel.getPasswordInput().getInput().getText()
 //					);
-					Usuario authenticated = getUser("admin", "admin");
+					Usuario authenticated = getUser("estaban", "esteban");
 					if (authenticated == null) 
 						panel.displayUnauthorizedWarning();
 					else 
@@ -425,19 +430,69 @@ public class HotelSystemInterface extends JFrame {
 	private void configConsumingManagement(String user) {
 		Function<MenuConsumible, ActionListener> ProductosAction = (panel) -> {
 			return new ActionListener() {
+				private MenuProductosServicios menuProductosServicios;
+
 				@Override
-				public void actionPerformed(ActionEvent e) {}
+				public void actionPerformed(ActionEvent e) {
+					this.menuProductosServicios = new MenuProductosServicios(user,null,null,null);
+					configMainFrame(this.menuProductosServicios);
+				}
 			};
 		};
 		Function<MenuConsumible, ActionListener> ServiciosAction = (panel) -> {
 			return new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {}
+				public void actionPerformed(ActionEvent e) {
+					configServices(user);
+				}
+			};
+		};
+		// INITIALIZE
+		this.menuConsumible = new MenuConsumible(user, ProductosAction, ServiciosAction);
+		configMainFrame(this.menuConsumible);
+	}
+	
+	// Config Servicios
+	private void configServices(String user) {
+		Function<MenuServicios, ActionListener> restauranteAction = (panel) -> {
+			return new ActionListener() {
+				private MenuProductosServicios menuProductosServicios;
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					this.menuProductosServicios = new MenuProductosServicios(user,null,null,null);
+					configMainFrame(this.menuProductosServicios);
+				}
+			};
+		};
+		Function<MenuServicios, ActionListener> spaAction = (panel) -> {
+			return new ActionListener() {
+				private MenuProductosServicios menuProductosServicios;
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					this.menuProductosServicios = new MenuProductosServicios(user,null,null,null);
+					configMainFrame(this.menuProductosServicios);
+				}
+			};
+		};
+		
+		Function<MenuServicios, ActionListener> alojamientoAction = (panel) -> {
+			return new ActionListener() {
+				private MenuProductosServicios menuProductosServicios;
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					this.menuProductosServicios = new MenuProductosServicios(user,null,null,null);
+					configMainFrame(this.menuProductosServicios);
+				}
 			};
 		};
 		
 		// INITIALIZE
-		this.menuConsumible = new MenuConsumible(user, ProductosAction, ServiciosAction);
-		configMainFrame(this.menuConsumible);
-	}	
+		this.menuServicios = new MenuServicios(user, restauranteAction, spaAction, alojamientoAction);
+		configMainFrame(this.menuServicios);
+	}
+	
+		
 }
