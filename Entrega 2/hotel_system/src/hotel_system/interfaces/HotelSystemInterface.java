@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.swing.BoxLayout;
@@ -273,7 +275,7 @@ public class HotelSystemInterface extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					Reserva booking;
-					String text = finder.getInput().getInput().getText();
+					String text = finder.getInput();
 					System.out.println(text);
 					booking = pms.getReservaByDNI(text);
 					System.out.println(booking);
@@ -307,25 +309,39 @@ public class HotelSystemInterface extends JFrame {
 			};
 		
 		};
-		Function<Finder, ActionListener> createAction = (btn) -> {
+		Function<BookingManagement, ActionListener> createAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						pms.reservar("",
-								"",
-								"",
-								"", 
-								null, 
-								null, 
-								null, 
-								"", 
-								"");
-					} catch (Exception e1) {
-						e1.printStackTrace();
+						Map<String, String> data = panel.getDataMap();
+						Map<String, Integer> rooms = panel.getDataRoomsMap();
+						System.out.println(data.values());
+						List<Integer> roomsSelected = new ArrayList<>();
+						rooms.keySet().stream().forEach(r -> {
+							roomsSelected.add(pms.seleccionarHab(r, data.get("llegada"), data.get("salida")));
+						});
+						if (pms.calcularCapacidadTotal(roomsSelected) < Integer.parseInt(data.get("huespedes"))) {
+							throw new IOException("La cantidad de huespedes es mayor a la capacidad de las habitaciones"); 
+						}
+						pms.reservar(
+								data.get("titular"),
+								data.get("email"),
+								data.get("dni"),
+								data.get("telefono"), 
+								Integer.parseInt(data.get("edad")),
+								Integer.parseInt(data.get("huespedes")),
+								roomsSelected,
+								data.get("llegada"),
+								data.get("salida")
+						);
+						panel.injectData(pms.getReservaByDNI(data.get("dni")));
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(null, e1.getMessage());
+					} catch (Exception e2) {
+						e2.printStackTrace();
 	                    JOptionPane.showMessageDialog(null, "Se produjo un error creando la reserva");
-
-					}
+					} 
 				}
 			};
 		
@@ -347,6 +363,7 @@ public class HotelSystemInterface extends JFrame {
 				headers,
 				data,
 				findAction, 
+				createAction,
 				deleteAction, 
 				updateAction
 		);

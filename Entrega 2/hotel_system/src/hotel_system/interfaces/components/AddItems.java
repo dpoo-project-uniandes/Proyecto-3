@@ -77,7 +77,7 @@ public class AddItems extends JPanel {
 		this.revalidate();
 	}
 	
-	public Integer getValut() {
+	public Integer getValue() {
 		return value;
 	}
 }

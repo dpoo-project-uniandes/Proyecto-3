@@ -8,7 +8,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.swing.BorderFactory;
@@ -55,18 +57,25 @@ public class BookingManagement extends JPanel {
 	private Button booking;
 	private List<String> headersFormNewBooking;
 	private List<List<String>> dataFormNewBooking;
+	private List<String> headerFormRooms;
+	private List<List<Object>> dataFormRooms;
+	
+	// ACTIONS LISTENER
+	Function<BookingManagement, ActionListener> createAction;
 	
 	public BookingManagement(
 		String user,
 		List<String> headersFormRooms,
 		List<List<String>> dataFormRooms,
 		Function<Finder, ActionListener> findAction,
+		Function<BookingManagement, ActionListener> createAction,
 		Function<Finder, ActionListener> deleteAction,
 		Function<Finder, ActionListener> updateAction
 	) {
 		this.title = "Detalles de la Reserva";
 		this.headersFormNewBooking = headersFormRooms;
 		this.dataFormNewBooking = dataFormRooms;
+		this.createAction = createAction;
 		configPanel();
 		configHeader(user, "Reservas");
 		configFinder("Documento Titular / Nro de Reserva", findAction);
@@ -180,14 +189,14 @@ public class BookingManagement extends JPanel {
 	
 	private void configFormNewBookingSelectRooms() {		
 		// CELLS HEADERS
-		List<String> headers = new ArrayList<>(this.headersFormNewBooking);
-		headers.add("Opciones");
-		List<List<Object>> data = this.dataFormNewBooking.stream().map(row -> { 
+		headerFormRooms = new ArrayList<>(this.headersFormNewBooking);
+		headerFormRooms.add("Opciones");
+		dataFormRooms = this.dataFormNewBooking.stream().map(row -> { 
 			List<Object> rn = new ArrayList<>(row);
 			rn.add(new AddItems());
 			return rn;
 		}).toList();
- 		this.selectRoomsTable = new DynamicTable(headers, data);
+ 		this.selectRoomsTable = new DynamicTable(headerFormRooms, dataFormRooms);
  		JScrollPane scrollPane = new JScrollPane(this.selectRoomsTable);
  		scrollPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
@@ -198,6 +207,7 @@ public class BookingManagement extends JPanel {
 	private void configButtonBooking() {
 		this.booking = new Button("Reservar", new Dimension(200, 50));
 		this.booking.setAlignmentX(CENTER_ALIGNMENT);
+		this.booking.addActionListener(this.createAction.apply(this));
 		this.formNewBooking.add(this.booking);
 	}
 	
@@ -213,5 +223,28 @@ public class BookingManagement extends JPanel {
 	
 	public void injectData(Reserva booking) {
 		System.out.println(booking);
+	}
+	
+	public Map<String, String> getDataMap() {
+		return Map.of(
+			"titular", this.guest.getValue(), 
+			"salida", this.checkout.getValue(), 
+			"email", this.email.getValue(), 
+			"llegada", this.arrival.getValue(), 
+			"huespedes", this.nroGuests.getValue(),
+			"dni", this.dni.getValue(),
+			"edad", this.age.getValue(),
+			"telefono", this.phone.getValue()
+		);
+	}	
+	
+	public Map<String, Integer> getDataRoomsMap() {
+		Map<String, Integer> rooms = new HashMap();
+		this.dataFormRooms.stream().forEach(r -> {
+			AddItems addItems = (AddItems) r.get(r.size()-1);
+			if (addItems.getValue() > 0) 
+				rooms.put((String) r.get(0), addItems.getValue());
+		});
+		return rooms;
 	}
 }

@@ -65,4 +65,8 @@ public class Input extends JPanel {
 	public <T extends JTextField> T getInput() {
 		return (T) input;
 	}
+	
+	public String getValue() {
+		return this.input.getText();
+	}
 }
