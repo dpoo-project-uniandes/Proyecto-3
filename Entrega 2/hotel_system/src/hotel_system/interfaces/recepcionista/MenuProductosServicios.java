@@ -1,21 +1,18 @@
 package hotel_system.interfaces.recepcionista;
 
 import java.awt.Color;
-
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -25,10 +22,9 @@ import javax.swing.border.EmptyBorder;
 import hotel_system.interfaces.DataPanel;
 import hotel_system.interfaces.Finder;
 import hotel_system.interfaces.MainHeader;
-import hotel_system.interfaces.Utils;
+import hotel_system.interfaces.UtilsGUI;
 import hotel_system.interfaces.VerticalButtons;
 import hotel_system.interfaces.components.Button;
-import hotel_system.interfaces.components.Input;
 import hotel_system.interfaces.components.Tabla;
 
 
@@ -116,8 +112,8 @@ public class MenuProductosServicios extends JPanel {
 		this.finderAndButtonsPanel.setLayout(new GridBagLayout());
 		this.finderAndButtonsPanel.setOpaque(false);
 		this.finderAndButtonsPanel.setAlignmentX(LEFT_ALIGNMENT);
-		this.finderAndButtonsPanel.add(this.finder, Utils.getConstraints(0, 0, 1, 1, 0.2, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
-		this.finderAndButtonsPanel.add(this.verticalButtons, Utils.getConstraints(1, 0, 1, 1, 0.1, 1, 20, 600, 0, 0, 1, GridBagConstraints.EAST));
+		this.finderAndButtonsPanel.add(this.finder, UtilsGUI.getConstraints(0, 0, 1, 1, 0.2, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
+		this.finderAndButtonsPanel.add(this.verticalButtons, UtilsGUI.getConstraints(1, 0, 1, 1, 0.1, 1, 20, 600, 0, 0, 1, GridBagConstraints.EAST));
 		this.finderAndButtonsPanel.setMaximumSize(new Dimension(5000, 80));
 	}
 
@@ -135,9 +131,12 @@ public class MenuProductosServicios extends JPanel {
 
 	public void injectData(String filePath) {
 	    List<String> headers = new ArrayList<>();
-	    List<List<String>> data = readCsvData(filePath);
+	    List<List<Object>> data = readCsvData(filePath).stream().map(e->{
+	    	List<Object> rn = new ArrayList<>(e);
+	    	return rn;
+	    	}).collect(Collectors.toList());
 	    if (data.size() > 0) {
-	        headers = data.get(0);
+	        headers = data.get(0).stream().map(e->e.toString()).toList();
 	        data.remove(0);
 	    }
 	    Tabla tabla = new Tabla(headers, data);

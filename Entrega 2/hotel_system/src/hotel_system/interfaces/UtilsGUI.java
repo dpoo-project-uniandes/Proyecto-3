@@ -3,7 +3,7 @@ package hotel_system.interfaces;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
-public class Utils {
+public class UtilsGUI {
     public static GridBagConstraints getConstraints(
     		int x, 
 			int y, 

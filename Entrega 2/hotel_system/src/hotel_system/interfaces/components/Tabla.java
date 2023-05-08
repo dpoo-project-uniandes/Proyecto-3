@@ -1,10 +1,8 @@
 package hotel_system.interfaces.components;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,16 +12,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
-import hotel_system.interfaces.Utils;
-
 public class Tabla extends JPanel {
 	
 	private JTable table;
 	private JScrollPane scrollPane;
 	private List<String> headers;
-	private List<List<String>> data;
+	private List<List<Object>> data;
 
-    public Tabla(List<String> headers, List<List<String>> data) {
+    public Tabla(List<String> headers, List<List<Object>> data) {
     	this.headers = headers;
     	this.data = data;
     	configPanel();
@@ -42,7 +38,7 @@ public class Tabla extends JPanel {
     private void configTable() {
     	// DATA
     	DefaultListModel<String> headers = new DefaultListModel<>();
-    	DefaultListModel<List<String>> data = new DefaultListModel<>();
+    	DefaultListModel<List<Object>> data = new DefaultListModel<>();
     	
     	headers.addAll(this.headers);
     	data.addAll(this.data);
@@ -58,18 +54,18 @@ public class Tabla extends JPanel {
 		}
         this.table.getTableHeader().setDefaultRenderer(new TableHeader());
         this.table.setRowHeight(35);
-
+  
         this.scrollPane = new JScrollPane(this.table);
     }
     
     class TableModel extends AbstractTableModel {
     	
-        private List<String[]> data = new ArrayList<>();
+        private List<Object[]> data = new ArrayList<>();
         private String[] headers;
         
-        public TableModel(List<String> headers, List<List<String>> data) {
+        public TableModel(List<String> headers, List<List<Object>> data) {
         	this.headers = headers.toArray(String[]::new);
-        	this.data = data.stream().map(e -> e.toArray(String[]::new)).toList();
+        	this.data = data.stream().map(e -> e.toArray(Object[]::new)).toList();
         }
     	
         public int getColumnCount() {
@@ -86,6 +82,10 @@ public class Tabla extends JPanel {
 
         public Object getValueAt(int row, int col) {
             return data.get(row)[col];
+        }
+        
+        public boolean isCellEditable(int row, int col) {
+        	return false;
         }
     }
 }

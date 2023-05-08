@@ -4,8 +4,10 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import javax.swing.BoxLayout;
@@ -19,14 +21,14 @@ import hotel_system.interfaces.admin.MenuCargaAdministrador;
 import hotel_system.interfaces.admin.MenuModificarAdmin;
 import hotel_system.interfaces.recepcionista.BookingManagement;
 import hotel_system.interfaces.recepcionista.MenuConsumible;
+import hotel_system.interfaces.recepcionista.MenuProductosServicios;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
 import hotel_system.interfaces.recepcionista.MenuServicios;
-import hotel_system.interfaces.recepcionista.MenuProductosServicios;
-import hotel_system.models.Consumible;
 import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
 import hotel_system.models.Usuario;
+import hotel_system.utils.Utils;
 import services.Dupla;
 import services.SecValidation;
 
@@ -66,7 +68,7 @@ public class HotelSystemInterface extends JFrame {
 		// SETTINGS
 		this.setTitle("Hotel System Management");
 		this.getContentPane().setBackground(Color.WHITE);
-		this.setSize(1416, 800);
+		this.setSize(1530, 900);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
@@ -79,11 +81,10 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-//					Usuario authenticated = getUser(
-//							panel.getUserInput().getInput().getText(), 
-//							panel.getPasswordInput().getInput().getText()
-//					);
-					Usuario authenticated = getUser("estaban", "esteban");
+					Usuario authenticated = getUser(
+							panel.getUserInput().getInput().getText(), 
+							panel.getPasswordInput().getInput().getText()
+					);
 					if (authenticated == null) 
 						panel.displayUnauthorizedWarning();
 					else 
@@ -246,7 +247,7 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					String id = finder.getInput().getInput().getText();
+					String id = finder.getInput();
 					Dupla<Producto, String> dupla = pms.getProductoByID(id);
 					Producto producto = dupla.getPrimero();
 					String tipo = dupla.getSegundo();
@@ -343,10 +344,8 @@ public class HotelSystemInterface extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					Reserva booking;
-					String text = finder.getInput().getInput().getText();
-					System.out.println(text);
+					String text = finder.getInput();
 					booking = pms.getReservaByDNI(text);
-					System.out.println(booking);
 					if (booking == null) 
 						booking = pms.getReservaById(text);
 					if (booking == null)
@@ -356,46 +355,74 @@ public class HotelSystemInterface extends JFrame {
 				}
 			};
 		};
-		Function<Finder, ActionListener> deleteAction = (btn) -> {
+		Function<BookingManagement, ActionListener> deleteAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Reserva booking = new Reserva(null, null, null, null, null);
-					pms.eliminarReserva(booking);
+					pms.eliminarReserva(panel.getBookingInjected());
 					
 				}
 			};
 		};
-		Function<Finder, ActionListener> updateAction = (btn) -> {
+		Function<BookingManagement, ActionListener> cancelAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Reserva booking = new Reserva(null, null, null, null, null);
-					pms.modificarReserva(booking);
+					pms.cancelarReserva(panel.getBookingInjected().getTitular().getDni());
 					
+				}
+			};
+		};
+		Function<BookingManagement, ActionListener> updateAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Reserva reserva = panel.getBookingInjected();
+					Map<String, String> data = panel.getDataMap();
+					reserva.getTitular().setNombre(data.get("titular"));
+					reserva.getTitular().setDni(data.get("dni"));
+					reserva.getTitular().setEmail(data.get("email"));
+					reserva.getTitular().setTelefono(data.get("telefono"));
+					reserva.getTitular().setEdad(Integer.parseInt(data.get("edad")));
+					reserva.setFechaDeLlegada(Utils.stringToDate(data.get("llegada")));
+					reserva.setFechaDeSalida(Utils.stringToDate(data.get("Salida")));
+					pms.modificarReserva(reserva);
 				}
 			};
 		
 		};
-		Function<Finder, ActionListener> createAction = (btn) -> {
+		Function<BookingManagement, ActionListener> createAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						pms.reservar("",
-								"",
-								"",
-								"", 
-								null, 
-								null, 
-								null, 
-								"", 
-								"");
-					} catch (Exception e1) {
-						e1.printStackTrace();
+						Map<String, String> data = panel.getDataMap();
+						Map<String, Integer> rooms = panel.getDataRoomsMap();
+						List<Integer> roomsSelected = new ArrayList<>();
+						rooms.keySet().stream().forEach(r -> {
+							roomsSelected.add(pms.seleccionarHab(r, data.get("llegada"), data.get("salida")));
+						});
+						if (pms.calcularCapacidadTotal(roomsSelected) < Integer.parseInt(data.get("huespedes"))) {
+							throw new IOException("La cantidad de huespedes es mayor a la capacidad de las habitaciones"); 
+						}
+						pms.reservar(
+								data.get("titular"),
+								data.get("email"),
+								data.get("dni"),
+								data.get("telefono"), 
+								Integer.parseInt(data.get("edad")),
+								Integer.parseInt(data.get("huespedes")),
+								roomsSelected,
+								data.get("llegada"),
+								data.get("salida")
+						);
+						panel.injectData(pms.getReservaByDNI(data.get("dni")));
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(null, e1.getMessage());
+					} catch (Exception e2) {
+						e2.printStackTrace();
 	                    JOptionPane.showMessageDialog(null, "Se produjo un error creando la reserva");
-
-					}
+					} 
 				}
 			};
 		
@@ -417,8 +444,10 @@ public class HotelSystemInterface extends JFrame {
 				headers,
 				data,
 				findAction, 
+				createAction,
 				deleteAction, 
-				updateAction
+				updateAction,
+				cancelAction
 		);
 		configMainFrame(bookingManagement);
 	}

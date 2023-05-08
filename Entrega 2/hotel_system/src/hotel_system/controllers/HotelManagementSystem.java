@@ -274,6 +274,14 @@ public class HotelManagementSystem {
 				.get()
 				.getNumero();
 	}
+	
+	public Integer seleccionarHab(String alias, String desde, String hasta) {
+		return inventarioHabitaciones.stream()
+				.filter(hab -> hab.getTipo().getAlias().equals(alias) && hab.consultarDisponibilidad(Utils.stringToDate(desde), Utils.stringToDate(hasta)))
+				.findAny()
+				.get()
+				.getNumero();
+	}
 
 	public Spa getServicioSpa(){
 		Spa spa = (Spa)inventarioServicios.get("spa");

@@ -49,10 +49,11 @@ public class DataPanel extends JPanel {
 		// TITLE TEXT
 		this.title = new JLabel(title);
 	    this.title.setFont(new Font(getName(), Font.BOLD, 20));
-	    this.title.setBorder(new EmptyBorder(10,20,10,20));
+	    this.title.setBorder(new EmptyBorder(5,20,5,20));
 	    this.title.setForeground(Color.WHITE);
 	    
 	    this.titlePanel.add(this.title);
+	    this.titlePanel.setMinimumSize(new Dimension(1000, 40));
 	    this.titlePanel.setMaximumSize(new Dimension(5000, 50));
 	}
 	
@@ -68,12 +69,12 @@ public class DataPanel extends JPanel {
 		this.emptyResultsLabel = new JLabel("Sin Resultados");
 		this.emptyResultsLabel.setFont(new Font(getName(), Font.PLAIN, 20));
 		this.emptyResultsLabel.setForeground(Color.GRAY);
-		this.dataPanel.add(this.emptyResultsLabel, Utils.getConstraints(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
+		this.dataPanel.add(this.emptyResultsLabel, UtilsGUI.getConstraints(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
 	}
 	
 	public void injectDataPanel(JPanel panel) {
 		this.dataPanel.removeAll();
-		this.dataPanel.add(panel, Utils.getConstraints(0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
+		this.dataPanel.add(panel, UtilsGUI.getConstraints(0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
 		this.revalidate();
 	}
 }

@@ -6,7 +6,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.util.function.Function;
 
 import javax.swing.Box;
@@ -17,11 +16,10 @@ import javax.swing.border.EmptyBorder;
 import hotel_system.interfaces.DataPanel;
 import hotel_system.interfaces.Finder;
 import hotel_system.interfaces.MainHeader;
-import hotel_system.interfaces.Utils;
+import hotel_system.interfaces.UtilsGUI;
 import hotel_system.interfaces.VerticalButtons;
 import hotel_system.interfaces.components.Button;
 import hotel_system.models.Producto;
-import hotel_system.models.Reserva;
 
 public class MenuModificarAdmin extends JPanel{
 	// BASIC
@@ -101,8 +99,8 @@ public class MenuModificarAdmin extends JPanel{
 			this.finderAndNewBookingPanel.setOpaque(false);
 			this.finderAndNewBookingPanel.setAlignmentX(LEFT_ALIGNMENT);
 			
-			this.finderAndNewBookingPanel.add(this.finder, Utils.getConstraints(0, 0, 1, 1, 0.2, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
-			this.finderAndNewBookingPanel.add(this.verticalButtons, Utils.getConstraints(1, 0, 1, 1, 0.1, 1, 20, 600, 0, 0, 1, GridBagConstraints.EAST));
+			this.finderAndNewBookingPanel.add(this.finder, UtilsGUI.getConstraints(0, 0, 1, 1, 0.2, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
+			this.finderAndNewBookingPanel.add(this.verticalButtons, UtilsGUI.getConstraints(1, 0, 1, 1, 0.1, 1, 20, 600, 0, 0, 1, GridBagConstraints.EAST));
 			
 			this.finderAndNewBookingPanel.setMaximumSize(new Dimension(5000, 80));
 		}
