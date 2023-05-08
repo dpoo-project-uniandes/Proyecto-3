@@ -72,11 +72,10 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-//					Usuario authenticated = getUser(
-//							panel.getUserInput().getInput().getText(), 
-//							panel.getPasswordInput().getInput().getText()
-//					);
-					Usuario authenticated = getUser("juan", "juan");
+					Usuario authenticated = getUser(
+							panel.getUserInput().getInput().getText(), 
+							panel.getPasswordInput().getInput().getText()
+					);
 					if (authenticated == null) 
 						panel.displayUnauthorizedWarning();
 					else 
