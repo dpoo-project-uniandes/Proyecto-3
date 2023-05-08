@@ -25,6 +25,7 @@ import hotel_system.models.TipoHabitacion;
 import hotel_system.models.Titular;
 import hotel_system.models.Usuario;
 import hotel_system.utils.Utils;
+import services.Dupla;
 import services.FileManager;
 
 public class HotelManagementSystem {
@@ -428,6 +429,23 @@ public class HotelManagementSystem {
 		return reserva.getHabitaciones().stream().map(h -> h.getNumero()).toList();
 	}
 
+	public Dupla<Producto, String> getProductoByID(String id) {
+		Optional<Producto> consumible; 
+		Optional<ProductoRestaurante> productoRestaurante;
+		consumible = inventarioProductos.stream()
+		.filter(cons -> cons.getId().toString().equals(id))
+		.findAny();
+		if (consumible.isPresent()) {return new Dupla<Producto, String>(consumible.get(), "hotel");}
+		productoRestaurante = getServicioRestaurante().getProductos().stream()
+			.filter(cons -> cons.getId().toString().equals(id))
+				.findAny();
+		if (productoRestaurante.isPresent()) {return new Dupla<Producto, String>(productoRestaurante.get(), "restaurante");}
+		consumible = getServicioSpa().getProductosYServicios().stream()
+			.filter(cons -> cons.getId().toString().equals(id))
+				.findAny();
+		if (consumible.isPresent()) {return new Dupla<Producto, String>(consumible.get(), "spa");}
+		return null;
+	}
 	public void finalizarEstadia(String dni) {
 		Estadia estadia = getEstadiaByDNI(dni);
 		estadia.facturarEstadia();
@@ -457,4 +475,17 @@ public class HotelManagementSystem {
 		List<List<String>> rowUser = List.of(List.of(user, password, rol.toString()));
 		FileManager.agregarLineasCSV("usuarios.csv", rowUser);
 	}
+	
+	
+	public void eliminarProducto(Producto producto, String tipo) {
+		if (tipo.equals("hotel")) {
+			
+		}else if(tipo.equals("spa")) {
+			
+		}else {
+			
+		}
+		
+	}
+
 }

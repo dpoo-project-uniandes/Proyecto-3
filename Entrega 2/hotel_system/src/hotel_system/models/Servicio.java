@@ -50,7 +50,8 @@ public abstract class Servicio implements Consumible {
 	public void setProductosConsumidos(List<Producto> productosConsumidos) {
 		this.productosConsumidos = productosConsumidos;
 	}
-
+	
+	@Override
 	public Long getId() {
 		return id;
 	}
