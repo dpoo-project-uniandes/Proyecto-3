@@ -24,6 +24,7 @@ import hotel_system.interfaces.recepcionista.MenuRecepcionista;
 import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
 import hotel_system.models.Usuario;
+import hotel_system.utils.Utils;
 import services.SecValidation;
 
 public class HotelSystemInterface extends JFrame {
@@ -276,9 +277,7 @@ public class HotelSystemInterface extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					Reserva booking;
 					String text = finder.getInput();
-					System.out.println(text);
 					booking = pms.getReservaByDNI(text);
-					System.out.println(booking);
 					if (booking == null) 
 						booking = pms.getReservaById(text);
 					if (booking == null)
@@ -288,23 +287,38 @@ public class HotelSystemInterface extends JFrame {
 				}
 			};
 		};
-		Function<Finder, ActionListener> deleteAction = (btn) -> {
+		Function<BookingManagement, ActionListener> deleteAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Reserva booking = new Reserva(null, null, null, null, null);
-					pms.eliminarReserva(booking);
+					pms.eliminarReserva(panel.getBookingInjected());
 					
 				}
 			};
 		};
-		Function<Finder, ActionListener> updateAction = (btn) -> {
+		Function<BookingManagement, ActionListener> cancelAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Reserva booking = new Reserva(null, null, null, null, null);
-					pms.modificarReserva(booking);
+					pms.cancelarReserva(panel.getBookingInjected().getTitular().getDni());
 					
+				}
+			};
+		};
+		Function<BookingManagement, ActionListener> updateAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Reserva reserva = panel.getBookingInjected();
+					Map<String, String> data = panel.getDataMap();
+					reserva.getTitular().setNombre(data.get("titular"));
+					reserva.getTitular().setDni(data.get("dni"));
+					reserva.getTitular().setEmail(data.get("email"));
+					reserva.getTitular().setTelefono(data.get("telefono"));
+					reserva.getTitular().setEdad(Integer.parseInt(data.get("edad")));
+					reserva.setFechaDeLlegada(Utils.stringToDate(data.get("llegada")));
+					reserva.setFechaDeSalida(Utils.stringToDate(data.get("Salida")));
+					pms.modificarReserva(reserva);
 				}
 			};
 		
@@ -316,7 +330,6 @@ public class HotelSystemInterface extends JFrame {
 					try {
 						Map<String, String> data = panel.getDataMap();
 						Map<String, Integer> rooms = panel.getDataRoomsMap();
-						System.out.println(data.values());
 						List<Integer> roomsSelected = new ArrayList<>();
 						rooms.keySet().stream().forEach(r -> {
 							roomsSelected.add(pms.seleccionarHab(r, data.get("llegada"), data.get("salida")));
@@ -365,7 +378,8 @@ public class HotelSystemInterface extends JFrame {
 				findAction, 
 				createAction,
 				deleteAction, 
-				updateAction
+				updateAction,
+				cancelAction
 		);
 		configMainFrame(bookingManagement);
 	}

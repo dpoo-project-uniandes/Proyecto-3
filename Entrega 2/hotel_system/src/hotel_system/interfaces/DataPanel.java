@@ -69,12 +69,12 @@ public class DataPanel extends JPanel {
 		this.emptyResultsLabel = new JLabel("Sin Resultados");
 		this.emptyResultsLabel.setFont(new Font(getName(), Font.PLAIN, 20));
 		this.emptyResultsLabel.setForeground(Color.GRAY);
-		this.dataPanel.add(this.emptyResultsLabel, Utils.getConstraints(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
+		this.dataPanel.add(this.emptyResultsLabel, UtilsGUI.getConstraints(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
 	}
 	
 	public void injectDataPanel(JPanel panel) {
 		this.dataPanel.removeAll();
-		this.dataPanel.add(panel, Utils.getConstraints(0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
+		this.dataPanel.add(panel, UtilsGUI.getConstraints(0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
 		this.revalidate();
 	}
 }

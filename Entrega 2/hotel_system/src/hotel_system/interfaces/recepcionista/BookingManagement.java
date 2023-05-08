@@ -2,6 +2,8 @@ package hotel_system.interfaces.recepcionista;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -16,6 +18,7 @@ import java.util.function.Function;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
@@ -23,13 +26,14 @@ import javax.swing.border.EmptyBorder;
 import hotel_system.interfaces.DataPanel;
 import hotel_system.interfaces.Finder;
 import hotel_system.interfaces.MainHeader;
-import hotel_system.interfaces.Utils;
+import hotel_system.interfaces.UtilsGUI;
 import hotel_system.interfaces.VerticalButtons;
 import hotel_system.interfaces.components.AddItems;
 import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.DynamicTable;
 import hotel_system.interfaces.components.Input;
 import hotel_system.models.Reserva;
+import hotel_system.utils.Utils;
 
 public class BookingManagement extends JPanel {
 	
@@ -60,8 +64,20 @@ public class BookingManagement extends JPanel {
 	private List<String> headerFormRooms;
 	private List<List<Object>> dataFormRooms;
 	
+	// DATA BOOKING
+	private JPanel bookingDataPanel;
+	private VerticalButtons actionsBookingPanel;
+	private Button updateBookingBtn;
+	private Button deleteBookingBtn;
+	private Button cancelBookingBtn;
+	private Reserva bookingInjected;
+	
+	
 	// ACTIONS LISTENER
 	Function<BookingManagement, ActionListener> createAction;
+	Function<BookingManagement, ActionListener> deleteAction;
+	Function<BookingManagement, ActionListener> updateAction;
+	Function<BookingManagement, ActionListener> cancelAction;
 	
 	public BookingManagement(
 		String user,
@@ -69,13 +85,17 @@ public class BookingManagement extends JPanel {
 		List<List<String>> dataFormRooms,
 		Function<Finder, ActionListener> findAction,
 		Function<BookingManagement, ActionListener> createAction,
-		Function<Finder, ActionListener> deleteAction,
-		Function<Finder, ActionListener> updateAction
+		Function<BookingManagement, ActionListener> deleteAction,
+		Function<BookingManagement, ActionListener> updateAction,
+		Function<BookingManagement, ActionListener> cancelAction
 	) {
 		this.title = "Detalles de la Reserva";
 		this.headersFormNewBooking = headersFormRooms;
 		this.dataFormNewBooking = dataFormRooms;
 		this.createAction = createAction;
+		this.updateAction = updateAction;
+		this.deleteAction = deleteAction;
+		this.cancelAction = cancelAction;
 		configPanel();
 		configHeader(user, "Reservas");
 		configFinder("Documento Titular / Nro de Reserva", findAction);
@@ -133,8 +153,8 @@ public class BookingManagement extends JPanel {
 		this.finderAndNewBookingPanel.setOpaque(false);
 		this.finderAndNewBookingPanel.setAlignmentX(LEFT_ALIGNMENT);
 		
-		this.finderAndNewBookingPanel.add(this.finder, Utils.getConstraints(0, 0, 1, 1, 0.2, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
-		this.finderAndNewBookingPanel.add(this.verticalButtons, Utils.getConstraints(1, 0, 1, 1, 0.1, 1, 20, 600, 0, 0, 1, GridBagConstraints.EAST));
+		this.finderAndNewBookingPanel.add(this.finder, UtilsGUI.getConstraints(0, 0, 1, 1, 0.2, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
+		this.finderAndNewBookingPanel.add(this.verticalButtons, UtilsGUI.getConstraints(1, 0, 1, 1, 0.1, 1, 20, 600, 0, 0, 1, GridBagConstraints.EAST));
 		
 		this.finderAndNewBookingPanel.setMaximumSize(new Dimension(5000, 80));
 	}
@@ -217,12 +237,89 @@ public class BookingManagement extends JPanel {
 		this.dataPanel.setAlignmentX(LEFT_ALIGNMENT);
 	}
 	
+	private JPanel getLabelDataBooking(String title, String value) {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel titleLabel = new JLabel(title + ":");
+		JLabel valueLabel = new JLabel(value);
+		
+		// CUSTOMOZATION
+		titleLabel.setFont(new Font(getName(), Font.BOLD, 20));
+		valueLabel.setFont(new Font(getName(), Font.PLAIN, 20));
+		
+		panel.add(titleLabel);
+		panel.add(valueLabel);
+		panel.setOpaque(false);
+		
+		return panel;
+	}
+	
+	private JPanel getColumnPanelDataBooking() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setOpaque(false);
+		return panel;
+	}
+	
 	public void withoutResults() {
 		configDataPanel(title);
 	}
 	
 	public void injectData(Reserva booking) {
-		System.out.println(booking);
+		// UPDATE CURRENT
+		this.bookingInjected = booking;
+		
+		// PANEL
+		this.bookingDataPanel = new JPanel();
+		this.bookingDataPanel.setLayout(new GridBagLayout());
+		this.bookingDataPanel.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+		this.bookingDataPanel.setOpaque(false);
+		
+		List<String> titles = List.of("Nro", "Llegada", "Salida", "Titular", "Documento", "Estado", "Estadia", "Tarifa", "Habitaciones");
+		List<String> values = List.of(
+				booking.getNumero().toString(),
+				Utils.stringLocalDate(booking.getFechaDeLlegada()),
+				Utils.stringLocalDate(booking.getFechaDeSalida()),
+				booking.getTitular().getNombre(),
+				booking.getTitular().getDni(),
+				booking.getEstado().toString(),
+				booking.getEstadia() == null ? "0" : booking.getEstadia().getId().toString(),
+				booking.getTarifaTotal().toString(),
+				booking.getHabitaciones().stream().map(h -> h.getNumero().toString()).toList().toString()
+		);
+		
+		// COLUMNS DATA
+		Integer middle = (titles.size() / 2);
+		JPanel col1 = getColumnPanelDataBooking();
+		JPanel col2 = getColumnPanelDataBooking();
+		
+		for(int i = 0; i < titles.size(); i++) {
+			if (middle < i)
+				col1.add(getLabelDataBooking(titles.get(i), values.get(i)));
+			else
+				col2.add(getLabelDataBooking(titles.get(i), values.get(i)));
+		}
+		
+		this.bookingDataPanel.add(col2, UtilsGUI.getConstraints(0, 0, 1, 1, 0.4, 1, 0, 0, 0, 0, 1, GridBagConstraints.WEST));
+		this.bookingDataPanel.add(col1, UtilsGUI.getConstraints(1, 0, 1, 1, 0.4, 1, 0, 0, 0, 0, 1, GridBagConstraints.WEST));
+		
+		
+		// BUTTONS
+		this.actionsBookingPanel = new VerticalButtons(3);
+		this.updateBookingBtn = new Button("Modificar");
+		this.updateBookingBtn.addActionListener(this.updateAction.apply(this));
+		this.deleteBookingBtn = new Button("Eliminar");
+		this.deleteBookingBtn.addActionListener(this.deleteAction.apply(this));
+		this.cancelBookingBtn = new Button("Cancelar");
+		this.cancelBookingBtn.addActionListener(this.cancelAction.apply(this));
+		this.actionsBookingPanel.addButton(this.updateBookingBtn);
+		this.actionsBookingPanel.addButton(this.cancelBookingBtn);
+		this.actionsBookingPanel.addButton(this.deleteBookingBtn);
+		
+		this.bookingDataPanel.add(this.actionsBookingPanel, UtilsGUI.getConstraints(3, 0, 1, 1, 0.2, 1, 60, 0, 60, 0, 1, GridBagConstraints.EAST));
+		
+		// REFRESH
+		this.dataPanel.injectDataPanel(this.bookingDataPanel);
+		this.revalidate();
 	}
 	
 	public Map<String, String> getDataMap() {
@@ -246,5 +343,9 @@ public class BookingManagement extends JPanel {
 				rooms.put((String) r.get(0), addItems.getValue());
 		});
 		return rooms;
+	}
+	
+	public Reserva getBookingInjected() {
+		return bookingInjected;
 	}
 }
