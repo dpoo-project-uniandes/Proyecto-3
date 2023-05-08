@@ -3,6 +3,8 @@ package hotel_system.models;
 import java.sql.Date;
 import java.util.List;
 
+import hotel_system.utils.Utils;
+
 public class ProductoRestaurante extends Producto {
 
 	private List<Date> rangoHorario;
@@ -33,7 +35,9 @@ public class ProductoRestaurante extends Producto {
 		this.alCuarto = alCuarto;
 	}
 	public String getRangoHorarioStr() {
-		return null;
+		String inicio = Utils.stringLocalDate(this.rangoHorario.get(0));
+		String fin = Utils.stringLocalDate(this.rangoHorario.get(this.rangoHorario.size()-1));
+		return inicio+"-"+fin;
 	}
 
 	public String getTipo() {

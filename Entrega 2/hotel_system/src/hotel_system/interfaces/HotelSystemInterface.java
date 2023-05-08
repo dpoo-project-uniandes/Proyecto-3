@@ -79,7 +79,7 @@ public class HotelSystemInterface extends JFrame {
 //							panel.getUserInput().getInput().getText(), 
 //							panel.getPasswordInput().getInput().getText()
 //					);
-					Usuario authenticated = getUser("juan", "juan");
+					Usuario authenticated = getUser("admin", "admin");
 					if (authenticated == null) 
 						panel.displayUnauthorizedWarning();
 					else 
@@ -245,8 +245,9 @@ public class HotelSystemInterface extends JFrame {
 					String id = finder.getInput().getInput().getText();
 					Dupla<Producto, String> dupla = pms.getProductoByID(id);	
 					if (dupla == null)
-						menuModificarAdmin.withoutResults();
+						menuModificarAdmin.withoutResults(id);
 					else {
+						System.out.println("In");
 						Producto producto = dupla.getPrimero();
 						String tipo = dupla.getSegundo();
 						menuModificarAdmin.setProducto(id, producto.getNombre(), producto.getPrecio().toString(), tipo);;
@@ -431,7 +432,9 @@ public class HotelSystemInterface extends JFrame {
 		Function<MenuConsumible, ActionListener> ProductosAction = (panel) -> {
 			return new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) {}
+				public void actionPerformed(ActionEvent e) {
+					
+				}
 			};
 		};
 		Function<MenuConsumible, ActionListener> ServiciosAction = (panel) -> {

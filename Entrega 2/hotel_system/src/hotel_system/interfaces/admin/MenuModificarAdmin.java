@@ -11,6 +11,8 @@ import java.util.function.Function;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -34,11 +36,12 @@ public class MenuModificarAdmin extends JPanel{
 	private String title;
 	private String tipoProducto;
 	// PARA LA RESERVA
-	private String id;	
-	private String nombre;
-	private String precio;
-	private String rangoHorario;
-	private String alCuarto;
+	private JLabel id;	
+	private JLabel nombre;
+	private JLabel precio;
+	private JLabel rangoHorario;
+	private JLabel alCuarto;
+	private JPanel newPanel;
 	
 
 	public MenuModificarAdmin(
@@ -118,27 +121,40 @@ public class MenuModificarAdmin extends JPanel{
 			this.dataPanel.setAlignmentX(LEFT_ALIGNMENT);
 		}
 		
-		public void withoutResults() {
+		public void withoutResults(String id) {
+            JOptionPane.showMessageDialog(null, "No se enontraron resultados con el id "+ id);
 			configDataPanel(title);
 		}
 		
 		public void injectData() {
-			this.dataPanel.add()
+			
+			this.dataPanel.add(id);
+			this.dataPanel.add(nombre);
+			this.dataPanel.add(precio);
+			if (this.tipoProducto.equals("restaurante")) {
+				this.dataPanel.add(id);
+				this.dataPanel.add(id);}
+			this.repaint();
+			this.revalidate();
+
 		}
 		
 		public void setProducto(String id, String nombre, String precio, String tipo) {
 			setTipoProducto(tipo);
-			this.id=id;
-			this.nombre=nombre;
-			this.precio = precio;
-			
+			this.id = new JLabel(id);
+			this.id.setSize(100, 100);
+			this.nombre=new JLabel(nombre);
+			this.nombre.setSize(100, 100);
+			this.precio =new JLabel (precio);
+			this.precio.setSize(100, 100);
+
 			
 			
 		}
 		
 		public void setProductoRest(String alCuarto, String rango) {
-			this.alCuarto = alCuarto;
-			this.rangoHorario = rango;
+			this.alCuarto =  new JLabel(alCuarto);
+			this.rangoHorario = new JLabel(rango);
 
 		}
 		
