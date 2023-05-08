@@ -1,6 +1,7 @@
 package hotel_system.interfaces.recepcionista;
 
 import java.awt.Color;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -12,6 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,6 +31,10 @@ import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.Input;
 import hotel_system.interfaces.components.Tabla;
 
+
+
+//TODO 3. Conectar los botones de esta interfaz con el PMS 
+
 public class MenuProductosServicios extends JPanel {
 	
 
@@ -40,22 +48,25 @@ public class MenuProductosServicios extends JPanel {
 	private String title;
 	
 	public MenuProductosServicios(
-		String user,
-		Function<Finder, ActionListener> generateAction,
-		Function<Finder, ActionListener> payNowAction,
-		Function<Finder, ActionListener> payLaterAction
-	) {
-		this.title = "Detalles de los productos/servicios";
-		configPanel();
-		configHeader(user, "Factura");
-		configFinder("Numero de habitacion", generateAction);
-		configPayNowButton(payNowAction);
-		configPayLaterButton(payLaterAction);
-		configVerticalButtons();
-		configPanelFinderAndButtons();
-		configDataPanel(title);
-		configComponents();
-	}
+		    String user,
+		    Function<Finder, ActionListener> generateAction,
+		    Function<Finder, ActionListener> payNowAction,
+		    Function<Finder, ActionListener> payLaterAction,
+		    String filePath
+		) {
+		    this.title = "Detalles de los productos/servicios";
+		    configPanel();
+		    configHeader(user, "Factura");
+		    configFinder("Numero de habitacion", generateAction);
+		    configPayNowButton(payNowAction);
+		    configPayLaterButton(payLaterAction);
+		    configVerticalButtons();
+		    configPanelFinderAndButtons();
+		    configDataPanel(title,filePath);
+		    injectData(filePath);
+		    configComponents();
+		}
+
 	
 	private void configComponents() {
 		this.add(header);
@@ -110,17 +121,40 @@ public class MenuProductosServicios extends JPanel {
 		this.finderAndButtonsPanel.setMaximumSize(new Dimension(5000, 80));
 	}
 
-	private void configDataPanel(String title) {
-		this.dataPanel = new DataPanel(title);
-		this.dataPanel.setAlignmentX(LEFT_ALIGNMENT);
+	private void configDataPanel(String title, String filePath) {
+	    this.dataPanel = new DataPanel(title);
+	    this.dataPanel.setAlignmentX(LEFT_ALIGNMENT);
+	    injectData(filePath);
 	}
 
-	public void withoutResults() {
-		configDataPanel(title);
+
+
+	public void withoutResults(String filePath) {
+		configDataPanel(title,filePath);
 	}
 
-	public void injectData(Object data) {
-		System.out.println(data);
+	public void injectData(String filePath) {
+	    List<String> headers = new ArrayList<>();
+	    List<List<String>> data = readCsvData(filePath);
+	    if (data.size() > 0) {
+	        headers = data.get(0);
+	        data.remove(0);
+	    }
+	    Tabla tabla = new Tabla(headers, data);
+	    dataPanel.injectDataPanel(tabla);
 	}
-	
+
+
+	private List<List<String>> readCsvData(String filePath) {
+	    List<List<String>> data = new ArrayList<>();
+	    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+	        String line;
+	        while ((line = br.readLine()) != null) {
+	            data.add(Arrays.asList(line.split(",")));
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	    return data;
+	}	
 }

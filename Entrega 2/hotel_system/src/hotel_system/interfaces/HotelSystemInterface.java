@@ -434,7 +434,10 @@ public class HotelSystemInterface extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					this.menuProductosServicios = new MenuProductosServicios(user,null,null,null);
+					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+					this.menuProductosServicios = new MenuProductosServicios(user,generateAction,payNowAction,payLaterAction,"data/productos.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
@@ -460,7 +463,10 @@ public class HotelSystemInterface extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					this.menuProductosServicios = new MenuProductosServicios(user,null,null,null);
+					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+					this.menuProductosServicios = new MenuProductosServicios(user,generateAction,payNowAction,payLaterAction,"data/productos_restaurante.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
@@ -471,7 +477,10 @@ public class HotelSystemInterface extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					this.menuProductosServicios = new MenuProductosServicios(user,null,null,null);
+					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+					this.menuProductosServicios = new MenuProductosServicios(user,generateAction,payNowAction,payLaterAction,"data/productos_spa.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
@@ -483,7 +492,10 @@ public class HotelSystemInterface extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					this.menuProductosServicios = new MenuProductosServicios(user,null,null,null);
+					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+					this.menuProductosServicios = new MenuProductosServicios(user,generateAction,payNowAction,payLaterAction,"data/reservas_habitaciones.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
