@@ -19,7 +19,7 @@ public class TipoHabitacion {
 	private Boolean conCubrelecho;
 	private Boolean conTapetesHipoalergenicos;
 	private Boolean conPlancha;
-	private Boolean coSecadorCabello;
+	private Boolean conSecadorCabello;
 	private String voltaje;
 	private Boolean conUSBA;
 	private Boolean conUSBC;
@@ -66,7 +66,7 @@ public class TipoHabitacion {
 		this.conCubrelecho = conCubrelecho;
 		this.conTapetesHipoalergenicos = conTapetesHipoalergenicos;
 		this.conPlancha = conPlancha;
-		this.coSecadorCabello = coSecadorCabello;
+		this.conSecadorCabello = coSecadorCabello;
 		this.voltaje = voltaje;
 		this.conUSBA = conUSBA;
 		this.conUSBC = conUSBC;
@@ -81,7 +81,7 @@ public class TipoHabitacion {
 				+ area + ", conAireAcondicionado=" + conAireAcondicionado + ", conCalefaccion=" + conCalefaccion
 				+ ", conTelevision=" + conTelevision + ", conCafetera=" + conCafetera + ", conCubrelecho="
 				+ conCubrelecho + ", conTapetesHipoalergenicos=" + conTapetesHipoalergenicos + ", conPlancha="
-				+ conPlancha + ", coSecadorCabello=" + coSecadorCabello + ", voltaje=" + voltaje + ", conUSBA="
+				+ conPlancha + ", coSecadorCabello=" + conSecadorCabello + ", voltaje=" + voltaje + ", conUSBA="
 				+ conUSBA + ", conUSBC=" + conUSBC + ", conDesayuno=" + conDesayuno + "]";
 	}
 
@@ -153,8 +153,8 @@ public class TipoHabitacion {
 		return conPlancha;
 	}
 
-	public Boolean getCoSecadorCabello() {
-		return coSecadorCabello;
+	public Boolean getConSecadorCabello() {
+		return conSecadorCabello;
 	}
 
 	public String getVoltaje() {

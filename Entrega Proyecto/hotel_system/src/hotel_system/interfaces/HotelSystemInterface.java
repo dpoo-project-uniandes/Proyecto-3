@@ -20,6 +20,7 @@ import hotel_system.interfaces.admin.MenuAdministrador;
 import hotel_system.interfaces.admin.MenuCargaAdministrador;
 import hotel_system.interfaces.admin.MenuModificarAdmin;
 import hotel_system.interfaces.recepcionista.BookingManagement;
+import hotel_system.interfaces.recepcionista.FormRoomsData;
 import hotel_system.interfaces.recepcionista.MenuConsumible;
 import hotel_system.interfaces.recepcionista.MenuProductosServicios;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
@@ -55,7 +56,8 @@ public class HotelSystemInterface extends JFrame {
 	public HotelSystemInterface() throws IOException {
 		this.user = "Juan Rojas";
 		this.pms = new HotelManagementSystem();
-		configLogin();
+//		configLogin();
+		configBookingManagement(user);
 	}
 	
 	private void configMainFrame(JPanel panel) {
@@ -429,20 +431,10 @@ public class HotelSystemInterface extends JFrame {
 		};
 		
 		// INITIALIZE
-		List<String> headers = Arrays.asList("Habitacion", "Capacidad", "Balcon", "Vista", "Cocina", "Precio");
-		List<List<String>> data = pms.getOpcionesHabitacion().stream().map(opt -> Arrays.asList(
-				opt.getAlias(), 
-				opt.getCapacidad().toString(), 
-				opt.getConBalcon().toString(), 
-				opt.getConVista().toString(), 
-				opt.getConCocina().toString(), 
-				opt.getPrecio().toString()
-			)
-		).toList();
+		FormRoomsData formRoomsData = new FormRoomsData(pms.getOpcionesHabitacion());
 		this.bookingManagement = new BookingManagement(
 				user,
-				headers,
-				data,
+				formRoomsData,
 				findAction, 
 				createAction,
 				deleteAction, 

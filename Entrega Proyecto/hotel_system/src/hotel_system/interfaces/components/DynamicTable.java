@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.util.List;
 
@@ -15,22 +17,27 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 
+import hotel_system.interfaces.UtilsGUI;
+
 public class DynamicTable extends JPanel {
 	
 	private List<String> headers;
 	private List<List<Object>> data;
+	private List<Double> weights;
 	private JScrollPane scrollPane;
 	
-	public DynamicTable(List<String> headers, List<List<Object>> data) {
-		this.headers = headers;
-		this.data = data;
+	public DynamicTable(FormDataTable formDataTable) {
+		this.headers = formDataTable.getHeaders();
+		this.data = formDataTable.getData();
+		this.weights = formDataTable.getWeights();
 		configPanel();
 		configTable();
 	}
 	
 	private void configPanel() {
 		this.setOpaque(false);
-		this.setLayout(new GridLayout(this.data.size() + 1, this.headers.size()));
+//		this.setLayout(new GridLayout(this.data.size() + 1, this.headers.size()));
+		this.setLayout(new GridBagLayout());
 	}
 	
 	private void configTable() {
@@ -44,7 +51,7 @@ public class DynamicTable extends JPanel {
 	        header.setFont(new Font("Arial", Font.BOLD, 13));
 	        header.setBorder(new CompoundBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, Color.WHITE), BorderFactory.createEmptyBorder(0,0,0,0)));
 	        header.setMaximumSize(new Dimension(1000, 50));
-			this.add(header);
+			this.add(header, UtilsGUI.getConstraints(i, 0, 1, 1, weights.get(i), 1, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
 		}
 		
 		// DATA
@@ -58,11 +65,11 @@ public class DynamicTable extends JPanel {
 			        cellString.setForeground(Color.BLACK);
 			        cellString.setBackground(Color.WHITE);
 			        cellString.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Color.BLACK), BorderFactory.createEmptyBorder(0,0,0,0)));
-					this.add(cellString);
+					this.add(cellString, UtilsGUI.getConstraints(i, r, 1, 1, weights.get(i), 1, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
 				}
 				if (obj instanceof Component) {
 					((JComponent) obj).setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 1, Color.BLACK), BorderFactory.createEmptyBorder(0,0,0,0)));
-					this.add((Component) obj);
+					this.add((Component) obj, UtilsGUI.getConstraints(i, r, 1, 1, weights.get(i), 1, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
 				}
 			}
 		}

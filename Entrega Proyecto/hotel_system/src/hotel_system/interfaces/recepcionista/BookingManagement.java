@@ -59,10 +59,7 @@ public class BookingManagement extends JPanel {
 	private Input phone;
 	private DynamicTable selectRoomsTable;
 	private Button booking;
-	private List<String> headersFormNewBooking;
-	private List<List<String>> dataFormNewBooking;
-	private List<String> headerFormRooms;
-	private List<List<Object>> dataFormRooms;
+	private FormRoomsData formRoomsData;
 	
 	// DATA BOOKING
 	private JPanel bookingDataPanel;
@@ -81,8 +78,7 @@ public class BookingManagement extends JPanel {
 	
 	public BookingManagement(
 		String user,
-		List<String> headersFormRooms,
-		List<List<String>> dataFormRooms,
+		FormRoomsData formRoomsData,
 		Function<Finder, ActionListener> findAction,
 		Function<BookingManagement, ActionListener> createAction,
 		Function<BookingManagement, ActionListener> deleteAction,
@@ -90,8 +86,7 @@ public class BookingManagement extends JPanel {
 		Function<BookingManagement, ActionListener> cancelAction
 	) {
 		this.title = "Detalles de la Reserva";
-		this.headersFormNewBooking = headersFormRooms;
-		this.dataFormNewBooking = dataFormRooms;
+		this.formRoomsData = formRoomsData;
 		this.createAction = createAction;
 		this.updateAction = updateAction;
 		this.deleteAction = deleteAction;
@@ -209,14 +204,7 @@ public class BookingManagement extends JPanel {
 	
 	private void configFormNewBookingSelectRooms() {		
 		// CELLS HEADERS
-		headerFormRooms = new ArrayList<>(this.headersFormNewBooking);
-		headerFormRooms.add("Opciones");
-		dataFormRooms = this.dataFormNewBooking.stream().map(row -> { 
-			List<Object> rn = new ArrayList<>(row);
-			rn.add(new AddItems());
-			return rn;
-		}).toList();
- 		this.selectRoomsTable = new DynamicTable(headerFormRooms, dataFormRooms);
+ 		this.selectRoomsTable = new DynamicTable(formRoomsData);
  		JScrollPane scrollPane = new JScrollPane(this.selectRoomsTable);
  		scrollPane.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
@@ -337,7 +325,7 @@ public class BookingManagement extends JPanel {
 	
 	public Map<String, Integer> getDataRoomsMap() {
 		Map<String, Integer> rooms = new HashMap();
-		this.dataFormRooms.stream().forEach(r -> {
+		this.formRoomsData.getData().stream().forEach(r -> {
 			AddItems addItems = (AddItems) r.get(r.size()-1);
 			if (addItems.getValue() > 0) 
 				rooms.put((String) r.get(0), addItems.getValue());
