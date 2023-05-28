@@ -10,6 +10,7 @@ import hotel_system.models.Consumible;
 import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
 import hotel_system.models.Habitacion;
+import hotel_system.models.Hotel;
 import hotel_system.models.Huesped;
 import hotel_system.models.Producto;
 import hotel_system.models.ProductoRestaurante;
@@ -34,6 +35,7 @@ public class HotelManagementSystem {
 	private List<Producto> inventarioProductos;
 	private Map<String,Usuario> usuarios;
 	private Map<String, Servicio> inventarioServicios;
+	private Hotel hotel;
 	
 	private HotelManagementLoaderData loaderData;
 	private HotelManagementUsuarios controladorUsuarios;
@@ -47,8 +49,9 @@ public class HotelManagementSystem {
 		try {
 			this.loaderData = new HotelManagementLoaderData();
 			this.loaderData.limpiarDisponibilidades();
+			this.hotel = this.loaderData.cargarHotel();
 			this.opcionesHabitacion = this.loaderData.cargarTipoHabitaciones();
-			this.inventarioHabitaciones = this.loaderData.cargarHabitaciones(opcionesHabitacion);
+			this.inventarioHabitaciones = this.loaderData.cargarHabitaciones(opcionesHabitacion, hotel);
 			this.reservas = this.loaderData.cargarReservas();
 			this.estadias = this.loaderData.cargarEstadias();
 			this.inventarioProductos = this.loaderData.cargarProductos();

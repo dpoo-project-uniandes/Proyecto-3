@@ -11,12 +11,14 @@ public class Habitacion {
 	private Integer numero;
 	private TipoHabitacion tipo;
 	private List<Disponibilidad> disponibilidad;
+	private Hotel hotel;
 
-	public Habitacion(Integer numero, TipoHabitacion tipo, List<Disponibilidad> disponibilidad) {
+	public Habitacion(Integer numero, TipoHabitacion tipo, List<Disponibilidad> disponibilidad, Hotel hotel) {
 		super();
 		this.numero = numero;
 		this.tipo = tipo;
 		this.disponibilidad = disponibilidad;
+		this.hotel = hotel;
 	}
 
 	private List<Integer> rangoDeFechasAIndices(Date desde, Date hasta) {
@@ -64,7 +66,8 @@ public class Habitacion {
 
 	@Override
 	public String toString() {
-		return "Habitacion [numero=" + numero + ", tipo=" + tipo + ", disponibilidad=" + disponibilidad.size() + "]";
+		return "Habitacion [numero=" + numero + ", tipo=" + tipo + ", hotel="
+				+ hotel + "]";
 	}
 
 	public void agregarDisponibilidad(Disponibilidad disponibilidad) {
@@ -95,5 +98,9 @@ public class Habitacion {
 				.get()
 				.getReserva();
 		}catch (Exception e) {return null;}
+	}
+	
+	public Hotel getHotel() {
+		return hotel;
 	}
 }

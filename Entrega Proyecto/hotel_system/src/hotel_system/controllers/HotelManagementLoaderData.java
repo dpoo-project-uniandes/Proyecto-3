@@ -10,6 +10,7 @@ import java.util.Map;
 import hotel_system.models.Disponibilidad;
 import hotel_system.models.Estadia;
 import hotel_system.models.Habitacion;
+import hotel_system.models.Hotel;
 import hotel_system.models.Producto;
 import hotel_system.models.ProductoRestaurante;
 import hotel_system.models.Reserva;
@@ -99,7 +100,7 @@ public class HotelManagementLoaderData {
 		return disponibilidad;
 	}
 	
-	public List<Habitacion>  cargarHabitaciones(List<TipoHabitacion> opcionesHabitacion) throws Exception{
+	public List<Habitacion>  cargarHabitaciones(List<TipoHabitacion> opcionesHabitacion, Hotel hotel) throws Exception{
 		List<Habitacion> habitaciones = new ArrayList<>();
 		List<Map<String, String>> datos = FileManager.cargarArchivoCSV("habitaciones.csv");
 		for(Map<String, String> dato : datos) {
@@ -109,7 +110,7 @@ public class HotelManagementLoaderData {
 					.findAny()
 					.get();
 			List<Disponibilidad> disponibilidad = cargarDisponibilidad(numeroHabitacion, tipo.getPrecio());
-			Habitacion habitacion = new Habitacion(numeroHabitacion, tipo, disponibilidad);
+			Habitacion habitacion = new Habitacion(numeroHabitacion, tipo, disponibilidad, hotel);
 			habitaciones.add(habitacion);
 		}
 		return habitaciones;
@@ -190,5 +191,18 @@ public class HotelManagementLoaderData {
             productosRestaurante.add(producto);
         }
         return new Restaurante(988374853L, productosRestaurante);
+	}
+	
+	public Hotel cargarHotel() throws Exception {
+		List<Map<String, String>> datosHotel = FileManager.cargarArchivoCSV("caracteristicas_hotel.csv");
+		Map<String, String> datos = datosHotel.get(0);
+		Boolean conParqueaderoIncluido = Boolean.parseBoolean(datos.get("parqueadero"));
+		Boolean conPiscina = Boolean.parseBoolean(datos.get("piscina"));
+		Boolean conZonasHumedas = Boolean.parseBoolean(datos.get("zonas_humedas"));
+		Boolean conBBQ = Boolean.parseBoolean(datos.get("bbq"));
+		Boolean conWifi = Boolean.parseBoolean(datos.get("wifi"));
+		Boolean conRecepcion24Horas = Boolean.parseBoolean(datos.get("recepcion_24hrs"));
+		Boolean admiteMascotas = Boolean.parseBoolean(datos.get("mascotas"));
+		return new Hotel(conParqueaderoIncluido, conPiscina, conZonasHumedas, conBBQ, conWifi, conRecepcion24Horas, admiteMascotas);
 	}
 }
