@@ -1,7 +1,5 @@
 package hotel_system.controllers;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,7 +7,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import hotel_system.models.Consumible;
-import hotel_system.models.Disponibilidad;
 import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
 import hotel_system.models.Habitacion;
@@ -39,9 +36,11 @@ public class HotelManagementSystem {
 	private Map<String, Servicio> inventarioServicios;
 	
 	private HotelManagementLoaderData loaderData;
+	private HotelManagementUsuarios controladorUsuarios;
 
 	public HotelManagementSystem()  {
 		cargarDatos();
+		cargarControladores();
 	}
 	
 	private void cargarDatos() {
@@ -59,6 +58,10 @@ public class HotelManagementSystem {
 			System.out.println("La carga de datos no ha sido posible debido a: " + e.getMessage());
 			e.printStackTrace();
 		}
+	}
+	
+	private void cargarControladores() {
+		this.controladorUsuarios = new HotelManagementUsuarios(usuarios);
 	}
 
 	private Titular setTitular(String string) {
@@ -333,25 +336,21 @@ public class HotelManagementSystem {
 		return getReservaByDNI(dni).getCantidadPersonas();
 	}
 	
-	// LOGIIN ====================================================================================================================
+	// LOGIN ====================================================================================================================
 	
 	public boolean userExists(String user) {
-		return usuarios.containsKey(user);
+		return controladorUsuarios.userExists(user);
 	}
 
 	public Usuario userLogin(String user, String password) {
-		Usuario usuario = usuarios.get(user);
-		if (usuario != null && usuario.getPassword().equals(password)) {
-			return usuario;
-		}
-		return null;
-	}
-	public void registrarUsuario(String user, String password, Rol rol) throws Exception {
-		usuarios.put(user, new Usuario(user, password, rol));
-		List<List<String>> rowUser = List.of(List.of(user, password, rol.toString()));
-		FileManager.agregarLineasCSV("usuarios.csv", rowUser);
+		return controladorUsuarios.userLogin(user, password);
 	}
 	
+	public void registrarUsuario(String user, String password, Rol rol) throws Exception {
+		controladorUsuarios.userSignUp(user, password, rol);
+	}
+	
+	//  ====================================================================================================================
 	
 	public void eliminarProducto(Producto producto, String tipo) {
 		if (tipo.equals("hotel")) {
