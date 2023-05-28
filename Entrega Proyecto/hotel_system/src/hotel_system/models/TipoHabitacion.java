@@ -11,9 +11,44 @@ public class TipoHabitacion {
 	private Integer camasDobles;
 	private Integer camasQueen;
 	private Double precio;
+	private Double area;
+	private Boolean conAireAcondicionado;
+	private Boolean conCalefaccion;
+	private Boolean conTelevision;
+	private Boolean conCafetera;
+	private Boolean conCubrelecho;
+	private Boolean conTapetesHipoalergenicos;
+	private Boolean conPlancha;
+	private Boolean coSecadorCabello;
+	private String voltaje;
+	private Boolean conUSBA;
+	private Boolean conUSBC;
+	private Boolean conDesayuno;
 
-	public TipoHabitacion(String alias, Integer capacidad, Boolean conBalcon, Boolean conVista, Boolean conCocina,
-			Integer camasSencillas, Integer camasDobles, Integer camasQueen, Double precio) {
+	public TipoHabitacion(
+			String alias, 
+			Integer capacidad, 
+			Boolean conBalcon, 
+			Boolean conVista, 
+			Boolean conCocina,
+			Integer camasSencillas, 
+			Integer camasDobles, 
+			Integer camasQueen, 
+			Double precio,
+			Double area,
+			Boolean conAireAcondicionado,
+			Boolean conCalefaccion,
+			Boolean conTelevision,
+			Boolean conCafetera,
+			Boolean conCubrelecho,
+			Boolean conTapetesHipoalergenicos,
+			Boolean conPlancha,
+			Boolean coSecadorCabello,
+			String voltaje,
+			Boolean conUSBA,
+			Boolean conUSBC,
+			Boolean conDesayuno
+	) {
 		this.alias = alias;
 		this.capacidad = capacidad;
 		this.conBalcon = conBalcon;
@@ -23,84 +58,118 @@ public class TipoHabitacion {
 		this.camasDobles = camasDobles;
 		this.camasQueen = camasQueen;
 		this.precio = precio;
+		this.area = area;
+		this.conAireAcondicionado = conAireAcondicionado;
+		this.conCalefaccion = conCalefaccion;
+		this.conTelevision = conTelevision;
+		this.conCafetera = conCafetera;
+		this.conCubrelecho = conCubrelecho;
+		this.conTapetesHipoalergenicos = conTapetesHipoalergenicos;
+		this.conPlancha = conPlancha;
+		this.coSecadorCabello = coSecadorCabello;
+		this.voltaje = voltaje;
+		this.conUSBA = conUSBA;
+		this.conUSBC = conUSBC;
+		this.conDesayuno = conDesayuno;
 	}
 
 	@Override
 	public String toString() {
 		return "TipoHabitacion [alias=" + alias + ", capacidad=" + capacidad + ", conBalcon=" + conBalcon
 				+ ", conVista=" + conVista + ", conCocina=" + conCocina + ", camasSencillas=" + camasSencillas
-				+ ", camasDobles=" + camasDobles + ", camasQueen=" + camasQueen + ", precio=" + precio + "]";
+				+ ", camasDobles=" + camasDobles + ", camasQueen=" + camasQueen + ", precio=" + precio + ", area="
+				+ area + ", conAireAcondicionado=" + conAireAcondicionado + ", conCalefaccion=" + conCalefaccion
+				+ ", conTelevision=" + conTelevision + ", conCafetera=" + conCafetera + ", conCubrelecho="
+				+ conCubrelecho + ", conTapetesHipoalergenicos=" + conTapetesHipoalergenicos + ", conPlancha="
+				+ conPlancha + ", coSecadorCabello=" + coSecadorCabello + ", voltaje=" + voltaje + ", conUSBA="
+				+ conUSBA + ", conUSBC=" + conUSBC + ", conDesayuno=" + conDesayuno + "]";
 	}
 
 	public String getAlias() {
 		return alias;
 	}
 
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
-
 	public Integer getCapacidad() {
 		return capacidad;
-	}
-
-	public void setCapacidad(Integer capacidad) {
-		this.capacidad = capacidad;
 	}
 
 	public Boolean getConBalcon() {
 		return conBalcon;
 	}
 
-	public void setConBalcon(Boolean conBalcon) {
-		this.conBalcon = conBalcon;
-	}
-
 	public Boolean getConVista() {
 		return conVista;
-	}
-
-	public void setConVista(Boolean conVista) {
-		this.conVista = conVista;
 	}
 
 	public Boolean getConCocina() {
 		return conCocina;
 	}
 
-	public void setConCocina(Boolean conCocina) {
-		this.conCocina = conCocina;
-	}
-
 	public Integer getCamasSencillas() {
 		return camasSencillas;
-	}
-
-	public void setCamasSencillas(Integer camasSencillas) {
-		this.camasSencillas = camasSencillas;
 	}
 
 	public Integer getCamasDobles() {
 		return camasDobles;
 	}
 
-	public void setCamasDobles(Integer camasDobles) {
-		this.camasDobles = camasDobles;
-	}
-
 	public Integer getCamasQueen() {
 		return camasQueen;
-	}
-
-	public void setCamasQueen(Integer camasQueen) {
-		this.camasQueen = camasQueen;
 	}
 
 	public Double getPrecio() {
 		return precio;
 	}
 
-	public void setPrecio(Double precio) {
-		this.precio = precio;
+	public Double getArea() {
+		return area;
+	}
+
+	public Boolean getConAireAcondicionado() {
+		return conAireAcondicionado;
+	}
+
+	public Boolean getConCalefaccion() {
+		return conCalefaccion;
+	}
+
+	public Boolean getConTelevision() {
+		return conTelevision;
+	}
+
+	public Boolean getConCafetera() {
+		return conCafetera;
+	}
+
+	public Boolean getConCubrelecho() {
+		return conCubrelecho;
+	}
+
+	public Boolean getConTapetesHipoalergenicos() {
+		return conTapetesHipoalergenicos;
+	}
+
+	public Boolean getConPlancha() {
+		return conPlancha;
+	}
+
+	public Boolean getCoSecadorCabello() {
+		return coSecadorCabello;
+	}
+
+	public String getVoltaje() {
+		return voltaje;
+	}
+
+	public Boolean getConUSBA() {
+		return conUSBA;
+	}
+
+	public Boolean getConUSBC() {
+		return conUSBC;
+	}
+
+	public Boolean getConDesayuno() {
+		return conDesayuno;
 	}
 }
