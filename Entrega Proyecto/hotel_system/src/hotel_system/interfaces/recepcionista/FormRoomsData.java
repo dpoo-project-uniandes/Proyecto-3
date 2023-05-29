@@ -3,6 +3,9 @@ package hotel_system.interfaces.recepcionista;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -65,6 +68,23 @@ public class FormRoomsData implements FormDataTable {
 		JLabel label = new JLabel();
 		label.setIcon(icon);
 		return label;
+	}
+	
+	public void selectRooms(List<TipoHabitacion> habitaciones) {
+		habitaciones.stream()
+				.collect(Collectors.groupingBy(TipoHabitacion::getAlias))
+				.forEach((key, val) -> {
+					data.stream().forEach(row -> {
+						if (row.get(0).equals(key))
+							((AddItems) row.get(4)).setValue(val.size());
+					});
+				});
+	}
+	
+	public void clean() {
+		for (List<Object> list : data) {
+			((AddItems) list.get(4)).setValue(0);
+		}
 	}
 
 	public List<String> getHeaders() {

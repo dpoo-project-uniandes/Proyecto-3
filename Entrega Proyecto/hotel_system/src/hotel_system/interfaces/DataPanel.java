@@ -24,8 +24,8 @@ public class DataPanel extends JPanel {
 		configPanel();
 		configTitlePanel(title);
 		configDataPanel();
-		configEmptyResults();
 		configComponents();
+		emptyResults();
 	}
 	
 	private void configComponents() {
@@ -64,12 +64,15 @@ public class DataPanel extends JPanel {
 		this.dataPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
 	}
 	
-	private void configEmptyResults() {
+	public void emptyResults() {
 		// WITHOUT RESULTS LABEL
 		this.emptyResultsLabel = new JLabel("Sin Resultados");
 		this.emptyResultsLabel.setFont(new Font(getName(), Font.PLAIN, 20));
 		this.emptyResultsLabel.setForeground(Color.GRAY);
+		
+		this.dataPanel.removeAll();
 		this.dataPanel.add(this.emptyResultsLabel, UtilsGUI.getConstraints(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
+		this.revalidate();
 	}
 	
 	public void injectDataPanel(JPanel panel) {

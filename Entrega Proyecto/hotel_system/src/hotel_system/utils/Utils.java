@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 public class Utils {
 
 	public static final Date nowDate() {
-		return Date.valueOf(LocalDateTime.now().toLocalDate());
+		return new Date(System.currentTimeMillis());
 	}
 
 	public static final String stringDate(Date date) {
@@ -33,6 +33,6 @@ public class Utils {
 	}
 
 	public static final Long generateId() {
-		return nowDate().getTime();
+		return System.currentTimeMillis();
 	}
 }

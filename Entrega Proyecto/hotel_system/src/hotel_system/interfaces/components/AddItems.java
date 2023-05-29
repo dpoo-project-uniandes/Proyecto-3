@@ -80,4 +80,9 @@ public class AddItems extends JPanel {
 	public Integer getValue() {
 		return value;
 	}
+	
+	public void setValue(Integer value) {
+		this.value = value;
+		this.updateInput();
+	}
 }

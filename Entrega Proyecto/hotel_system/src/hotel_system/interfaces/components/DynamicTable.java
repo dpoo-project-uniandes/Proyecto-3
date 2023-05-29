@@ -36,7 +36,6 @@ public class DynamicTable extends JPanel {
 	
 	private void configPanel() {
 		this.setOpaque(false);
-//		this.setLayout(new GridLayout(this.data.size() + 1, this.headers.size()));
 		this.setLayout(new GridBagLayout());
 	}
 	

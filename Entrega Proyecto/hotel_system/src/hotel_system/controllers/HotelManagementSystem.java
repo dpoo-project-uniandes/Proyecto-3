@@ -1,5 +1,6 @@
 package hotel_system.controllers;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,16 +23,14 @@ import hotel_system.models.Spa;
 import hotel_system.models.TipoHabitacion;
 import hotel_system.models.Titular;
 import hotel_system.models.Usuario;
-import hotel_system.utils.Utils;
 import services.Dupla;
-import services.FileManager;
 
 public class HotelManagementSystem {
 
-	private List<Habitacion> inventarioHabitaciones;
-	private List<TipoHabitacion> opcionesHabitacion;
-	private List<Reserva> reservas;
-	private List<Estadia> estadias;
+	private Map<Integer, Habitacion> inventarioHabitaciones;
+	private Map<String, TipoHabitacion> opcionesHabitacion;
+	private Map<Long, Reserva> reservas;
+	private Map<Long, Estadia> estadias;
 	private List<Producto> inventarioProductos;
 	private Map<String,Usuario> usuarios;
 	private Map<String, Servicio> inventarioServicios;
@@ -39,6 +38,7 @@ public class HotelManagementSystem {
 	
 	private HotelManagementLoaderData loaderData;
 	private HotelManagementUsuarios controladorUsuarios;
+	private HotelManagementReservas controladorResevas;
 
 	public HotelManagementSystem()  {
 		cargarDatos();
@@ -52,8 +52,8 @@ public class HotelManagementSystem {
 			this.hotel = this.loaderData.cargarHotel();
 			this.opcionesHabitacion = this.loaderData.cargarTipoHabitaciones();
 			this.inventarioHabitaciones = this.loaderData.cargarHabitaciones(opcionesHabitacion, hotel);
-			this.reservas = this.loaderData.cargarReservas();
 			this.estadias = this.loaderData.cargarEstadias();
+			this.reservas = this.loaderData.cargarReservas(inventarioHabitaciones, estadias);
 			this.inventarioProductos = this.loaderData.cargarProductos();
 			this.inventarioServicios = this.loaderData.cargarServicios();
 			this.usuarios = this.loaderData.cargarUsuarios();
@@ -65,6 +65,7 @@ public class HotelManagementSystem {
 	
 	private void cargarControladores() {
 		this.controladorUsuarios = new HotelManagementUsuarios(usuarios);
+		this.controladorResevas = new HotelManagementReservas(inventarioHabitaciones, reservas);
 	}
 
 	private Titular setTitular(String string) {
@@ -75,95 +76,60 @@ public class HotelManagementSystem {
 				datos[3],
 				datos[4]);
 	}
-
-	public Integer calcularCapacidadTotal(List<Integer> ids) {
-		int count = 0;
-		for (Integer id:ids) {
-			count+=inventarioHabitaciones.stream().filter(hab -> hab.getNumero() == id)
-			.findAny().get().getTipo().getCapacidad();
-		}
-		return count;
-	}
-
-	public void reservar(String nombre, String email, String dni, String telefono
-			,Integer edad, Integer cantidad, List<Integer> opcionHab, String llegada, String salida) throws Exception {
-
-		Titular titular = new Titular(nombre, dni, edad, email, telefono);
-
-		List<Habitacion> habitaciones = new ArrayList<>();
-
-		for (Integer num: opcionHab) {
-			habitaciones.add(inventarioHabitaciones.stream()
-					.filter(hab -> hab.getNumero() == num)
-					.findAny()
-					.get()
-			);
-		}
-
-		Reserva reserva = new Reserva(Utils.stringToDate(llegada), Utils.stringToDate(salida), titular, cantidad, habitaciones);
-		reservas.add(reserva);
-
-		List<List<String>> rowReserva = List.of(List.of(
-				reserva.getNumero().toString(),
-				reserva.getTarifaTotal().toString(),
-				reserva.getEstado().toString(),
-				reserva.getCantidadPersonas().toString(),
-				Utils.stringLocalDate(reserva.getFechaDeCreacion()),
-				Utils.stringLocalDate(reserva.getFechaDeLlegada()),
-				Utils.stringLocalDate(reserva.getFechaDeSalida()),
-				reserva.getTitular().getDni().toString(),
-				"0"
-				));
-
-		FileManager.agregarLineasCSV("reservas.csv", rowReserva);
-	}
-	//Funciones de reservas
-	public void cancelarReserva(String dni) {
-		getReservaByDNI(dni).cancelarReserva();
-	}
-	public void eliminarReserva(Reserva reserva) {
-		//TODO eliminarReservaEnCsv
-		this.reservas.remove(reserva);
-	}
-	public void modificarReserva(Reserva reservaNueva) {
-		Reserva reservaVieja = getReservaById(""+reservaNueva.getNumero());
-		this.reservas.remove(reservaVieja);
-		this.reservas.add(reservaNueva);
+	
+	// =====================================================================================================================================================
+	// RESERVAS 
+	// =====================================================================================================================================================
+	
+	public void reservar(
+			String nombre,
+			String email,
+			String dni,
+			String telefono,
+			Integer edad,
+			Integer cantidad,
+			Date llegada,
+			Date salida,
+			Map<String, Integer> habitacionesElegidas
+	) throws Exception {
+		controladorResevas.reservar(nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
 	}
 	
-		//getters
-	public Reserva getReservaById(String id) {
-		Optional<Reserva> reservacion = reservas.stream()
-				.filter(res -> (""+res.getNumero()).equals(id))
-				.findAny();
-		if (reservacion.isPresent()) {return reservacion.get();}
-		else {return null;}
+	public void cancelarReserva(Long id) throws Exception {
+		controladorResevas.cancelarReserva(id);
 	}
+	
+	public void eliminarReserva(Long id) throws Exception {
+		controladorResevas.eliminarReserva(id);
+	}
+	
+	public Reserva getReservaById(Long id) {
+		return controladorResevas.getReservaById(id);
+	}
+	
+	public Reserva getReservaByDNI(String dni) {
+		return controladorResevas.getReservaByDNI(dni);
+	}
+	
 	public Reserva getReservaByHabitacion(String id) {
-		Optional<Habitacion> reservacion = inventarioHabitaciones
-				.stream().filter(hab -> (hab.getReservaActual().getNumero()+"").equals(id))
-				.findAny();
-		if (reservacion.isPresent()) {return reservacion.get().getReservaActual();}
-		else {return null;}
-	}
-
-	
-	public Integer seleccionarHab(Integer select, String desde, String hasta) {
-		String alias = opcionesHabitacion.get(select).getAlias();
-		return inventarioHabitaciones.stream()
-				.filter(hab -> hab.getTipo().getAlias().equals(alias) && hab.consultarDisponibilidad(Utils.stringToDate(desde), Utils.stringToDate(hasta)))
-				.findAny()
-				.get()
-				.getNumero();
+		return controladorResevas.getReservaByHabitacion(id);
 	}
 	
-	public Integer seleccionarHab(String alias, String desde, String hasta) {
-		return inventarioHabitaciones.stream()
-				.filter(hab -> hab.getTipo().getAlias().equals(alias) && hab.consultarDisponibilidad(Utils.stringToDate(desde), Utils.stringToDate(hasta)))
-				.findAny()
-				.get()
-				.getNumero();
+	public void actualizarReserva(
+			String nombre,
+			String email,
+			String dni,
+			String telefono,
+			Integer edad,
+			Integer cantidad,
+			Date llegada,
+			Date salida,
+			Map<String, Integer> habitacionesElegidas
+	) throws Exception {
+		controladorResevas.actualizarReserva(nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
 	}
+	
+	// =====================================================================================================================================================
 
 	public Spa getServicioSpa(){
 		Spa spa = (Spa)inventarioServicios.get("spa");
@@ -177,23 +143,15 @@ public class HotelManagementSystem {
 
 
 	public Estadia getEstadiaById(String id) {
-		Optional<Estadia> estadia = estadias.stream()
+		Optional<Estadia> estadia = estadias.values().stream()
 				.filter(reg -> (""+reg.getId()).equals(id))
 				.findAny();
 		if (estadia.isPresent()) {return estadia.get();}
 		else {return null;}
 	}
 
-	public Reserva getReservaByDNI(String dni) {
-		Optional<Reserva> reservacion = reservas.stream()
-				.filter(res -> res.getTitular().getDni().equals(dni))
-				.findAny();
-		if (reservacion.isPresent()) {return reservacion.get();}
-		else {return null;}
-	}
-
 	public Estadia getEstadiaByTitular(String nom) {
-		Optional<Estadia> estadia = estadias.stream()
+		Optional<Estadia> estadia = estadias.values().stream()
 				.filter(reg -> (reg.getReserva().getTitular()
 				.getNombre().equals(nom))).findAny();
 		if (estadia.isPresent()) {return estadia.get();}
@@ -201,7 +159,7 @@ public class HotelManagementSystem {
 	}
 
 	public Estadia getEstadiaByDNI(String dni) {
-		Optional<Estadia> reservacion = estadias.stream()
+		Optional<Estadia> reservacion = estadias.values().stream()
 				.filter(estadia -> estadia.getReserva().getTitular().getDni().equals(dni))
 				.findAny();
 		if (reservacion.isPresent()) {return reservacion.get();}
@@ -210,22 +168,11 @@ public class HotelManagementSystem {
 
 	
 	public Estadia getEstadiaByHabitacion(String id) {
-		Optional<Habitacion> habitacion = inventarioHabitaciones.stream()
+		Optional<Habitacion> habitacion = inventarioHabitaciones.values().stream()
 				.filter(hab -> (hab.getNumero().toString()).equals(id))
 				.findAny();
 		if (habitacion.isPresent()) {return habitacion.get().getReservaActual().getEstadia();}
 		else {return null;}
-	}
-
-
-	
-
-	public List<Habitacion> getInventarioHabitaciones() {
-		return inventarioHabitaciones;
-	}
-
-	public void setInventarioHabitaciones(List<Habitacion> inventarioHabitaciones) {
-		this.inventarioHabitaciones = inventarioHabitaciones;
 	}
 
 	public List<Producto> getInventarioProductos() {
@@ -245,12 +192,8 @@ public class HotelManagementSystem {
 		this.inventarioServicios = inventarioServicios;
 	}
 
-	public List<TipoHabitacion> getOpcionesHabitacion() {
+	public Map<String, TipoHabitacion> getOpcionesHabitacion() {
 		return opcionesHabitacion;
-	}
-
-	public void setOpcionesHabitacion(List<TipoHabitacion> opcionesHabitacion) {
-		this.opcionesHabitacion = opcionesHabitacion;
 	}
 
 	public void seleccionarProductoSpa(List<Producto> consumos, String hab, Boolean pagar) {
@@ -306,7 +249,7 @@ public class HotelManagementSystem {
 		}
 		Estadia estadia = new Estadia(reserva, reserva.getFechaDeLlegada(), reserva.getFechaDeSalida(), huespedes);
 		reserva.setEstadia(estadia);
-		estadias.add(estadia);
+		estadias.put(estadia.getId(), estadia);
 
 		return reserva.getHabitaciones().stream().map(h -> h.getNumero()).toList();
 	}
@@ -339,7 +282,9 @@ public class HotelManagementSystem {
 		return getReservaByDNI(dni).getCantidadPersonas();
 	}
 	
-	// LOGIN ====================================================================================================================
+	// =====================================================================================================================================================
+	// LOGIN 
+	// =====================================================================================================================================================
 	
 	public boolean userExists(String user) {
 		return controladorUsuarios.userExists(user);
@@ -353,7 +298,7 @@ public class HotelManagementSystem {
 		controladorUsuarios.userSignUp(user, password, rol);
 	}
 	
-	//  ====================================================================================================================
+	// =====================================================================================================================================================
 	
 	public void eliminarProducto(Producto producto, String tipo) {
 		if (tipo.equals("hotel")) {

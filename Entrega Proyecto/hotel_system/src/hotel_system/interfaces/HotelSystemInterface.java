@@ -28,6 +28,7 @@ import hotel_system.interfaces.recepcionista.MenuServicios;
 import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
+import hotel_system.models.TipoHabitacion;
 import hotel_system.models.Usuario;
 import hotel_system.utils.Utils;
 import services.Dupla;
@@ -249,7 +250,7 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					String id = finder.getInput();
+					String id = finder.getValue();
 					Dupla<Producto, String> dupla = pms.getProductoByID(id);
 					Producto producto = dupla.getPrimero();
 					String tipo = dupla.getSegundo();
@@ -339,17 +340,23 @@ public class HotelSystemInterface extends JFrame {
 		configMainFrame(this.menuRecepcionista);
 	}
 	
+	// ================================================================================================================================================================================
+	// VENTANA DE RESERVAS
+	// ================================================================================================================================================================================
+	
 	private void configBookingManagement(String user) {
-		// ACTIONS LISTENERS
+		// ============================================================================================================================================================================
+		// ACTION LISTENERS DE RESERVAS
+		// ============================================================================================================================================================================
 		Function<Finder, ActionListener> findAction = (finder) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					Reserva booking;
-					String text = finder.getInput();
+					String text = finder.getValue();
 					booking = pms.getReservaByDNI(text);
 					if (booking == null) 
-						booking = pms.getReservaById(text);
+						booking = pms.getReservaById(Long.parseLong(text));
 					if (booking == null)
 						bookingManagement.withoutResults();
 					else
@@ -361,8 +368,11 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					pms.eliminarReserva(panel.getBookingInjected());
-					
+					try {
+						pms.eliminarReserva(panel.getBookingInjected().getNumero());
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
 				}
 			};
 		};
@@ -370,8 +380,11 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					pms.cancelarReserva(panel.getBookingInjected().getTitular().getDni());
-					
+					try {
+						pms.cancelarReserva(panel.getBookingInjected().getNumero());
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}	
 				}
 			};
 		};
@@ -380,15 +393,7 @@ public class HotelSystemInterface extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					Reserva reserva = panel.getBookingInjected();
-					Map<String, String> data = panel.getDataMap();
-					reserva.getTitular().setNombre(data.get("titular"));
-					reserva.getTitular().setDni(data.get("dni"));
-					reserva.getTitular().setEmail(data.get("email"));
-					reserva.getTitular().setTelefono(data.get("telefono"));
-					reserva.getTitular().setEdad(Integer.parseInt(data.get("edad")));
-					reserva.setFechaDeLlegada(Utils.stringToDate(data.get("llegada")));
-					reserva.setFechaDeSalida(Utils.stringToDate(data.get("Salida")));
-					pms.modificarReserva(reserva);
+					panel.formNewBookingInjectData(reserva);
 				}
 			};
 		
@@ -400,13 +405,6 @@ public class HotelSystemInterface extends JFrame {
 					try {
 						Map<String, String> data = panel.getDataMap();
 						Map<String, Integer> rooms = panel.getDataRoomsMap();
-						List<Integer> roomsSelected = new ArrayList<>();
-						rooms.keySet().stream().forEach(r -> {
-							roomsSelected.add(pms.seleccionarHab(r, data.get("llegada"), data.get("salida")));
-						});
-						if (pms.calcularCapacidadTotal(roomsSelected) < Integer.parseInt(data.get("huespedes"))) {
-							throw new IOException("La cantidad de huespedes es mayor a la capacidad de las habitaciones"); 
-						}
 						pms.reservar(
 								data.get("titular"),
 								data.get("email"),
@@ -414,9 +412,9 @@ public class HotelSystemInterface extends JFrame {
 								data.get("telefono"), 
 								Integer.parseInt(data.get("edad")),
 								Integer.parseInt(data.get("huespedes")),
-								roomsSelected,
-								data.get("llegada"),
-								data.get("salida")
+								Utils.stringToDate(data.get("llegada")),
+								Utils.stringToDate(data.get("salida")),
+								rooms
 						);
 						panel.injectData(pms.getReservaByDNI(data.get("dni")));
 					} catch (IOException e1) {
@@ -430,8 +428,11 @@ public class HotelSystemInterface extends JFrame {
 		
 		};
 		
-		// INITIALIZE
-		FormRoomsData formRoomsData = new FormRoomsData(pms.getOpcionesHabitacion());
+		// ============================================================================================================================================================================
+		// INICIALIZACION DEL PANEL DE RESERVAS
+		// ============================================================================================================================================================================
+		List<TipoHabitacion> tiposHabitacion = pms.getOpcionesHabitacion().values().stream().toList();
+		FormRoomsData formRoomsData = new FormRoomsData(tiposHabitacion);
 		this.bookingManagement = new BookingManagement(
 				user,
 				formRoomsData,
@@ -441,8 +442,13 @@ public class HotelSystemInterface extends JFrame {
 				updateAction,
 				cancelAction
 		);
+		
 		configMainFrame(bookingManagement);
 	}
+	
+	// ================================================================================================================================================================================
+	// VENTANA DE ...
+	// ================================================================================================================================================================================
 	
 	private void configStayingManagement(String user) {
 		// TODO Auto-generated method stub	

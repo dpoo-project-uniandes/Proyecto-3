@@ -48,9 +48,14 @@ public class Finder extends JPanel {
 		this.button.setAlignmentY(TOP_ALIGNMENT);
 	}
 	
-	public String getInput() {
+	public void setValue(String value) {
+		this.input.getInput().setText(value);
+	}
+	
+	public String getValue() {
 		return input.getValue();
 	}
+	
 	public void setButtonText(String text) {
 		this.button.setText(text);
 	}

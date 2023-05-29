@@ -9,7 +9,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +32,7 @@ import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.DynamicTable;
 import hotel_system.interfaces.components.Input;
 import hotel_system.models.Reserva;
+import hotel_system.models.TipoHabitacion;
 import hotel_system.utils.Utils;
 
 public class BookingManagement extends JPanel {
@@ -155,6 +155,9 @@ public class BookingManagement extends JPanel {
 	}
 	
 	private void configFormNewBooking() {
+		// CLEAN
+		cleanUserInputs();
+		
 		// INITIALIZE
 		this.formNewBooking = new JPanel();
 		this.formNewBooking.setLayout(new BoxLayout(this.formNewBooking, BoxLayout.Y_AXIS));
@@ -249,7 +252,7 @@ public class BookingManagement extends JPanel {
 	}
 	
 	public void withoutResults() {
-		configDataPanel(title);
+		this.dataPanel.emptyResults();
 	}
 	
 	public void injectData(Reserva booking) {
@@ -308,6 +311,30 @@ public class BookingManagement extends JPanel {
 		// REFRESH
 		this.dataPanel.injectDataPanel(this.bookingDataPanel);
 		this.revalidate();
+	}
+	
+	public void formNewBookingInjectData(Reserva booking) {
+		// Restart form panel
+		configFormNewBooking();
+		
+		// Set rooms selected
+		List<TipoHabitacion> habitaciones = booking.getHabitaciones().stream().map(h -> h.getTipo()).toList();
+		this.formRoomsData.selectRooms(habitaciones);
+		
+		// Set information from booking data
+		this.guest.getInput().setText(booking.getTitular().getNombre());
+		this.checkout.getInput().setText(Utils.stringLocalDate(booking.getFechaDeSalida()));
+		this.email.getInput().setText(booking.getTitular().getEmail());
+		this.arrival.getInput().setText(Utils.stringLocalDate(booking.getFechaDeLlegada()));
+		this.nroGuests.getInput().setText(booking.getCantidadPersonas().toString());
+		this.dni.getInput().setText(booking.getTitular().getDni().toString());
+		this.age.getInput().setText(booking.getTitular().getEdad().toString());
+		this.phone.getInput().setText(booking.getTitular().getTelefono().toString());
+	}
+	
+	public void cleanUserInputs() {
+		this.formRoomsData.clean();
+		this.finder.setValue("");;
 	}
 	
 	public Map<String, String> getDataMap() {

@@ -3,8 +3,12 @@ package services;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,6 +80,45 @@ public class FileManager {
 		}
 	}
 	
+	public static void removerLineaCSV(String name, List<String> fila) throws Exception {
+		try {
+			String filaString = fila.stream().reduce("", (val, accumulator) -> accumulator + "," + val);
+			List<List<String>> data = cargarArchivoListCSV(name);
+			for (int i = 1; i < data.size(); i++) {
+				List<String> row = data.get(i);
+				String rowString = row.stream().reduce("", (val, accumulator) -> accumulator + "," + val);
+				if (filaString.equals(rowString)) {
+					data.remove(i);
+					guardarArchivoCSV(name, data);
+					return;
+				}
+			}
+		} catch(Exception e) {
+			System.out.println("Fallo remocion de linea al archivo csv " + name);
+			throw e;
+		}
+	}
+	
+	public static void modificarLineaCSV(String name, List<String> fila) throws Exception {
+		try {
+			String filaString = fila.stream().reduce(",", (val, accumulator) -> accumulator + val);
+			List<List<String>> data = cargarArchivoListCSV(name);
+			for (int i = 1; i < data.size(); i++) {
+				List<String> row = data.get(i);
+				String rowString = row.stream().reduce("", (val, accumulator) -> accumulator + "," + val);
+				if (filaString.equals(rowString)) {
+					data.remove(i);
+					data.add(fila);
+					guardarArchivoCSV(name, data);
+					return;
+				}
+			}
+		} catch(Exception e) {
+			System.out.println("Fallo remocion de linea al archivo csv " + name);
+			throw e;
+		}
+	}
+	
 	public static List<List<String>> cargarArchivoListCSV(String name) throws Exception {
 		try {
 			List<List<String>> data = new ArrayList<>();
@@ -95,5 +138,14 @@ public class FileManager {
 			System.out.println("Fallo el cargado del archivo csv " + name);
 			throw e;
 		}
+	}
+	
+	public static void guardarArchivoCSV(String name, List<List<String>> datos) throws Exception {
+		FileWriter fileWriter = new FileWriter(cargarArchivo(name), false);
+		for (List<String> row : datos) {
+			String rowString = row.stream().reduce("\n", (val, accumulator) -> accumulator + "," + val);
+			fileWriter.append(rowString);
+		}
+		fileWriter.close();
 	}
 }

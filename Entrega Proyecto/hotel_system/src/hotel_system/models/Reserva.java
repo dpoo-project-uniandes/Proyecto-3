@@ -30,6 +30,23 @@ public class Reserva {
 		confirmarReserva();
 	}
 
+	public Reserva(Long numero, Double tarifaTotal, EstadoReserva estado, Integer cantidadPersonas, Date fechaDeLlegada,
+			Date fechaDeSalida, Date fechaDeCreacion, Titular titular, Estadia estadia, List<Habitacion> habitaciones) {
+		super();
+		this.numero = numero;
+		this.tarifaTotal = tarifaTotal;
+		this.estado = estado;
+		this.cantidadPersonas = cantidadPersonas;
+		this.fechaDeLlegada = fechaDeLlegada;
+		this.fechaDeSalida = fechaDeSalida;
+		this.fechaDeCreacion = fechaDeCreacion;
+		this.titular = titular;
+		this.estadia = estadia;
+		this.habitaciones = habitaciones;
+	}
+
+
+
 	public Double calcularTarifaTotal() {
 		double valorTotal = 0.0;
 		for (Habitacion hab: habitaciones) {
