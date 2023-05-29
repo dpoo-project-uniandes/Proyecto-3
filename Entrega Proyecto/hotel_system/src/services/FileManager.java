@@ -80,14 +80,15 @@ public class FileManager {
 		}
 	}
 	
-	public static void removerLineaCSV(String name, List<String> fila) throws Exception {
+	public static void removerLineaCSV(String name, String identifier, String value) throws Exception {
 		try {
-			String filaString = fila.stream().reduce("", (val, accumulator) -> accumulator + "," + val);
 			List<List<String>> data = cargarArchivoListCSV(name);
+			Integer posIdentifier = data.get(0).indexOf(identifier);
+			if (posIdentifier < 0)
+				throw new Exception("el identifier-key no ha sido encontrado en los headers");
 			for (int i = 1; i < data.size(); i++) {
 				List<String> row = data.get(i);
-				String rowString = row.stream().reduce("", (val, accumulator) -> accumulator + "," + val);
-				if (filaString.equals(rowString)) {
+				if (row.get(posIdentifier).equals(value)) {
 					data.remove(i);
 					guardarArchivoCSV(name, data);
 					return;
@@ -99,14 +100,15 @@ public class FileManager {
 		}
 	}
 	
-	public static void modificarLineaCSV(String name, List<String> fila) throws Exception {
+	public static void modificarLineaCSV(String name, String identifier, String value, List<String> fila) throws Exception {
 		try {
-			String filaString = fila.stream().reduce(",", (val, accumulator) -> accumulator + val);
 			List<List<String>> data = cargarArchivoListCSV(name);
+			Integer posIdentifier = data.get(0).indexOf(identifier);
+			if (posIdentifier < 0)
+				throw new Exception("el identifier-key no ha sido encontrado en los headers");
 			for (int i = 1; i < data.size(); i++) {
 				List<String> row = data.get(i);
-				String rowString = row.stream().reduce("", (val, accumulator) -> accumulator + "," + val);
-				if (filaString.equals(rowString)) {
+				if (row.get(posIdentifier).equals(value)) {
 					data.remove(i);
 					data.add(fila);
 					guardarArchivoCSV(name, data);
@@ -143,7 +145,7 @@ public class FileManager {
 	public static void guardarArchivoCSV(String name, List<List<String>> datos) throws Exception {
 		FileWriter fileWriter = new FileWriter(cargarArchivo(name), false);
 		for (List<String> row : datos) {
-			String rowString = row.stream().reduce("\n", (val, accumulator) -> accumulator + "," + val);
+			String rowString = row.stream().collect(Collectors.joining(",")).concat("\n");
 			fileWriter.append(rowString);
 		}
 		fileWriter.close();

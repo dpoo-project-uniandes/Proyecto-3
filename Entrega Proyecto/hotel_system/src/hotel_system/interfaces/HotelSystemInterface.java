@@ -341,7 +341,7 @@ public class HotelSystemInterface extends JFrame {
 	}
 	
 	// ================================================================================================================================================================================
-	// VENTANA DE RESERVAS
+	// RESERVAS
 	// ================================================================================================================================================================================
 	
 	private void configBookingManagement(String user) {
@@ -405,7 +405,9 @@ public class HotelSystemInterface extends JFrame {
 					try {
 						Map<String, String> data = panel.getDataMap();
 						Map<String, Integer> rooms = panel.getDataRoomsMap();
+						String id = data.get("id");
 						pms.reservar(
+								id != "0" ?  Long.parseLong(id) : null,
 								data.get("titular"),
 								data.get("email"),
 								data.get("dni"),

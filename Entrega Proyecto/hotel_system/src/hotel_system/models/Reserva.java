@@ -29,6 +29,18 @@ public class Reserva {
 		this.tarifaTotal = calcularTarifaTotal();
 		confirmarReserva();
 	}
+	
+	public Reserva(Long id, Date fechaDeLlegada, Date fechaDeSalida, Titular titular, Integer cantidad,List<Habitacion> habitaciones) {
+		this.numero = id == null ? Utils.generateId() : id;
+		this.fechaDeLlegada = fechaDeLlegada;
+		this.fechaDeCreacion = Utils.nowDate();
+		this.cantidadPersonas = cantidad;
+		this.fechaDeSalida = fechaDeSalida;
+		this.titular = titular;
+		this.habitaciones = habitaciones;
+		this.tarifaTotal = calcularTarifaTotal();
+		confirmarReserva();
+	}
 
 	public Reserva(Long numero, Double tarifaTotal, EstadoReserva estado, Integer cantidadPersonas, Date fechaDeLlegada,
 			Date fechaDeSalida, Date fechaDeCreacion, Titular titular, Estadia estadia, List<Habitacion> habitaciones) {

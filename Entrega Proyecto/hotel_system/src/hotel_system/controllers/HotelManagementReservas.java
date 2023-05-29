@@ -30,6 +30,7 @@ public class HotelManagementReservas {
 	}
 
 	public void reservar(
+		Long id,
 		String nombre,
 		String email,
 		String dni,
@@ -40,12 +41,19 @@ public class HotelManagementReservas {
 		Date salida,
 		Map<String, Integer> habitacionesElegidas
 	) throws Exception {
-		Reserva reserva = construirReserva(nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
+		
+		if (id != null) {
+			actualizarReserva(id, nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
+			return;
+		}
+		
+		Reserva reserva = construirReserva(null, nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
 		reservas.put(reserva.getNumero(), reserva);
 		persistirReserva(reserva);
 	}
 	
 	public void actualizarReserva(
+			Long id,
 			String nombre,
 			String email,
 			String dni,
@@ -56,21 +64,31 @@ public class HotelManagementReservas {
 			Date salida,
 			Map<String, Integer> habitacionesElegidas
 	) throws Exception {
+		// Construccion y validacion de la reserva
+		Reserva reservaOriginal = reservas.get(id);
+		if (reservaOriginal == null)
+			throw new Exception("reserva " + id.toString() + " no encontrada en el registro");
+		
+		Reserva reserva = construirReserva(id, nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
+		
 		// Archivo de reservas
-		Reserva reserva = construirReserva(nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
-		reservas.put(reserva.getNumero(), reserva);
 		List<String> datos = reservaToListString(reserva);
-		FileManager.modificarLineaCSV("reservas.csv", datos);
+		FileManager.modificarLineaCSV("reservas.csv", "numero", id.toString(), datos);
 		
 		// Archivo de Titular
 		List<String> titular = titularToListString(reserva.getTitular());
-		FileManager.modificarLineaCSV("huespedes.csv", titular);
+		FileManager.modificarLineaCSV("huespedes.csv", "dni", reserva.getTitular().getDni(), titular);
 
 		// Archivo de reservas y habitaciones
-		List<List<String>> reservasYHabitaciones = reservaHabitacionesToListString(reserva);
-		for (List<String> row : reservasYHabitaciones) {
-			FileManager.modificarLineaCSV("reservas_habitaciones.csv", row);	
+		for(Habitacion habitacion: reservaOriginal.getHabitaciones()) {
+			FileManager.removerLineaCSV("reservas_habitaciones.csv", "numero_reserva", id.toString());
 		}
+		
+		List<List<String>> reservasYHabitaciones = reservaHabitacionesToListString(reserva);
+		FileManager.agregarLineasCSV("reservas_habitaciones.csv", reservasYHabitaciones);
+		
+		// Actualizar la reserva en el mapa
+		reservas.put(id, reserva);
 	}
 	
 	public Habitacion seleccionarHabitacionDisponible(String tipo, Date desde, Date hasta) {
@@ -109,7 +127,7 @@ public class HotelManagementReservas {
 	public void cancelarReserva(Long id) throws Exception {
 		Reserva reserva = reservas.get(id);
 		reserva.setEstado(EstadoReserva.CANCELADO);
-		FileManager.modificarLineaCSV("reservas.csv", reservaToListString(reserva));
+		FileManager.modificarLineaCSV("reservas.csv", "numero", reserva.getNumero().toString(), reservaToListString(reserva));
 	}
 	
 	public void eliminarReserva(Long id) throws Exception {
@@ -117,15 +135,17 @@ public class HotelManagementReservas {
 		Reserva reserva = this.reservas.get(id);
 		if (reserva == null) 
 			return;
-		List<String> datos = reservaToListString(reserva);
 		this.reservas.remove(id);
-		FileManager.removerLineaCSV("reservas.csv", datos);
+		FileManager.removerLineaCSV("reservas.csv", "numero_reserva", reserva.getNumero().toString());
 		
-		// Archivo de reservas y habitaciones
-		FileManager.removerLineaCSV("reservas_habitaciones.csv", reservaHabitacionesToListString(reserva).get(0));
+		// Archivo de reservas y habitacione
+		for(Habitacion habitacion: reserva.getHabitaciones()) {
+			FileManager.removerLineaCSV("reservas_habitaciones.csv", "numero_reserva", reserva.getNumero().toString());	
+		}
 	}
 	
 	private Reserva construirReserva(
+			Long id,
 			String nombre,
 			String email,
 			String dni,
@@ -144,7 +164,7 @@ public class HotelManagementReservas {
 		if (calcularCapacidadHabitaciones(habitaciones) < cantidad) {
 			throw new IOException("La cantidad de huespedes es mayor a la capacidad de las habitaciones"); 
 		}
-		Reserva reserva = new Reserva(llegada, salida, titular, cantidad, habitaciones);
+		Reserva reserva = new Reserva(id, llegada, salida, titular, cantidad, habitaciones);
 		return reserva;
 	}
 	

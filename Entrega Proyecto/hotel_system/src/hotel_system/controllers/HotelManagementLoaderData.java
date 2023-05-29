@@ -133,7 +133,6 @@ public class HotelManagementLoaderData {
 	}
 	
 	public Map<Long, Reserva> cargarReservas(Map<Integer, Habitacion> habitaciones, Map<Long, Estadia> estadias) throws Exception {
-		limpiarReservas();
 		Map<Long, Reserva> reservas = new HashMap<>();
 		Map<String, Titular> titulares = cargarTitulares();
 		Map<Long, List<Integer>> reservasHabitaciones = cargarReservasHabitaciones();

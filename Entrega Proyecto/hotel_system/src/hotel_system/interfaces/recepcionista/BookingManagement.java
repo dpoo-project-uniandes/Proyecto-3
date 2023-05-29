@@ -339,6 +339,7 @@ public class BookingManagement extends JPanel {
 	
 	public Map<String, String> getDataMap() {
 		return Map.of(
+			"id", this.bookingInjected == null ? "0" : this.bookingInjected.getNumero().toString(),
 			"titular", this.guest.getValue(), 
 			"salida", this.checkout.getValue(), 
 			"email", this.email.getValue(), 

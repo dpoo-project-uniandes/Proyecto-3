@@ -1,6 +1,2 @@
-dni,nombre,edad,email,telefono
-462835,juan rojas,22,juan@email.com,34953458234823,juan rojas,22,juan@email.com,4345349
-3453484,juan rojas,22,juan@email.com,2349234
-2342392,juan rojas,22,juan@email.com,238423445
-234283,juan rojas,22,juan@email.com,234234
-234283,juan rojas,22,juan@email.com,234234
+telefono,email,edad,nombre,dni
+12345,juan david rojas,22,juan@email.com,8394937

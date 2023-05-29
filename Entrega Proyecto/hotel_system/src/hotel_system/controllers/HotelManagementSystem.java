@@ -67,21 +67,13 @@ public class HotelManagementSystem {
 		this.controladorUsuarios = new HotelManagementUsuarios(usuarios);
 		this.controladorResevas = new HotelManagementReservas(inventarioHabitaciones, reservas);
 	}
-
-	private Titular setTitular(String string) {
-		String[] datos = string.split(",");
-		return new Titular(datos[0],
-				datos[2],
-				Integer.parseInt(datos[1]),
-				datos[3],
-				datos[4]);
-	}
 	
 	// =====================================================================================================================================================
 	// RESERVAS 
 	// =====================================================================================================================================================
 	
 	public void reservar(
+			Long id,
 			String nombre,
 			String email,
 			String dni,
@@ -92,7 +84,7 @@ public class HotelManagementSystem {
 			Date salida,
 			Map<String, Integer> habitacionesElegidas
 	) throws Exception {
-		controladorResevas.reservar(nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
+		controladorResevas.reservar(id, nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
 	}
 	
 	public void cancelarReserva(Long id) throws Exception {
@@ -115,21 +107,16 @@ public class HotelManagementSystem {
 		return controladorResevas.getReservaByHabitacion(id);
 	}
 	
-	public void actualizarReserva(
-			String nombre,
-			String email,
-			String dni,
-			String telefono,
-			Integer edad,
-			Integer cantidad,
-			Date llegada,
-			Date salida,
-			Map<String, Integer> habitacionesElegidas
-	) throws Exception {
-		controladorResevas.actualizarReserva(nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
-	}
-	
 	// =====================================================================================================================================================
+	
+	private Titular setTitular(String string) {
+		String[] datos = string.split(",");
+		return new Titular(datos[0],
+				datos[2],
+				Integer.parseInt(datos[1]),
+				datos[3],
+				datos[4]);
+	}
 
 	public Spa getServicioSpa(){
 		Spa spa = (Spa)inventarioServicios.get("spa");
