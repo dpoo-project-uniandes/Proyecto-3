@@ -44,7 +44,8 @@ public class MainHeader extends JPanel {
 	
 	private void configComponents() {
 		this.add(this.infoPanel);
-		this.add(this.headerButtonsPanel);
+		if (this.actions.showButtons())
+			this.add(this.headerButtonsPanel);
 	}
 
 	private void configPanel() {

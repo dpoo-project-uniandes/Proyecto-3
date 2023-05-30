@@ -263,7 +263,7 @@ public class HotelSystemInterface extends JFrame {
 		};
 		
 		// INITIALIZE
-		this.menuAdmin = new MenuAdministrador(user, headerButtonsActions, loadAction, modifyAction, searchAction);
+		this.menuAdmin = new MenuAdministrador(user, headerButtonsActions.withButtons(), loadAction, modifyAction, searchAction);
 		configMainFrame(this.menuAdmin);
 		
 	}
@@ -297,7 +297,7 @@ public class HotelSystemInterface extends JFrame {
 		};
 		
 		// INITIALIZE
-		this.menuCargaAdministrador = new MenuCargaAdministrador(user, headerButtonsActions, RestauranteAction, SpaAction, HabitacionesAction);
+		this.menuCargaAdministrador = new MenuCargaAdministrador(user, headerButtonsActions.withButtons(), RestauranteAction, SpaAction, HabitacionesAction);
 		configMainFrame(this.menuCargaAdministrador);
 	}
 	
@@ -355,7 +355,7 @@ public class HotelSystemInterface extends JFrame {
 		};
 				
 		// INITIALIZE
-		this.menuModificarAdmin = new MenuModificarAdmin(user, headerButtonsActions, findAction, deleteAction ,updateAction, createAction);
+		this.menuModificarAdmin = new MenuModificarAdmin(user, headerButtonsActions.withButtons(), findAction, deleteAction ,updateAction, createAction);
 		configMainFrame(this.menuModificarAdmin);
 		
 	}
@@ -403,7 +403,7 @@ public class HotelSystemInterface extends JFrame {
 		// ================================================================================================================================================================================
 		// INICIALIZACION DEL MENU RECEPCIONISTA
 		// ================================================================================================================================================================================
-		this.menuRecepcionista = new MenuRecepcionista(user, headerButtonsActions, bookingAction, staysAction, consumiblesAction);
+		this.menuRecepcionista = new MenuRecepcionista(user, headerButtonsActions.withoutButtons(), bookingAction, staysAction, consumiblesAction);
 		this.currentHome = this.menuRecepcionista;
 		configMainFrame(menuRecepcionista);
 	}
@@ -506,7 +506,7 @@ public class HotelSystemInterface extends JFrame {
 		this.bookingManagement = new BookingManagement(
 				user,
 				formRoomsData,
-				headerButtonsActions,
+				headerButtonsActions.withButtons(),
 				findAction, 
 				createAction,
 				deleteAction, 
@@ -534,7 +534,7 @@ public class HotelSystemInterface extends JFrame {
 					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions,generateAction,payNowAction,payLaterAction,"data/productos.csv");
+					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/productos.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
@@ -548,7 +548,7 @@ public class HotelSystemInterface extends JFrame {
 			};
 		};
 		// INITIALIZE
-		this.menuConsumible = new MenuConsumible(user, headerButtonsActions, ProductosAction, ServiciosAction);
+		this.menuConsumible = new MenuConsumible(user, headerButtonsActions.withButtons(), ProductosAction, ServiciosAction);
 		configMainFrame(this.menuConsumible);
 	}
 	
@@ -563,7 +563,7 @@ public class HotelSystemInterface extends JFrame {
 					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions,generateAction,payNowAction,payLaterAction,"data/productos_restaurante.csv");
+					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/productos_restaurante.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
@@ -577,7 +577,7 @@ public class HotelSystemInterface extends JFrame {
 					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions,generateAction,payNowAction,payLaterAction,"data/productos_spa.csv");
+					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/productos_spa.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
@@ -592,14 +592,14 @@ public class HotelSystemInterface extends JFrame {
 					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions,generateAction,payNowAction,payLaterAction,"data/reservas_habitaciones.csv");
+					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/reservas_habitaciones.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
 		};
 		
 		// INITIALIZE
-		this.menuServicios = new MenuServicios(user, headerButtonsActions, restauranteAction, spaAction, alojamientoAction);
+		this.menuServicios = new MenuServicios(user, headerButtonsActions.withButtons(), restauranteAction, spaAction, alojamientoAction);
 		configMainFrame(this.menuServicios);
 	}
 	
