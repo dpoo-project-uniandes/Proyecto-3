@@ -30,6 +30,7 @@ import hotel_system.interfaces.VerticalButtons;
 import hotel_system.interfaces.components.AddItems;
 import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.DynamicTable;
+import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.components.Input;
 import hotel_system.models.Reserva;
 import hotel_system.models.TipoHabitacion;
@@ -69,7 +70,6 @@ public class BookingManagement extends JPanel {
 	private Button cancelBookingBtn;
 	private Reserva bookingInjected;
 	
-	
 	// ACTIONS LISTENER
 	Function<BookingManagement, ActionListener> createAction;
 	Function<BookingManagement, ActionListener> deleteAction;
@@ -79,6 +79,7 @@ public class BookingManagement extends JPanel {
 	public BookingManagement(
 		String user,
 		FormRoomsData formRoomsData,
+		HeaderButtonsActions headerButtonsActions,
 		Function<Finder, ActionListener> findAction,
 		Function<BookingManagement, ActionListener> createAction,
 		Function<BookingManagement, ActionListener> deleteAction,
@@ -92,7 +93,7 @@ public class BookingManagement extends JPanel {
 		this.deleteAction = deleteAction;
 		this.cancelAction = cancelAction;
 		configPanel();
-		configHeader(user, "Reservas");
+		configHeader(user, "Reservas", headerButtonsActions);
 		configFinder("Documento Titular / Nro de Reserva", findAction);
 		configNewBookingButton();
 		configVerticalButtons();
@@ -116,8 +117,8 @@ public class BookingManagement extends JPanel {
         this.setBorder(new EmptyBorder(50, 50, 50, 50));
 	}
 	
-	private void configHeader(String user, String title) {
-    	this.header = new MainHeader(user, title);
+	private void configHeader(String user, String title, HeaderButtonsActions headerButtonsActions) {
+    	this.header = new MainHeader(user, title, headerButtonsActions);
 	}
 	
 	private void configFinder(
@@ -146,7 +147,6 @@ public class BookingManagement extends JPanel {
 		this.finderAndNewBookingPanel = new JPanel();
 		this.finderAndNewBookingPanel.setLayout(new GridBagLayout());
 		this.finderAndNewBookingPanel.setOpaque(false);
-		this.finderAndNewBookingPanel.setAlignmentX(LEFT_ALIGNMENT);
 		
 		this.finderAndNewBookingPanel.add(this.finder, UtilsGUI.getConstraints(0, 0, 1, 1, 0.2, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
 		this.finderAndNewBookingPanel.add(this.verticalButtons, UtilsGUI.getConstraints(1, 0, 1, 1, 0.1, 1, 20, 600, 0, 0, 1, GridBagConstraints.EAST));
@@ -225,11 +225,10 @@ public class BookingManagement extends JPanel {
 	private void configDataPanel(String title) {
 		// DATA PANEL
 		this.dataPanel = new DataPanel(title);
-		this.dataPanel.setAlignmentX(LEFT_ALIGNMENT);
 	}
 	
 	private JPanel getLabelDataBooking(String title, String value) {
-		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JPanel panel = new JPanel(new FlowLayout());
 		JLabel titleLabel = new JLabel(title + ":");
 		JLabel valueLabel = new JLabel(value);
 		
@@ -273,7 +272,7 @@ public class BookingManagement extends JPanel {
 				booking.getTitular().getNombre(),
 				booking.getTitular().getDni(),
 				booking.getEstado().toString(),
-				booking.getEstadia() == null ? "0" : booking.getEstadia().getId().toString(),
+				booking.getEstadia() == null ? "" : booking.getEstadia().getId().toString(),
 				booking.getTarifaTotal().toString(),
 				booking.getHabitaciones().stream().map(h -> h.getNumero().toString()).toList().toString()
 		);

@@ -19,9 +19,11 @@ import hotel_system.interfaces.MainHeader;
 import hotel_system.interfaces.UtilsGUI;
 import hotel_system.interfaces.VerticalButtons;
 import hotel_system.interfaces.components.Button;
+import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.models.Producto;
 
 public class MenuModificarAdmin extends JPanel{
+	
 	// BASIC
 	private MainHeader header;
 	private Finder finder;
@@ -35,6 +37,7 @@ public class MenuModificarAdmin extends JPanel{
 
 	public MenuModificarAdmin(
 			String user,
+			HeaderButtonsActions headerButtonsActions,
 			Function<Finder, ActionListener> findAction,
 			Function<Finder, ActionListener> deleteAction,
 			Function<Finder, ActionListener> updateAction,
@@ -43,7 +46,7 @@ public class MenuModificarAdmin extends JPanel{
 		) {
 			this.title = "Detalles del consumible";
 			configPanel();
-			configHeader(user, "Modificar Productos o Servicios");
+			configHeader(user, "Modificar Productos o Servicios", headerButtonsActions);
 			configFinder("ID del producto/servicio: ", findAction);
 			configNewBookingButton();
 			configVerticalButtons();
@@ -67,8 +70,8 @@ public class MenuModificarAdmin extends JPanel{
 	        this.setBorder(new EmptyBorder(50, 50, 50, 50));
 		}
 		
-		private void configHeader(String user, String title) {
-	    	this.header = new MainHeader(user, title);
+		private void configHeader(String user, String title, HeaderButtonsActions headerButtonsActions) {
+	    	this.header = new MainHeader(user, title, headerButtonsActions);
 		}
 		
 		private void configFinder(

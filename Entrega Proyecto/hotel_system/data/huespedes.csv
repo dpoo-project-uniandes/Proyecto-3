@@ -1,2 +1,2 @@
-telefono,email,edad,nombre,dni
-12345,juan david rojas,22,juan@email.com,8394937
+dni,telefono,email,edad,nombre
+12345,8394937,juan@email.com,22,juan david rojas

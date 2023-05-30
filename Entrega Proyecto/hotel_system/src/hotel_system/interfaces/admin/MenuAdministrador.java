@@ -6,6 +6,7 @@ import java.util.function.Function;
 import javax.swing.JPanel;
 
 import hotel_system.interfaces.MainMenu;
+import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.components.MenuButton;
 
 public class MenuAdministrador extends MainMenu {
@@ -15,11 +16,12 @@ public class MenuAdministrador extends MainMenu {
 
     public MenuAdministrador(
     		String user,
+    		HeaderButtonsActions headerButtonsActions,
     		Function<MenuAdministrador, ActionListener> loadAction,
     		Function<MenuAdministrador, ActionListener> modifyAction,
     		Function<MenuAdministrador, ActionListener> searchAction
 	) {
-    	super(user, "Menu Principal", 3);
+    	super(user, "Menu Principal", 3, headerButtonsActions);
         configMenu(loadAction, modifyAction, searchAction);
     }
     

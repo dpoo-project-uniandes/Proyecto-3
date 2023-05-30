@@ -4,10 +4,9 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 import java.util.function.Function;
 
 import javax.swing.BoxLayout;
@@ -19,6 +18,7 @@ import hotel_system.controllers.HotelManagementSystem;
 import hotel_system.interfaces.admin.MenuAdministrador;
 import hotel_system.interfaces.admin.MenuCargaAdministrador;
 import hotel_system.interfaces.admin.MenuModificarAdmin;
+import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.recepcionista.BookingManagement;
 import hotel_system.interfaces.recepcionista.FormRoomsData;
 import hotel_system.interfaces.recepcionista.MenuConsumible;
@@ -54,14 +54,62 @@ public class HotelSystemInterface extends JFrame {
 	private MenuServicios menuServicios;
 	private MenuProductosServicios menuProductosServicios;
 	
+	// STACK DE VENTANAS
+	private Stack<JPanel> framesStack;
+	private HeaderButtonsActions headerButtonsActions;
+	private JPanel currentHome;
+	
+	
 	public HotelSystemInterface() throws IOException {
 		this.user = "Juan Rojas";
 		this.pms = new HotelManagementSystem();
+		configHeaderButtonsActions();
 //		configLogin();
-		configBookingManagement(user);
+//		configBookingManagement();
+		configMenuRecepcionista();
 	}
 	
+	// ============================================================================================================================================================================
+	// HEADER ACTIONS
+	// ============================================================================================================================================================================
+	
+	private void configHeaderButtonsActions() {
+		this.framesStack = new Stack<>();
+		// ============================================================================================================================================================================
+		// ACTIONS LISTENERS DEL HEADER
+		// ============================================================================================================================================================================
+		Function<MainHeader, ActionListener> home = (header) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configMainFrame(currentHome);
+				}
+			};
+		};
+		Function<MainHeader, ActionListener> back = (header) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					framesStack.pop();
+					configMainFrame(framesStack.pop());
+				}
+			};
+		};
+		
+		// ============================================================================================================================================================================
+		// INICIALIZACION
+		// ============================================================================================================================================================================
+		this.headerButtonsActions = new HeaderButtonsActions(home, back, home);
+	}
+	
+	// ================================================================================================================================================================================
+	// FRAME GRANDE
+	// ================================================================================================================================================================================
+	
 	private void configMainFrame(JPanel panel) {
+		// STACK
+		this.framesStack.push(panel);
+		
 		// CLEAN
 		this.setContentPane(panel);
 
@@ -77,14 +125,41 @@ public class HotelSystemInterface extends JFrame {
 		this.setVisible(true);
 		this.setResizable(true);
 	}  
+	
+	// ================================================================================================================================================================================
+	// FRAME PEQUENO
+	// ================================================================================================================================================================================
+	
+	private void configSmallFrame(JPanel panel) {
+		// CLEAN
+		this.setContentPane(panel);
+
+		// LAYOUT CONFIGURATION & CLEAN
+		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
+
+		// SETTINGS
+		this.getContentPane().setBackground(Color.WHITE);
+		this.setSize(600, 700);
+		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setVisible(true);
+		this.setTitle("Hotel System Management");
+		this.setResizable(false);
+	} 
+	
+	// ================================================================================================================================================================================
+	// LOGIN
+	// ================================================================================================================================================================================
 
 	private void configLogin() {  
-		// ACTIONS LISTENERS
+		// ============================================================================================================================================================================
+		// ACTION LISTENERS DEL LOGIN
+		// ============================================================================================================================================================================
 		Function<Login, ActionListener> loginAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Usuario authenticated = getUser(
+					Usuario authenticated = pms.userLogin(
 							panel.getUserInput().getInput().getText(), 
 							panel.getPasswordInput().getInput().getText()
 					);
@@ -104,29 +179,31 @@ public class HotelSystemInterface extends JFrame {
 			};
 		};
 		
-		// INITIALIZE
+		// ============================================================================================================================================================================
+		// INICIALIZACION DEL LOGIN
+		// ============================================================================================================================================================================
 		this.login = new Login(loginAction, signUpAction);
-		
-		// LAYOUT CONFIGURATION & CLEAN
-		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-		this.setContentPane(this.login);
-
-		// SETTINGS
-		this.getContentPane().setBackground(Color.WHITE);
-		this.setSize(600, 700);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setLocationRelativeTo(null);
-		this.setVisible(true);
-		this.setTitle("Hotel System Management");
-		this.setResizable(false);
-	}
-
-	private Usuario getUser(String user, String password) {
-		return pms.userLogin(user, password);
+		configSmallFrame(login);
 	}
 	
+	private void login(Usuario usuario) {
+		this.user = usuario.getAlias();
+		if (usuario.getRol() == Rol.RECEPCIONISTA) { 
+			configMenuRecepcionista();
+		}
+		else {
+			configMenuAdmin(user);
+		}
+	}
+	
+	// ================================================================================================================================================================================
+	// SIGN UP
+	// ================================================================================================================================================================================
+	
 	private void configSignUp() {
-		// ACTION LISTENERS
+		// ============================================================================================================================================================================
+		// ACTION LISTENERS DE SIGN UP
+		// ============================================================================================================================================================================
 	    Function<Registrarse, ActionListener> registerAction = (panel) -> {
 	        return new ActionListener() {
 	            @Override
@@ -147,32 +224,12 @@ public class HotelSystemInterface extends JFrame {
 	        };
 	    };
 		
-		// INITIALIZE
+		// ============================================================================================================================================================================
+		// INICIALIZACION DEL SIGN UP
+		// ============================================================================================================================================================================
 	    String[] roles = List.of(Rol.values()).stream().map(r -> r.toString()).toArray(String[]::new);
 	    this.registrarse = new Registrarse(roles, registerAction);
-		
-		// LAYOUT CONFIGURATION & CLEAN
-		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.Y_AXIS));
-	    this.setContentPane(this.registrarse);
-		  
-		// SETTINGS
-		this.getContentPane().setBackground(Color.WHITE);
-		this.setSize(600, 700);
-		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setLocationRelativeTo(null);
-		this.setVisible(true);
-		this.setTitle("Hotel System Management");
-		this.setResizable(false);
-	}
-	
-	private void login(Usuario usuario) {
-		this.user = usuario.getAlias();
-		if (usuario.getRol() == Rol.RECEPCIONISTA) { 
-			configMenuRecepcionista(user);
-		}
-		else {
-			configMenuAdmin(user);
-		}
+	    configSmallFrame(registrarse);
 	}
 	
 	// Funciones, configs y paneles para admin
@@ -206,7 +263,7 @@ public class HotelSystemInterface extends JFrame {
 		};
 		
 		// INITIALIZE
-		this.menuAdmin = new MenuAdministrador(user, loadAction, modifyAction, searchAction);
+		this.menuAdmin = new MenuAdministrador(user, headerButtonsActions, loadAction, modifyAction, searchAction);
 		configMainFrame(this.menuAdmin);
 		
 	}
@@ -240,7 +297,7 @@ public class HotelSystemInterface extends JFrame {
 		};
 		
 		// INITIALIZE
-		this.menuCargaAdministrador = new MenuCargaAdministrador(user, RestauranteAction, SpaAction, HabitacionesAction);
+		this.menuCargaAdministrador = new MenuCargaAdministrador(user, headerButtonsActions, RestauranteAction, SpaAction, HabitacionesAction);
 		configMainFrame(this.menuCargaAdministrador);
 	}
 	
@@ -298,7 +355,7 @@ public class HotelSystemInterface extends JFrame {
 		};
 				
 		// INITIALIZE
-		this.menuModificarAdmin = new MenuModificarAdmin(user, findAction, deleteAction ,updateAction, createAction);
+		this.menuModificarAdmin = new MenuModificarAdmin(user, headerButtonsActions, findAction, deleteAction ,updateAction, createAction);
 		configMainFrame(this.menuModificarAdmin);
 		
 	}
@@ -307,14 +364,22 @@ public class HotelSystemInterface extends JFrame {
 		
 	}
 	
-	// Funciones, configs y paneles para recepcionista
-	private void configMenuRecepcionista(String user) {
-		// ACTIONS LISTENERS
+	// ================================================================================================================================================================================
+	// MENUS DE LA APLICACIONES
+	// ================================================================================================================================================================================
+	
+	// ================================================================================================================================================================================
+	// MENU RECEPCIONISTA
+	// ================================================================================================================================================================================
+	private void configMenuRecepcionista() {
+		// ================================================================================================================================================================================
+		// ACTION LISTENERS DEL MENU RECEPCIONISTA
+		// ================================================================================================================================================================================
 		Function<MenuRecepcionista, ActionListener> bookingAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					configBookingManagement(user);
+					configBookingManagement();
 				}
 			};
 		};
@@ -322,7 +387,7 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					configStayingManagement(user);
+					configStayingManagement();
 				}	
 			};
 		};
@@ -330,21 +395,24 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					configConsumingManagement(user);
+					configConsumingManagement();
 				}		
 			};
 		};
 		
-		// INITIALIZE
-		this.menuRecepcionista = new MenuRecepcionista(user, bookingAction, staysAction, consumiblesAction);
-		configMainFrame(this.menuRecepcionista);
+		// ================================================================================================================================================================================
+		// INICIALIZACION DEL MENU RECEPCIONISTA
+		// ================================================================================================================================================================================
+		this.menuRecepcionista = new MenuRecepcionista(user, headerButtonsActions, bookingAction, staysAction, consumiblesAction);
+		this.currentHome = this.menuRecepcionista;
+		configMainFrame(menuRecepcionista);
 	}
 	
 	// ================================================================================================================================================================================
 	// RESERVAS
 	// ================================================================================================================================================================================
 	
-	private void configBookingManagement(String user) {
+	private void configBookingManagement() {
 		// ============================================================================================================================================================================
 		// ACTION LISTENERS DE RESERVAS
 		// ============================================================================================================================================================================
@@ -438,13 +506,13 @@ public class HotelSystemInterface extends JFrame {
 		this.bookingManagement = new BookingManagement(
 				user,
 				formRoomsData,
+				headerButtonsActions,
 				findAction, 
 				createAction,
 				deleteAction, 
 				updateAction,
 				cancelAction
 		);
-		
 		configMainFrame(bookingManagement);
 	}
 	
@@ -452,11 +520,11 @@ public class HotelSystemInterface extends JFrame {
 	// VENTANA DE ...
 	// ================================================================================================================================================================================
 	
-	private void configStayingManagement(String user) {
+	private void configStayingManagement() {
 		// TODO Auto-generated method stub	
 	}
 	
-	private void configConsumingManagement(String user) {
+	private void configConsumingManagement() {
 		Function<MenuConsumible, ActionListener> ProductosAction = (panel) -> {
 			return new ActionListener() {
 				private MenuProductosServicios menuProductosServicios;
@@ -466,7 +534,7 @@ public class HotelSystemInterface extends JFrame {
 					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,generateAction,payNowAction,payLaterAction,"data/productos.csv");
+					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions,generateAction,payNowAction,payLaterAction,"data/productos.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
@@ -480,7 +548,7 @@ public class HotelSystemInterface extends JFrame {
 			};
 		};
 		// INITIALIZE
-		this.menuConsumible = new MenuConsumible(user, ProductosAction, ServiciosAction);
+		this.menuConsumible = new MenuConsumible(user, headerButtonsActions, ProductosAction, ServiciosAction);
 		configMainFrame(this.menuConsumible);
 	}
 	
@@ -495,7 +563,7 @@ public class HotelSystemInterface extends JFrame {
 					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,generateAction,payNowAction,payLaterAction,"data/productos_restaurante.csv");
+					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions,generateAction,payNowAction,payLaterAction,"data/productos_restaurante.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
@@ -509,7 +577,7 @@ public class HotelSystemInterface extends JFrame {
 					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,generateAction,payNowAction,payLaterAction,"data/productos_spa.csv");
+					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions,generateAction,payNowAction,payLaterAction,"data/productos_spa.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
@@ -524,14 +592,14 @@ public class HotelSystemInterface extends JFrame {
 					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
 	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,generateAction,payNowAction,payLaterAction,"data/reservas_habitaciones.csv");
+					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions,generateAction,payNowAction,payLaterAction,"data/reservas_habitaciones.csv");
 					configMainFrame(this.menuProductosServicios);
 				}
 			};
 		};
 		
 		// INITIALIZE
-		this.menuServicios = new MenuServicios(user, restauranteAction, spaAction, alojamientoAction);
+		this.menuServicios = new MenuServicios(user, headerButtonsActions, restauranteAction, spaAction, alojamientoAction);
 		configMainFrame(this.menuServicios);
 	}
 	

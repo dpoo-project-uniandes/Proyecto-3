@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import hotel_system.interfaces.components.AddItems;
 import hotel_system.interfaces.components.FormDataTable;
 import hotel_system.models.TipoHabitacion;
+import hotel_system.utils.Utils;
 import services.ImagesManager;
 
 public class FormRoomsData implements FormDataTable {
@@ -34,6 +35,7 @@ public class FormRoomsData implements FormDataTable {
 	private void buildData() {
 		this.data = this.tipoHabitaciones.stream()
 				.map(tipo -> {
+					System.out.println(tipo);
 					List<Object> row = new ArrayList<>();
 					row.add(tipo.getAlias().toString());
 					row.add(tipo.getCapacidad().toString());

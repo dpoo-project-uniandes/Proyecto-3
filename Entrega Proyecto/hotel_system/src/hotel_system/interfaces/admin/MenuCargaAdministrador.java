@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.util.function.Function;
 
 import hotel_system.interfaces.MainMenu;
+import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.components.MenuButton;
 
 public class MenuCargaAdministrador extends MainMenu {
@@ -13,11 +14,12 @@ public class MenuCargaAdministrador extends MainMenu {
 
 	   public MenuCargaAdministrador(
 	    	String user,
+	    	HeaderButtonsActions headerButtonsActions,
 	    	Function<MenuCargaAdministrador, ActionListener> RestauranteAction,
 	    	Function<MenuCargaAdministrador, ActionListener> SpaAction,
 	    	Function<MenuCargaAdministrador, ActionListener> HabitacionesAction
 		) {
-	    	super(user, "Seleccione el servicio que desea cargar: ", 3);
+	    	super(user, "Seleccione el servicio que desea cargar: ", 3, headerButtonsActions);
 	        configMenu(RestauranteAction, SpaAction, HabitacionesAction);
 	    }
 	    

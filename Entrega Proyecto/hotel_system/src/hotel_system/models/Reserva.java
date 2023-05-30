@@ -68,14 +68,14 @@ public class Reserva {
 	}
 
 	public void confirmarReserva() {
-		this.estado = EstadoReserva.CONFIRMADO;
+		this.estado = EstadoReserva.CONFIRMADA;
 		for (Habitacion hab: habitaciones) {
 			hab.modificarDisponibilidad(fechaDeLlegada, fechaDeSalida, this, false);
 		}
 	}
 
 	public void cancelarReserva() {
-		this.estado = EstadoReserva.CANCELADO;
+		this.estado = EstadoReserva.CANCELADA;
 		for (Habitacion hab: habitaciones) {
 			hab.modificarDisponibilidad(fechaDeLlegada, fechaDeSalida, null, true);
 		}

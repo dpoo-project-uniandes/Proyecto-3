@@ -31,7 +31,7 @@ public class Estadia {
 		for (Consumible c : alojamiento.getConsumo()) {
 			cargarConsumo(c);
 		}
-		this.reserva.setEstado(EstadoReserva.CERRADO);
+		this.reserva.setEstado(EstadoReserva.CERRADA);
 		this.facturaTotal.calcularValorTotal();
 		this.facturaTotal.procesarPago();
 	}

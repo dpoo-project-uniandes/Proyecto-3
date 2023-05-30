@@ -7,6 +7,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.components.MenuButton;
 
 public abstract class MainMenu extends JPanel {
@@ -14,9 +15,9 @@ public abstract class MainMenu extends JPanel {
 	private MainHeader header;
     private JPanel buttonsPanel;
 
-    public MainMenu(String user, String title, Integer quantityButtons) {
+    public MainMenu(String user, String title, Integer quantityButtons, HeaderButtonsActions headerButtonsActions) {
         configPanel();
-        configHeader(user, title);
+        configHeader(user, title, headerButtonsActions);
         configButtonsPanel(quantityButtons);
         configComponents();
     }
@@ -33,17 +34,16 @@ public abstract class MainMenu extends JPanel {
         this.setBorder(new EmptyBorder(50, 50, 50, 50));
     }
 
-    private void configHeader(String user, String title) {
-    	this.header = new MainHeader(user, title);
+    private void configHeader(String user, String title, HeaderButtonsActions headerButtonsActions) {
+    	this.header = new MainHeader(user, title, headerButtonsActions);
     }
     
     private void configButtonsPanel(Integer quantityButtons) {
     	// BUTTONS PANEL
     	Integer rows = quantityButtons / 3;
-    	this.buttonsPanel = new JPanel(new GridLayout(rows, 3, 100, 100));
+    	this.buttonsPanel = new JPanel(new GridLayout(rows, 3, 100, 0));
     	this.buttonsPanel.setOpaque(false);
-    	this.buttonsPanel.setAlignmentX(LEFT_ALIGNMENT);
-    	this.buttonsPanel.setBorder(new EmptyBorder(135,100,135,100));
+    	this.buttonsPanel.setBorder(new EmptyBorder(100,100,100,100));
 	}
     
     protected void addButton(MenuButton btn) {

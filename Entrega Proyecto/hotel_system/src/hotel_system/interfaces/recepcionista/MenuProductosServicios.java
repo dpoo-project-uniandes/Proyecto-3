@@ -25,6 +25,7 @@ import hotel_system.interfaces.MainHeader;
 import hotel_system.interfaces.UtilsGUI;
 import hotel_system.interfaces.VerticalButtons;
 import hotel_system.interfaces.components.Button;
+import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.components.Tabla;
 
 
@@ -45,6 +46,7 @@ public class MenuProductosServicios extends JPanel {
 	
 	public MenuProductosServicios(
 		    String user,
+			HeaderButtonsActions headerButtonsActions,
 		    Function<Finder, ActionListener> generateAction,
 		    Function<Finder, ActionListener> payNowAction,
 		    Function<Finder, ActionListener> payLaterAction,
@@ -52,7 +54,7 @@ public class MenuProductosServicios extends JPanel {
 		) {
 		    this.title = "Detalles de los productos/servicios";
 		    configPanel();
-		    configHeader(user, "Factura");
+		    configHeader(user, "Factura", headerButtonsActions);
 		    configFinder("Numero de habitacion", generateAction);
 		    configPayNowButton(payNowAction);
 		    configPayLaterButton(payLaterAction);
@@ -79,8 +81,8 @@ public class MenuProductosServicios extends JPanel {
 		this.setBorder(new EmptyBorder(50, 50, 50, 50));
 	}
 	
-	private void configHeader(String user, String title) {
-		this.header = new MainHeader(user, title);
+	private void configHeader(String user, String title, HeaderButtonsActions headerButtonsActions) {
+		this.header = new MainHeader(user, title, headerButtonsActions);
 	}
 	
 	private void configFinder(

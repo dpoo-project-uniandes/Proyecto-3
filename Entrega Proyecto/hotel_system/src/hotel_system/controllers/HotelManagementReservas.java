@@ -7,13 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import hotel_system.models.EstadoReserva;
 import hotel_system.models.Habitacion;
 import hotel_system.models.Reserva;
-import hotel_system.models.TipoHabitacion;
 import hotel_system.models.Titular;
 import hotel_system.utils.Utils;
 import services.FileManager;
@@ -126,7 +124,7 @@ public class HotelManagementReservas {
 	
 	public void cancelarReserva(Long id) throws Exception {
 		Reserva reserva = reservas.get(id);
-		reserva.setEstado(EstadoReserva.CANCELADO);
+		reserva.setEstado(EstadoReserva.CANCELADA);
 		FileManager.modificarLineaCSV("reservas.csv", "numero", reserva.getNumero().toString(), reservaToListString(reserva));
 	}
 	

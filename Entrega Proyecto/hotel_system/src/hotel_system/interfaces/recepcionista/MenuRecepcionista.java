@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 import java.util.function.Function;
 
 import hotel_system.interfaces.MainMenu;
+import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.components.MenuButton;
 
 public class MenuRecepcionista extends MainMenu {
@@ -14,11 +15,12 @@ public class MenuRecepcionista extends MainMenu {
 
     public MenuRecepcionista(
     		String user,
+    		HeaderButtonsActions headerButtonsActions,
     		Function<MenuRecepcionista, ActionListener> bookingAction,
     		Function<MenuRecepcionista, ActionListener> staysAction,
     		Function<MenuRecepcionista, ActionListener> consumiblesAction
 	) {
-    	super(user, "Menu Principal", 3);
+    	super(user, "Menu Principal", 3, headerButtonsActions);
         configMenu(bookingAction, staysAction, consumiblesAction);
     }
     
