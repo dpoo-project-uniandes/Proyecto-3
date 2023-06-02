@@ -35,7 +35,6 @@ public class FormRoomsData implements FormDataTable {
 	private void buildData() {
 		this.data = this.tipoHabitaciones.stream()
 				.map(tipo -> {
-					System.out.println(tipo);
 					List<Object> row = new ArrayList<>();
 					row.add(tipo.getAlias().toString());
 					row.add(tipo.getCapacidad().toString());
