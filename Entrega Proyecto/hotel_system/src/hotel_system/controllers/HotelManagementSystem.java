@@ -67,7 +67,7 @@ public class HotelManagementSystem {
 	private void cargarControladores() {
 		this.controladorUsuarios = new HotelManagementUsuarios(usuarios);
 		this.controladorResevas = new HotelManagementReservas(inventarioHabitaciones, reservas);
-		this.controladorEstadias = new HotelManagementEstadias(inventarioHabitaciones, estadias);
+		this.controladorEstadias = new HotelManagementEstadias(inventarioHabitaciones, estadias, controladorResevas);
 	}
 	
 	// =====================================================================================================================================================
@@ -116,10 +116,10 @@ public class HotelManagementSystem {
 	// ESTADIAS
 	// =====================================================================================================================================================
 	
-	public void iniciarEstadia(String dni, List<Huesped> huespedes) throws Exception {
-		Reserva reserva = controladorResevas.getReservaByDNI(dni);
-		if (reserva != null) 
-			throw new Exception("No se encontraron reservas para el dni "+ dni);
+	public void iniciarEstadia(String dniTitular, List<Huesped> huespedes) throws Exception {
+		Reserva reserva = getReservaByDNI(dniTitular);
+		if (reserva == null) 
+			throw new Exception("No se encontraron reservas para el dni "+ dniTitular);
 		controladorEstadias.iniciarEstadia(reserva, huespedes);
 	}
 	

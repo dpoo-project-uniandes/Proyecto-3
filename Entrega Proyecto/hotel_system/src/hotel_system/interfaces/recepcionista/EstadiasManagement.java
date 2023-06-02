@@ -4,9 +4,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.function.Function;
 
 import javax.swing.BorderFactory;
@@ -43,6 +43,7 @@ public class EstadiasManagement extends JPanel {
 	// FORM NEW ESTADIA
 	private JPanel formNewEstadia;
 	private JPanel inputsPanel;
+	private Input bookingId;
 	private Input guest;
 	private Input dni;
 	private Input age;
@@ -68,7 +69,7 @@ public class EstadiasManagement extends JPanel {
 	
 	public EstadiasManagement(
 			String user,
-			FormDataTable guestsData,
+			FormDataTable<Huesped> guestsData,
 			HeaderButtonsActions headerButtonsActions,
 			Function<Finder, ActionListener> findAction,
 			Function<EstadiasManagement, ActionListener> createAction,
@@ -84,7 +85,7 @@ public class EstadiasManagement extends JPanel {
 		this.billingAction = billingAction;
 		configPanel();
 		configHeader(user, "Estadias", headerButtonsActions);
-		configFinder("Documento Titular / Nro de Reserva", findAction);
+		configFinder("Documento Titular / Nro de Estadia", findAction);
 		configNewEstadiaButton();
 		configVerticalButtons();
 		configPanelFinderAndNewEstadia();
@@ -185,17 +186,18 @@ public class EstadiasManagement extends JPanel {
 		this.inputsPanel.setOpaque(false);
 		
 		// INPUTS
+		this.bookingId = Input.Instance("Reserva", "text");
 		this.guest = Input.Instance("Nombre", "text");
 		this.dni = Input.Instance("Documento", "text");
 		this.age = Input.Instance("Edad", "number");
 		this.addGuestBtn = new Button("Agregar");
 		configButtonAddGuest();
 
-		this.inputsPanel.add(guest, UtilsGUI.getConstraints(0, 0, 1, 1, 0.25, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
-		this.inputsPanel.add(dni, UtilsGUI.getConstraints(1, 0, 1, 1, 0.25, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
-		this.inputsPanel.add(age, UtilsGUI.getConstraints(2, 0, 1, 1, 0.25, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
-		this.inputsPanel.add(addGuestBtn, UtilsGUI.getConstraints(3, 0, 1, 1, 0.1, 1, 20, 50, 20, 50, 1, GridBagConstraints.CENTER));
-		this.inputsPanel.setMaximumSize(new Dimension(5000, 300));
+		this.inputsPanel.add(bookingId, UtilsGUI.getConstraints(0, 0, 1, 1, 0.3, 1, 0, 0, 10, 50, 1, GridBagConstraints.WEST));
+		this.inputsPanel.add(guest, UtilsGUI.getConstraints(0, 1, 1, 1, 0.3, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
+		this.inputsPanel.add(dni, UtilsGUI.getConstraints(1, 1, 1, 1, 0.3, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
+		this.inputsPanel.add(age, UtilsGUI.getConstraints(2, 1, 1, 1, 0.3, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
+		this.inputsPanel.add(addGuestBtn, UtilsGUI.getConstraints(3, 1, 1, 1, 0.1, 1, 10, 50, 20, 50, 1, GridBagConstraints.CENTER));
 		
 		this.formNewEstadia.add(inputsPanel);
 		this.formNewEstadia.add(Box.createRigidArea(new Dimension(0, 50)));
@@ -213,7 +215,23 @@ public class EstadiasManagement extends JPanel {
 	}
 	
 	private void updateGuestsTable() {
-		configFormNewEstadia();
+		this.formNewEstadia.removeAll();
+		
+		// RE-ADD INPUTS
+		this.inputsPanel.add(bookingId, UtilsGUI.getConstraints(0, 0, 1, 1, 0.3, 1, 0, 0, 10, 50, 1, GridBagConstraints.WEST));
+		this.inputsPanel.add(guest, UtilsGUI.getConstraints(0, 1, 1, 1, 0.3, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
+		this.inputsPanel.add(dni, UtilsGUI.getConstraints(1, 1, 1, 1, 0.3, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
+		this.inputsPanel.add(age, UtilsGUI.getConstraints(2, 1, 1, 1, 0.3, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
+		this.inputsPanel.add(addGuestBtn, UtilsGUI.getConstraints(3, 1, 1, 1, 0.1, 1, 10, 50, 20, 50, 1, GridBagConstraints.CENTER));
+		this.formNewEstadia.add(inputsPanel);
+		this.formNewEstadia.add(Box.createRigidArea(new Dimension(0, 50)));
+		
+		// RECREATE TABLE
+		configGuestsTable();
+		
+		// READD BUTTON
+		configButtonEstadia();
+		
 		this.revalidate();
 	}
 	
@@ -249,5 +267,13 @@ public class EstadiasManagement extends JPanel {
 			};
 		};
 		((GuestsData) guestsData).withDeleteAction(deleteAction);
+	}
+	
+	public List<Huesped> guests() {
+		return guestsData.getTypedData();
+	}
+	
+	public String bookingId() {
+		return bookingId.getValue();
 	}
 }

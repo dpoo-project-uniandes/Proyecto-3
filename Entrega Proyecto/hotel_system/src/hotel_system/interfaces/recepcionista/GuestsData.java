@@ -46,6 +46,11 @@ public class GuestsData extends FormDataTable<Huesped> {
 		this.lastPositionFree += 1;
 	}
 	
+	@Override
+	public List<Huesped> getTypedData() {
+		return this.guests;
+	}
+	
 	private void addDataList(Huesped guest) {
 		List<Object> row = new ArrayList<>();
 		row.add(guest.getNombre().toString());

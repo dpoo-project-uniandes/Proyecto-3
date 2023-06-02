@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import hotel_system.models.Estadia;
 import hotel_system.models.EstadoReserva;
 import hotel_system.models.Habitacion;
 import hotel_system.models.Reserva;
@@ -140,6 +141,14 @@ public class HotelManagementReservas {
 		for(Habitacion habitacion: reserva.getHabitaciones()) {
 			FileManager.removerLineaCSV("reservas_habitaciones.csv", "numero_reserva", reserva.getNumero().toString());	
 		}
+	}
+	
+	public void setEstadiaReserva(Long idReserva, Estadia estadia ) throws Exception {
+		Reserva reserva = this.reservas.get(idReserva);
+		if (reserva == null) 
+			return;
+		reserva.setEstadia(estadia);
+		FileManager.modificarLineaCSV("reservas.csv", "numero", reserva.getNumero().toString(), reservaToListString(reserva));
 	}
 	
 	private Reserva construirReserva(

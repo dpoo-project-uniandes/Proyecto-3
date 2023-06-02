@@ -1,5 +1,6 @@
 package hotel_system.interfaces.components;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FormDataTable<T> {
@@ -30,4 +31,8 @@ public abstract class FormDataTable<T> {
 	public void addData(T value) {
 		
 	};
+	
+	public List<T> getTypedData() {
+		return new ArrayList<T>();
+	}
 }

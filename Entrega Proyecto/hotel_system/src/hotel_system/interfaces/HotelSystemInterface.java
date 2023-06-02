@@ -71,7 +71,7 @@ public class HotelSystemInterface extends JFrame {
 		this.user = "Juan Rojas";
 		this.pms = new HotelManagementSystem();
 		configHeaderButtonsActions();
-		configEstadiasManagement();
+		configMenuRecepcionista();
 	}
 	
 	// ============================================================================================================================================================================
@@ -392,7 +392,7 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					configStayingManagement();
+					configEstadiasManagement();
 				}	
 			};
 		};
@@ -572,7 +572,13 @@ public class HotelSystemInterface extends JFrame {
 		Function<EstadiasManagement, ActionListener> createAction = (panel) -> {
 			return new ActionListener() {
 				@Override
-				public void actionPerformed(ActionEvent e) { 
+				public void actionPerformed(ActionEvent e) {
+					try {
+						pms.iniciarEstadia(panel.bookingId(), panel.guests());
+					} catch (Exception e1) {
+						e1.printStackTrace();
+	                    JOptionPane.showMessageDialog(null, e1.getMessage());
+					}
 				}
 			};
 		
@@ -593,14 +599,6 @@ public class HotelSystemInterface extends JFrame {
 				billingAction
 		);
 		configMainFrame(estadiasManagement);
-	}
-	
-	// ================================================================================================================================================================================
-	// VENTANA DE ...
-	// ================================================================================================================================================================================
-	
-	private void configStayingManagement() {
-		// TODO Auto-generated method stub	
 	}
 	
 	private void configConsumingManagement() {

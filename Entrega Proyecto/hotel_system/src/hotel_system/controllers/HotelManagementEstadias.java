@@ -1,6 +1,6 @@
 package hotel_system.controllers;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,22 +9,43 @@ import hotel_system.models.Estadia;
 import hotel_system.models.Habitacion;
 import hotel_system.models.Huesped;
 import hotel_system.models.Reserva;
+import hotel_system.utils.Utils;
+import services.FileManager;
 
 public class HotelManagementEstadias {
 	
 	private Map<Integer, Habitacion> inventarioHabitaciones;
 	private Map<Long, Estadia> estadias;
 	
-	public HotelManagementEstadias(Map<Integer, Habitacion> inventarioHabitaciones, Map<Long, Estadia> estadias) {
+	private HotelManagementReservas controladorReservas;
+	
+	public HotelManagementEstadias(
+			Map<Integer, Habitacion> inventarioHabitaciones, 
+			Map<Long, Estadia> estadias,
+			HotelManagementReservas controladorReservas
+		) {
 		super();
 		this.inventarioHabitaciones = inventarioHabitaciones;
 		this.estadias = estadias;
+		this.controladorReservas = controladorReservas;
 	}
 	
-	public void iniciarEstadia(Reserva reserva, List<Huesped> huespedes) {
+	public void iniciarEstadia(Reserva reserva, List<Huesped> huespedes) throws Exception {
+		// Construccion Estadia
 		Estadia estadia = new Estadia(reserva, reserva.getFechaDeLlegada(), reserva.getFechaDeSalida(), huespedes);
-		reserva.setEstadia(estadia);
+		
+		// Archivo Estadias
+		FileManager.agregarLineasCSV("estadias.csv", Arrays.asList(estadiaToListString(estadia)));
+		
+		// Archivo Huespedes
+		List<List<String>> huespedesCSV = huespedes.stream().map(huesped -> huespedToListString(huesped)).toList();
+		FileManager.agregarLineasCSV("huespedes.csv", huespedesCSV);
+		
+		// Estadias
 		estadias.put(estadia.getId(), estadia);
+		
+		// Actualizacion Reserva
+		controladorReservas.setEstadiaReserva(reserva.getNumero(), estadia);
 	}
 
 	public Estadia getEstadiaById(Long id) {		
@@ -59,5 +80,24 @@ public class HotelManagementEstadias {
 			return habitacion.get().getReservaActual().getEstadia();
 		else 
 			return null;
+	}
+	
+	private List<String> estadiaToListString(Estadia estadia) {
+		return Arrays.asList(
+				estadia.getId().toString(),
+				estadia.getReserva().getNumero().toString(),
+				Utils.stringLocalDate(estadia.getFechaIngreso()),
+				Utils.stringLocalDate(estadia.getFechaSalida())
+		);
+	}
+	
+	private List<String> huespedToListString(Huesped huesped) {
+		return Arrays.asList(
+				huesped.getDni(),
+				huesped.getNombre(),
+				huesped.getEdad().toString(),
+				"",
+				""
+		);
 	}
 }
