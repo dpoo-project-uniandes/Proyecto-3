@@ -7,18 +7,21 @@ import hotel_system.utils.Utils;
 
 public class Factura {
 
+	private Long id;
 	private Huesped titular;
 	private Double valorTotal;
 	private Pago pago;
 	private List<Consumible> consumibles;
 
 	public Factura(Huesped titular, List<Consumible> consumibles) {
+		this.id = Utils.generateId();
 		this.titular = titular;
 		this.consumibles = consumibles;
 		calcularValorTotal();
 	}
 
 	public Factura(Huesped titular) {
+		this.id = Utils.generateId();
 		this.titular = titular;
 		this.valorTotal = 0.0;
 		this.consumibles = new ArrayList<>();
@@ -52,6 +55,10 @@ public class Factura {
 
 	public void eliminarConsumible(Consumible consumible) {
 		this.consumibles.remove(consumible);
+	}
+	
+	public Long getId() {
+		return id;
 	}
 
 	public Huesped getTitular() {

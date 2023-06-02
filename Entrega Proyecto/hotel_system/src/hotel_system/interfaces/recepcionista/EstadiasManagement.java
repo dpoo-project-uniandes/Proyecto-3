@@ -2,16 +2,21 @@ package hotel_system.interfaces.recepcionista;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
@@ -28,6 +33,7 @@ import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.components.Input;
 import hotel_system.models.Estadia;
 import hotel_system.models.Huesped;
+import hotel_system.utils.Utils;
 
 public class EstadiasManagement extends JPanel {
 
@@ -57,8 +63,8 @@ public class EstadiasManagement extends JPanel {
 	private JPanel estadiasDataPanel;
 	private VerticalButtons actionsEstadiasPanel;
 	private Button updateEstadiaBtn;
-	private Button deleteEstadiaBtn;
-	private Button cancelEstadiaBtn;
+	private Button guestsEstadiaBtn;
+	private Button billingEstadiaBtn;
 	private Estadia estadiaInjected;
 	
 	// ACTIONS LISTENER
@@ -129,6 +135,7 @@ public class EstadiasManagement extends JPanel {
 		this.newEstadiaBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				guestsData = new GuestsData(new ArrayList<>(), null);
 				configFormNewEstadia();
 			}
 		});
@@ -154,13 +161,13 @@ public class EstadiasManagement extends JPanel {
 	// ================================================================================================================================================================================
 	
 	public void cleanUserInputs() {
-		this.finder.setValue("");;
+		this.finder.setValue("");
+		this.guest.getInput().setText("");
+		this.dni.getInput().setText("");
+		this.age.getInput().setText("");
 	}
 	
 	private void configFormNewEstadia() {
-		// CLEAN
-		cleanUserInputs();
-		
 		// INITIALIZE
 		this.formNewEstadia = new JPanel();
 		this.formNewEstadia.setLayout(new BoxLayout(this.formNewEstadia, BoxLayout.Y_AXIS));
@@ -186,7 +193,7 @@ public class EstadiasManagement extends JPanel {
 		this.inputsPanel.setOpaque(false);
 		
 		// INPUTS
-		this.bookingId = Input.Instance("Reserva", "text");
+		this.bookingId = Input.Instance("Documento Titular", "text");
 		this.guest = Input.Instance("Nombre", "text");
 		this.dni = Input.Instance("Documento", "text");
 		this.age = Input.Instance("Edad", "number");
@@ -250,12 +257,13 @@ public class EstadiasManagement extends JPanel {
 					return;
 				Huesped huesped = new Huesped(guest.getValue(), dni.getValue(), Integer.parseInt(age.getValue()));
 				guestsData.addData(huesped);
+				cleanUserInputs();
 				updateGuestsTable();
 			}
 		});
-	} 
+	}
 	
-	private void configGuestsDataListeners() {
+	private Function<GuestsData, ActionListener> deleteAction() {
 		Function<GuestsData, ActionListener> deleteAction = (data) -> {
 			return new ActionListener() {
 				@Override
@@ -266,7 +274,11 @@ public class EstadiasManagement extends JPanel {
 				}
 			};
 		};
-		((GuestsData) guestsData).withDeleteAction(deleteAction);
+		return deleteAction;
+	}
+	
+	private void configGuestsDataListeners() {
+		((GuestsData) guestsData).withDeleteAction(deleteAction());
 	}
 	
 	public List<Huesped> guests() {
@@ -275,5 +287,108 @@ public class EstadiasManagement extends JPanel {
 	
 	public String bookingId() {
 		return bookingId.getValue();
+	}
+	
+	// ================================================================================================================================================================================
+	// INYECCION DE PANELES
+	// ================================================================================================================================================================================
+	
+	public void withoutResults() {
+		this.dataPanel.emptyResults();
+		this.estadiaInjected = null;
+	}
+	
+	private JPanel getColumnPanelDataEstadia() {
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setOpaque(false);
+		return panel;
+	}
+	
+	private JPanel getLabelDataEstadia(String title, String value) {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel titleLabel = new JLabel(title + ":");
+		JLabel valueLabel = new JLabel(value);
+		
+		// CUSTOMOZATION
+		titleLabel.setFont(new Font(getName(), Font.BOLD, 20));
+		valueLabel.setFont(new Font(getName(), Font.PLAIN, 20));
+		
+		panel.add(titleLabel);
+		panel.add(valueLabel);
+		panel.setOpaque(false);
+		
+		return panel;
+	}
+	
+	public void injectData(Estadia estadia) {
+		// UPDPATE CURRENT ESTADIA
+		this.estadiaInjected = estadia;
+		
+		// PANEL
+		this.estadiasDataPanel = new JPanel();
+		this.estadiasDataPanel.setLayout(new GridBagLayout());
+		this.estadiasDataPanel.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+		this.estadiasDataPanel.setOpaque(false);
+		
+		List<String> titles = Arrays.asList("Nro", "Llegada", "Salida", "Titular", "Reserva", "Huespedes", "Facturado");
+		List<String> values = Arrays.asList(
+				estadia.getId().toString(),
+				Utils.stringLocalDate(estadia.getFechaIngreso()),
+				Utils.stringLocalDate(estadia.getFechaSalida()),
+				estadia.getReserva().getTitular().getNombre().toString(),
+				estadia.getReserva().getNumero().toString(),
+				String.valueOf(estadia.getHuespedes().size()),
+				String.valueOf(estadia.getFacturas().size())
+		);
+		
+		// COLUMNS DATA
+		Integer middle = (titles.size() / 2);
+		JPanel col1 = getColumnPanelDataEstadia();
+		JPanel col2 = getColumnPanelDataEstadia();
+		
+		for(int i = 0; i < titles.size(); i++) {
+			if (middle < i)
+				col1.add(getLabelDataEstadia(titles.get(i), values.get(i)));
+			else
+				col2.add(getLabelDataEstadia(titles.get(i), values.get(i)));
+		}
+		
+		this.estadiasDataPanel.add(col2, UtilsGUI.getConstraints(0, 0, 1, 1, 0.4, 1, 0, 0, 0, 0, 1, GridBagConstraints.WEST));
+		this.estadiasDataPanel.add(col1, UtilsGUI.getConstraints(1, 0, 1, 1, 0.4, 1, 0, 0, 0, 0, 1, GridBagConstraints.WEST));
+		
+		// BUTTONS
+		this.actionsEstadiasPanel = new VerticalButtons(3);
+		this.updateEstadiaBtn = new Button("Modificar");
+		this.updateEstadiaBtn.addActionListener(this.updateAction.apply(this));
+		this.guestsEstadiaBtn = new Button("Huespedes");
+		this.guestsEstadiaBtn.addActionListener(this.guestsAction.apply(this));
+		this.billingEstadiaBtn = new Button("Facturacion");
+		this.billingEstadiaBtn.addActionListener(this.billingAction.apply(this));
+		
+		this.actionsEstadiasPanel.add(this.updateEstadiaBtn);
+		this.actionsEstadiasPanel.add(this.guestsEstadiaBtn);
+		this.actionsEstadiasPanel.add(this.billingEstadiaBtn);
+		
+		this.estadiasDataPanel.add(this.actionsEstadiasPanel, UtilsGUI.getConstraints(3, 0, 1, 1, 0.2, 1, 60, 0, 60, 0, 1, GridBagConstraints.EAST));
+		
+		// REFRESH
+		this.dataPanel.injectDataPanel(this.estadiasDataPanel);
+	}
+	
+	public void formNewEstadiaInjectData(Estadia estadia) {
+		// RESTART FROM PANEL
+		configFormNewEstadia();
+		
+		// SET INFORMATION
+		this.bookingId.getInput().setText(estadia.getId().toString());
+		this.guestsData = new GuestsData(estadia.getHuespedes(), deleteAction());
+		
+		// REFRESH TABLE
+		updateGuestsTable();
+	}
+	
+	public Estadia getEstadiaInjected() {
+		return estadiaInjected;
 	}
 }

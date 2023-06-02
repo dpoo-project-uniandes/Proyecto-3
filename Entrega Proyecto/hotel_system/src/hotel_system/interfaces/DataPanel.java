@@ -73,6 +73,7 @@ public class DataPanel extends JPanel {
 		this.dataPanel.removeAll();
 		this.dataPanel.add(this.emptyResultsLabel, UtilsGUI.getConstraints(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
 		this.revalidate();
+		this.repaint();
 	}
 	
 	public void injectDataPanel(JPanel panel) {

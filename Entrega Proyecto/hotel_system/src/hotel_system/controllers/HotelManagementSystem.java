@@ -53,8 +53,8 @@ public class HotelManagementSystem {
 			this.hotel = this.loaderData.cargarHotel();
 			this.opcionesHabitacion = this.loaderData.cargarTipoHabitaciones();
 			this.inventarioHabitaciones = this.loaderData.cargarHabitaciones(opcionesHabitacion, hotel);
-			this.estadias = this.loaderData.cargarEstadias();
-			this.reservas = this.loaderData.cargarReservas(inventarioHabitaciones, estadias);
+			this.reservas = this.loaderData.cargarReservas(inventarioHabitaciones);
+			this.estadias = this.loaderData.cargarEstadias(reservas);
 			this.inventarioProductos = this.loaderData.cargarProductos();
 			this.inventarioServicios = this.loaderData.cargarServicios();
 			this.usuarios = this.loaderData.cargarUsuarios();
@@ -116,11 +116,13 @@ public class HotelManagementSystem {
 	// ESTADIAS
 	// =====================================================================================================================================================
 	
-	public void iniciarEstadia(String dniTitular, List<Huesped> huespedes) throws Exception {
+	public Estadia iniciarEstadia(String dniTitular, List<Huesped> huespedes) throws Exception {
 		Reserva reserva = getReservaByDNI(dniTitular);
 		if (reserva == null) 
 			throw new Exception("No se encontraron reservas para el dni "+ dniTitular);
-		controladorEstadias.iniciarEstadia(reserva, huespedes);
+		if (huespedes.size() > reserva.getCantidadPersonas()) 
+			throw new Exception("La cantidad de huespedes supera los esperados");
+		return controladorEstadias.iniciarEstadia(reserva, huespedes);
 	}
 	
 	public Estadia getEstadiaById(Long id) {

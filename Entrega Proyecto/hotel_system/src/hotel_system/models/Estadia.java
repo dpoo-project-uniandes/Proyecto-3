@@ -15,6 +15,22 @@ public class Estadia {
 	Factura facturaTotal;
 	List<Factura> facturas;
 	List<Huesped> huespedes;
+	
+	public Estadia(Long id) {
+		this.id = id;
+	}
+	
+	public Estadia(Long id, Reserva reserva, Date fechaIngreso, Date fechaSalida, Factura facturaTotal,
+			List<Factura> facturas, List<Huesped> huespedes) {
+		super();
+		this.id = id;
+		this.reserva = reserva;
+		this.fechaIngreso = fechaIngreso;
+		this.fechaSalida = fechaSalida;
+		this.facturaTotal = facturaTotal;
+		this.facturas = facturas;
+		this.huespedes = huespedes;
+	}
 
 	public Estadia(Reserva reserva, Date fechaIngreso, Date fechaSalida, List<Huesped> huespedes) {
 		this.id = Utils.generateId();

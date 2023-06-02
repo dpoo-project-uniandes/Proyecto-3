@@ -52,7 +52,8 @@ public class FileManager {
 				String[] row = linea.split(",");
 				Map<String, String> rowMap = new HashMap<>();
 				for(int i = 0; i < headers.length; i++) {
-					rowMap.put(headers[i],row[i]);
+					String value = row.length <= i ? "" : row[i];
+					rowMap.put(headers[i],value);
 				}  
 				data.add(rowMap);
 				linea = br.readLine();

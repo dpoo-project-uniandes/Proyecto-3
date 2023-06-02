@@ -21,15 +21,19 @@ public class GuestsData extends FormDataTable<Huesped> {
 	
 	private Function<GuestsData, ActionListener> deleteAction;
 	
-	public GuestsData(List<Huesped> guests) {
+	public GuestsData(
+			List<Huesped> guests,
+			Function<GuestsData, ActionListener> deleteAction
+	) {
 		super(
 			Arrays.asList("Huesped", "Documento", "Edad", "Opciones"),
 			Arrays.asList(0.3, 0.3, 0.2, 0.2),
 			Arrays.asList()
 		);
 		this.guests = guests;
-		this.lastPositionFree = guests.size();
+		this.lastPositionFree = 0;
 		this.trashIcon = ImagesManager.resizeIcon(ImagesManager.ImageIcon("trash"), 18, 18);
+		this.deleteAction = deleteAction;
 		buildData();
 	}
 	

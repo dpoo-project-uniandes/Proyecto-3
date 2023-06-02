@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -30,6 +29,7 @@ import hotel_system.interfaces.recepcionista.MenuConsumible;
 import hotel_system.interfaces.recepcionista.MenuProductosServicios;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
 import hotel_system.interfaces.recepcionista.MenuServicios;
+import hotel_system.models.Estadia;
 import hotel_system.models.Huesped;
 import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
@@ -535,15 +535,15 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Reserva booking;
+					Estadia estadia;
 					String text = finder.getValue();
-					booking = pms.getReservaByDNI(text);
-					if (booking == null) 
-						booking = pms.getReservaById(Long.parseLong(text));
-					if (booking == null)
-						bookingManagement.withoutResults();
+					estadia = pms.getEstadiaByDNI(text);
+					if (estadia == null) 
+						estadia = pms.getEstadiaById(Long.parseLong(text));
+					if (estadia == null)
+						estadiasManagement.withoutResults();
 					else
-						bookingManagement.injectData(booking);
+						estadiasManagement.injectData(estadia);
 				}
 			};
 		};
@@ -551,6 +551,8 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					Estadia estadia = panel.getEstadiaInjected();
+					panel.formNewEstadiaInjectData(estadia);
 				}
 			};
 		};
@@ -565,6 +567,8 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					Estadia estadia = panel.getEstadiaInjected();
+					panel.formNewEstadiaInjectData(estadia);
 				}
 			};
 		
@@ -574,7 +578,8 @@ public class HotelSystemInterface extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
-						pms.iniciarEstadia(panel.bookingId(), panel.guests());
+						Estadia estadia = pms.iniciarEstadia(panel.bookingId(), panel.guests());
+						panel.injectData(estadia);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 	                    JOptionPane.showMessageDialog(null, e1.getMessage());
@@ -587,7 +592,7 @@ public class HotelSystemInterface extends JFrame {
 		// ============================================================================================================================================================================
 		// INICIALIZACION DEL PANEL DE ESTADIAS
 		// ============================================================================================================================================================================
-		FormDataTable<Huesped> guestsData = new GuestsData(new ArrayList<>());
+		FormDataTable<Huesped> guestsData = new GuestsData(new ArrayList<>(), null);
 		this.estadiasManagement = new EstadiasManagement(
 				user, 
 				guestsData,

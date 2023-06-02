@@ -3,6 +3,7 @@ package hotel_system.controllers;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,10 @@ import java.util.Map;
 import hotel_system.models.Disponibilidad;
 import hotel_system.models.Estadia;
 import hotel_system.models.EstadoReserva;
+import hotel_system.models.Factura;
 import hotel_system.models.Habitacion;
 import hotel_system.models.Hotel;
+import hotel_system.models.Huesped;
 import hotel_system.models.Producto;
 import hotel_system.models.ProductoRestaurante;
 import hotel_system.models.Reserva;
@@ -132,7 +135,7 @@ public class HotelManagementLoaderData {
 		return new ArrayList<>();
 	}
 	
-	public Map<Long, Reserva> cargarReservas(Map<Integer, Habitacion> habitaciones, Map<Long, Estadia> estadias) throws Exception {
+	public Map<Long, Reserva> cargarReservas(Map<Integer, Habitacion> habitaciones) throws Exception {
 		Map<Long, Reserva> reservas = new HashMap<>();
 		Map<String, Titular> titulares = cargarTitulares();
 		Map<Long, List<Integer>> reservasHabitaciones = cargarReservasHabitaciones();
@@ -147,7 +150,7 @@ public class HotelManagementLoaderData {
 			Date fechaSalida = Utils.stringToDate(dato.get("fecha_salida"));
 			Titular titular = titulares.get(dato.get("titular_dni"));
 			Long estadiaId = Long.parseLong(dato.get("numero_estadia"));
-			Estadia estadia = estadiaId.equals(0) ? null : estadias.get(estadiaId);
+			Estadia estadia = new Estadia(estadiaId);
 			List<Habitacion> habitacionesDeLaReserva = reservasHabitaciones.get(id)
 					.stream()
 					.map(idHabitacion -> habitaciones.get(idHabitacion))
@@ -168,12 +171,37 @@ public class HotelManagementLoaderData {
 		return reservas;
 	}
 
-	public Map<Long, Estadia> cargarEstadias() throws Exception {
+	public Map<Long, Estadia> cargarEstadias(Map<Long, Reserva> reservas) throws Exception {
 		Map<Long, Estadia> estadias = new HashMap<>();
+		Map<String, Titular> huespedes = cargarTitulares();
+		List<Map<String, String>> huespedesPorEstadia = FileManager.cargarArchivoCSV("huespedes_estadias.csv");
 		List<Map<String, String>> data = FileManager.cargarArchivoCSV("estadias.csv");
-//		for (Map<String, String> dato : data) {
-//			
-//		}
+		for (Map<String, String> dato : data) {
+			Long id = Long.parseLong(dato.get("id"));
+			Long idReserva = Long.parseLong(dato.get("numero_reserva"));
+			Reserva reserva = reservas.get(idReserva);
+			Date fechaIngreso = Utils.stringToDate(dato.get("fecha_ingreso"));
+			Date fechaSalida = Utils.stringToDate(dato.get("fecha_salida"));
+			Long facturaTotalId = Long.parseLong(dato.get("factura_id"));
+			Factura facturaTotal = null;
+			List<Huesped> huespedesEstadia = new ArrayList<>();
+			huespedesPorEstadia.stream()
+				.forEach(row -> {
+					if (row.get("numero_estadia").equals(id.toString())) 
+						huespedesEstadia.add(huespedes.get(row.get("dni_huesped")));
+				});
+			Estadia estadia = new Estadia(
+					id,
+					reserva,
+					fechaIngreso,
+					fechaSalida,
+					facturaTotal,
+					Arrays.asList(),
+					huespedesEstadia
+			);
+			estadias.put(id, estadia);
+			reserva.setEstadia(estadia);
+		}
 		return estadias;
 	}
 	

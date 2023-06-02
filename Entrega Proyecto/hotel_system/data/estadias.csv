@@ -1,2 +1,2 @@
-id,numero_reserva,fecha_ingreso,fecha_salida
-1685685143870,1685684481488,2023/06/03,2023/06/10
+id,numero_reserva,fecha_ingreso,fecha_salida,factura_id
+1685691983401,1685691561166,2023/06/03,2023/06/10,1685691983401

@@ -228,7 +228,7 @@ public class BookingManagement extends JPanel {
 	}
 	
 	private JPanel getLabelDataBooking(String title, String value) {
-		JPanel panel = new JPanel(new FlowLayout());
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel titleLabel = new JLabel(title + ":");
 		JLabel valueLabel = new JLabel(value);
 		
@@ -252,6 +252,7 @@ public class BookingManagement extends JPanel {
 	
 	public void withoutResults() {
 		this.dataPanel.emptyResults();
+		this.bookingInjected = null;
 	}
 	
 	public void injectData(Reserva booking) {

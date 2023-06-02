@@ -30,7 +30,7 @@ public class HotelManagementEstadias {
 		this.controladorReservas = controladorReservas;
 	}
 	
-	public void iniciarEstadia(Reserva reserva, List<Huesped> huespedes) throws Exception {
+	public Estadia iniciarEstadia(Reserva reserva, List<Huesped> huespedes) throws Exception {
 		// Construccion Estadia
 		Estadia estadia = new Estadia(reserva, reserva.getFechaDeLlegada(), reserva.getFechaDeSalida(), huespedes);
 		
@@ -41,11 +41,19 @@ public class HotelManagementEstadias {
 		List<List<String>> huespedesCSV = huespedes.stream().map(huesped -> huespedToListString(huesped)).toList();
 		FileManager.agregarLineasCSV("huespedes.csv", huespedesCSV);
 		
+		// Archivo Huespedes & Reservas
+		List<List<String>> huespedesPorEstadia = huespedes.stream()
+				.map(huesped -> Arrays.asList(huesped.getDni(), reserva.getNumero().toString(), estadia.getId().toString()))
+				.toList();
+		FileManager.agregarLineasCSV("huespedes_estadias.csv", huespedesPorEstadia);
+		
 		// Estadias
 		estadias.put(estadia.getId(), estadia);
 		
 		// Actualizacion Reserva
 		controladorReservas.setEstadiaReserva(reserva.getNumero(), estadia);
+		
+		return estadia;
 	}
 
 	public Estadia getEstadiaById(Long id) {		
@@ -87,7 +95,8 @@ public class HotelManagementEstadias {
 				estadia.getId().toString(),
 				estadia.getReserva().getNumero().toString(),
 				Utils.stringLocalDate(estadia.getFechaIngreso()),
-				Utils.stringLocalDate(estadia.getFechaSalida())
+				Utils.stringLocalDate(estadia.getFechaSalida()),
+				estadia.getFacturaTotal() != null ? estadia.getFacturaTotal().getId().toString() : "0"
 		);
 	}
 	
