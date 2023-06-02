@@ -1,5 +1,6 @@
 package hotel_system.models;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,13 +12,15 @@ public class Factura {
 	private Huesped titular;
 	private Double valorTotal;
 	private Pago pago;
+	private Date date;
 	private List<Consumible> consumibles;
 
 	public Factura(Huesped titular, List<Consumible> consumibles) {
 		this.id = Utils.generateId();
 		this.titular = titular;
 		this.consumibles = consumibles;
-		calcularValorTotal();
+		this.date = Utils.nowDate();
+		this.valorTotal = calcularValorTotal();
 	}
 
 	public Factura(Huesped titular) {
@@ -25,24 +28,15 @@ public class Factura {
 		this.titular = titular;
 		this.valorTotal = 0.0;
 		this.consumibles = new ArrayList<>();
+		this.date = Utils.nowDate();
 	}
 
-	public void calcularValorTotal() {
+	public Double calcularValorTotal() {
 		double valorTotal = 0.0;
 		for (Consumible consumible : this.consumibles) {
-			valorTotal += consumible.valor();
+			valorTotal += consumible.getPrecio();
 		}
-		this.valorTotal = valorTotal;
-	}
-
-	public String generarFactura() {
-		return String.format("%s;%s;%s;%s;%.2f;%b",
-				this.titular.getNombre(),
-				this.titular.getDni(),
-				Utils.stringLocalDate(Utils.nowDate()),
-				consumibles.toString(),
-				valorTotal,
-				pago != null);
+		return valorTotal;
 	}
 
 	public void procesarPago() {
@@ -65,31 +59,19 @@ public class Factura {
 		return titular;
 	}
 
-	public void setTitular(Huesped titular) {
-		this.titular = titular;
-	}
-
 	public Double getValorTotal() {
 		return valorTotal;
-	}
-
-	public void setValorTotal(Double valorTotal) {
-		this.valorTotal = valorTotal;
 	}
 
 	public Pago getPago() {
 		return pago;
 	}
 
-	public void setPago(Pago pago) {
-		this.pago = pago;
-	}
-
 	public List<Consumible> getConsumibles() {
 		return consumibles;
 	}
-
-	public void setConsumibles(List<Consumible> consumibles) {
-		this.consumibles = consumibles;
+	
+	public Date getDate() {
+		return date;
 	}
 }

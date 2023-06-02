@@ -3,60 +3,55 @@ package hotel_system.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Servicio implements Consumible {
+public abstract class Servicio implements Facturable {
 
 	protected Long id;
-	protected List<Producto> productosConsumidos;
+	protected List<Consumible> productosConsumidos;
 
 	public Servicio(Long id) {
 		super();
 		this.id = id;
 		this.productosConsumidos = new ArrayList<>();
 	}
+	
+	public Servicio(Long id, List<Consumible> consumibles) {
+		super();
+		this.id = id;
+		this.productosConsumidos = consumibles;
+	}
 
 	@Override
 	public Factura facturar(Huesped titular) {
-	    Factura factura = new Factura(titular, getConsumo());
+	    Factura factura = new Factura(titular, productosConsumidos);
 	    factura.procesarPago();
 	    return factura;
 	}
 
 	@Override
-	public Double valor() {
+	public Double calcularTotal() {
 		double valorTotal = 0.0;
-		for (Consumible consumible : getConsumo()) {
-			valorTotal += consumible.valor();
+		for (Consumible consumible : productosConsumidos) {
+			valorTotal += consumible.getPrecio();
 		}
 		return valorTotal;
 	}
 
-	public void agregarConsumo(Producto producto) {
-		this.productosConsumidos.add(producto);
+	@Override
+	public void addConsumible(Consumible consumible) {
+		this.productosConsumidos.add(consumible);
 	}
 
-	public void eliminarConsumo(Producto producto) {
-		this.productosConsumidos.remove(producto);
+	@Override
+	public void removeConsumible(Consumible consumible) {
+		this.productosConsumidos.remove(consumible);
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Consumible> getConsumo() {
-		return (List<Consumible>) productosConsumidos.stream().map(p -> (Consumible) p);
-	}
-
-	public List<Producto> getProductosConsumidos() {
+	@Override
+	public List<Consumible> getConsumibles() {
 		return productosConsumidos;
 	}
-
-	public void setProductosConsumidos(List<Producto> productosConsumidos) {
-		this.productosConsumidos = productosConsumidos;
-	}
 	
-	@Override
 	public Long getId() {
 		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 }

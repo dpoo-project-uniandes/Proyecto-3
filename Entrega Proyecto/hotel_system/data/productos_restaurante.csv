@@ -1,13 +1,13 @@
-id,nombre,precio,fechaInicial,fechaFinal,alCuarto,tipo
+id,nombre,precio,fecha_inicial,fecha_final,al_cuarto,tipo
 46921,gaseosa,50,2023/04/05,2023/04/12,false,producto
 27776,jugo,22,2023/05/15,2023/05/22,false,producto
-12097,cerveza,50,2023/06/10,2023/06/17,false,profucto
+12097,cerveza,50,2023/06/10,2023/06/17,false,producto
 87506,papas,12,2023/07/21,2023/07/28,false,producto
 37912,galletas,45,2023/08/02,2023/08/09,false,producto
-62109,desayuno_del_dia,30,2023/09/12,2023/09/19,true,productorestaurante
-21975,almuerzo_del_dia,28,2023/10/25,2023/11/01,true,productorestaurante
-54698,cena_del_dia,38,2023/12/05,2023/12/12,true,productorestaurante
-48970,postre_del_dia,15,2024/01/15,2024/01/22,true,productorestaurante
-30154,entrada_del_dia,25,2024/02/20,2024/02/27,true,productorestaurante
-79063,ensalada_del_dia,20,2024/03/08,2024/03/15,true,productorestaurante
-46723,opcion_vegana_del_dia,60,2024/04/18,2024/04/25,true,productorestaurante
+62109,desayuno del dia,30,2023/09/12,2023/09/19,true,productorestaurante
+21975,almuerzo del dia,28,2023/10/25,2023/11/01,true,productorestaurante
+54698,cena del dia,38,2023/12/05,2023/12/12,true,productorestaurante
+48970,postre del dia,15,2024/01/15,2024/01/22,true,productorestaurante
+30154,entrada del dia,25,2024/02/20,2024/02/27,true,productorestaurante
+79063,ensalada del dia,20,2024/03/08,2024/03/15,true,productorestaurante
+46723,opcion vegana del dia,60,2024/04/18,2024/04/25,true,productorestaurante

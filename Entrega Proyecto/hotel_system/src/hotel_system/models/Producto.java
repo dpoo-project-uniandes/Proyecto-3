@@ -1,16 +1,14 @@
 package hotel_system.models;
 
-import java.util.List;
 import java.util.Objects;
 
-public class Producto implements Consumible{
+public class Producto implements Consumible {
 
 	private Long id;
 	private String nombre;
 	private Double precio;
 
 	public Producto(Long id, String nombre, Double precio) {
-		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.precio = precio;
@@ -31,15 +29,8 @@ public class Producto implements Consumible{
 	}
 
 	@Override
-	public Factura facturar(Huesped titular) {
-	    Factura factura = new Factura(titular, List.of(this));
-	    factura.procesarPago();
-	    return factura;
-	}
-
-	@Override
-	public Double valor() {
-		return getPrecio();
+	public Double getPrecio() {
+		return precio;
 	}
 	
 	@Override
@@ -47,23 +38,8 @@ public class Producto implements Consumible{
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
+	@Override
 	public String getNombre() {
 		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
-
-	public Double getPrecio() {
-		return precio;
-	}
-
-	public void setPrecio(Double precio) {
-		this.precio = precio;
 	}
 }

@@ -1,70 +1,24 @@
 package hotel_system.models;
 
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
+
+import hotel_system.utils.Utils;
 
 public class Alojamiento extends Servicio {
 
-    private List<Habitacion> habitaciones;
-    private Date fechaIngreso;
-    private Date fechaSalida;
-
-    public Alojamiento(Long id, List<Habitacion> habitaciones, Date fechaIngreso, Date fechaSalida) {
-        super(id);
-        this.habitaciones = habitaciones;
-        this.fechaIngreso = fechaIngreso;
-        this.fechaSalida = fechaSalida;
+	public Alojamiento(Reserva reserva) {
+        super(Utils.generateId(), getConsumo(reserva));
     }
 
-    @Override
-    public Factura facturar(Huesped titular) {
-        throw new UnsupportedOperationException("method not implemented");
+	@SuppressWarnings("unchecked")
+	private static List<Consumible> getConsumo(Reserva reserva) {
+		return (List<Consumible>) ((List<?>)reserva.getHabitaciones().stream()
+				.map(habitacion -> {
+					Estadia estadia = reserva.getEstadia();
+					return new Producto(
+							Integer.toUnsignedLong(habitacion.getNumero()), 
+							habitacion.getTipo().getAlias(), 
+							habitacion.calcularTarifa(estadia.getFechaIngreso(), estadia.getFechaSalida()));
+				}).toList());
     }
-
-    @Override
-    public Double valor() {
-    	double valorTotal = 0.0;
-        for(Habitacion habitacion: habitaciones) {
-        	valorTotal += habitacion.calcularTarifa(fechaIngreso, fechaSalida);
-        }
-        return valorTotal;
-    }
-
-    @Override
-	public List<Consumible> getConsumo() {
-    	List<Consumible> habitaciones = new ArrayList<>();
-    	for(Habitacion habitacion: this.habitaciones) {
-    		habitaciones.add(new Producto(
-    				Integer.toUnsignedLong(habitacion.getNumero()),
-    				habitacion.getTipo().getAlias(),
-    				habitacion.calcularTarifa(fechaIngreso, fechaSalida))
-				);
-    	}
-    	return habitaciones;
-    }
-
-	public List<Habitacion> getHabitaciones() {
-		return habitaciones;
-	}
-
-	public void setHabitaciones(List<Habitacion> habitaciones) {
-		this.habitaciones = habitaciones;
-	}
-
-	public Date getFechaIngreso() {
-		return fechaIngreso;
-	}
-
-	public void setFechaIngreso(Date fechaIngreso) {
-		this.fechaIngreso = fechaIngreso;
-	}
-
-	public Date getFechaSalida() {
-		return fechaSalida;
-	}
-
-	public void setFechaSalida(Date fechaSalida) {
-		this.fechaSalida = fechaSalida;
-	}
 }

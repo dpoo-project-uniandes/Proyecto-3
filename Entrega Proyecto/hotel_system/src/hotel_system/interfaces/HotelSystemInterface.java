@@ -521,7 +521,7 @@ public class HotelSystemInterface extends JFrame {
 		// ============================================================================================================================================================================
 		// INICIALIZACION DEL PANEL DE RESERVAS
 		// ============================================================================================================================================================================
-		List<TipoHabitacion> tiposHabitacion = pms.getOpcionesHabitacion().values().stream().toList();
+		List<TipoHabitacion> tiposHabitacion = new ArrayList<>(pms.getOpcionesHabitacion().values());
 		FormRoomsData formRoomsData = new FormRoomsData(tiposHabitacion);
 		this.bookingManagement = new BookingManagement(
 				user,
@@ -651,19 +651,35 @@ public class HotelSystemInterface extends JFrame {
 	
 	private void configProductsManagement() {
 		Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-        Function<MenuProductosServicios, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-        Function<MenuProductosServicios, ActionListener> payLaterAction = (panel) -> { 
+        Function<MenuProductosServicios, ActionListener> payNowAction = (panel) -> { 
         	return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					// TODO Auto-generated method stub
 					Integer habitacion = Integer.parseInt(panel.getHabitacion());
 					Map<String, Integer> productsSelected = panel.getProductsMap();
 					Map<Long, Integer> products = new HashMap<>();
 					productsSelected.forEach((k, v) -> products.put(Long.parseLong(k), v));
 					try {
-						Factura factura = pms.facturarAlaHabitacion(habitacion, products);
+						Factura factura = pms.facturar(habitacion, products);
 						panel.injectDataFactura(factura);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+	                    JOptionPane.showMessageDialog(null, e1.getMessage());
+					}
+				}
+			};
+        };
+        Function<MenuProductosServicios, ActionListener> payLaterAction = (panel) -> { 
+        	return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Integer habitacion = Integer.parseInt(panel.getHabitacion());
+					Map<String, Integer> productsSelected = panel.getProductsMap();
+					Map<Long, Integer> products = new HashMap<>();
+					productsSelected.forEach((k, v) -> products.put(Long.parseLong(k), v));
+					try {
+						pms.facturarAlaHabitacion(habitacion, products);
+						JOptionPane.showMessageDialog(null, "Facturacion Exitosa");
 					} catch (Exception e1) {
 						e1.printStackTrace();
 	                    JOptionPane.showMessageDialog(null, e1.getMessage());
@@ -674,6 +690,7 @@ public class HotelSystemInterface extends JFrame {
         FormDataTable<Producto> data = new ProductsData(new ArrayList<>(pms.getProductos().values()));
 		this.menuProductosServicios = new MenuProductosServicios(
 				user,
+				this,
 				data,
 				headerButtonsActions.withButtons(),
 				generateAction,

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Window;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,7 +13,6 @@ import java.util.function.Function;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
@@ -43,11 +43,14 @@ public class MenuProductosServicios extends JPanel {
 	private String title;
 	private DynamicTable productsTable;
 	private JScrollPane scrollPaneProductsTable;
+	private DialogFactura dialogFactura;
+	private Window frame;
 	
 	private FormDataTable<Producto> productsData;
 	
 	public MenuProductosServicios(
 		    String user,
+		    Window frame,
 		    FormDataTable<Producto> productsData,
 			HeaderButtonsActions headerButtonsActions,
 		    Function<Finder, ActionListener> generateAction,
@@ -56,6 +59,7 @@ public class MenuProductosServicios extends JPanel {
 		) {
 		    this.title = "Inventario Productos";
 		    this.productsData = productsData;
+		    this.frame = frame;
 		    configPanel();
 		    configHeader(user, "Productos", headerButtonsActions);
 		    configFinder("Numero de habitacion", generateAction);
@@ -137,15 +141,8 @@ public class MenuProductosServicios extends JPanel {
 		// CLEAN
 		cleanUserInputs();
 		
-		// TODO mejorar presentacion
-		String facturaString = "FACTURA ELECTRONICA\n"
-				+ "Titular: "
-				+ factura.getTitular().getNombre()
-				+ "\nDNI: "
-				+ factura.getTitular().getDni()
-				+ "\nValor Total: "
-				+ factura.getValorTotal();
-        JOptionPane.showMessageDialog(this, facturaString);
+		// Factura
+		this.dialogFactura = new DialogFactura(frame, "Factura Electronica", factura);
 	}
 	
 	public String getHabitacion() {

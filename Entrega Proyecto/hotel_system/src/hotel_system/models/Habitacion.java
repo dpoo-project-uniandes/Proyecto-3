@@ -80,16 +80,8 @@ public class Habitacion {
 		return numero;
 	}
 
-	public void setNumero(Integer numero) {
-		this.numero = numero;
-	}
-
 	public TipoHabitacion getTipo() {
 		return tipo;
-	}
-
-	public void setTipo(TipoHabitacion tipo) {
-		this.tipo = tipo;
 	}
 
 	public Reserva getReservaActual() {

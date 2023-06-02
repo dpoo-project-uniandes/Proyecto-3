@@ -21,27 +21,13 @@ public class ProductoRestaurante extends Producto {
 		return rangoHorario;
 	}
 
-	public void setRangoHorario(List<Date> rangoHorario) {
-		this.rangoHorario = rangoHorario;
-	}
-
 	public Boolean getAlCuarto() {
 		return alCuarto;
-	}
-
-	public void setAlCuarto(Boolean alCuarto) {
-		this.alCuarto = alCuarto;
 	}
 
 	public String getTipo() {
 		return tipo;
 	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
-	}
-
-
 }
 
 

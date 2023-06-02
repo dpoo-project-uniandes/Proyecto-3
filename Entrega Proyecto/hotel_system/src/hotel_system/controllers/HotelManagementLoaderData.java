@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import hotel_system.models.Consumible;
 import hotel_system.models.Disponibilidad;
 import hotel_system.models.Estadia;
 import hotel_system.models.EstadoReserva;
@@ -210,6 +211,19 @@ public class HotelManagementLoaderData {
 		return estadias;
 	}
 	
+	public Hotel cargarHotel() throws Exception {
+		List<Map<String, String>> datosHotel = FileManager.cargarArchivoCSV("caracteristicas_hotel.csv");
+		Map<String, String> datos = datosHotel.get(0);
+		Boolean conParqueaderoIncluido = Boolean.parseBoolean(datos.get("parqueadero"));
+		Boolean conPiscina = Boolean.parseBoolean(datos.get("piscina"));
+		Boolean conZonasHumedas = Boolean.parseBoolean(datos.get("zonas_humedas"));
+		Boolean conBBQ = Boolean.parseBoolean(datos.get("bbq"));
+		Boolean conWifi = Boolean.parseBoolean(datos.get("wifi"));
+		Boolean conRecepcion24Horas = Boolean.parseBoolean(datos.get("recepcion_24hrs"));
+		Boolean admiteMascotas = Boolean.parseBoolean(datos.get("mascotas"));
+		return new Hotel(conParqueaderoIncluido, conPiscina, conZonasHumedas, conBBQ, conWifi, conRecepcion24Horas, admiteMascotas);
+	}
+	
 	public Map<Long, Producto> cargarProductos() throws Exception {
 		Map<Long, Producto> productosCargados = new HashMap<>();
 		List<Map<String, String>> datos = FileManager.cargarArchivoCSV("productos.csv");
@@ -223,32 +237,17 @@ public class HotelManagementLoaderData {
 		return productosCargados;
 	}
 
-	public Map<String, Servicio> cargarServicios() throws Exception {
-        HashMap<String, Servicio> serviciosCargados = new HashMap<>();
+	public Map<Long, Servicio> cargarServicios() throws Exception {
+        HashMap<Long, Servicio> serviciosCargados = new HashMap<>();
         Restaurante restaurante = cargarServicioRestaurante();
         Spa spa = cargarServicioSpa();
-
-        serviciosCargados.put("restaurante", restaurante);
-        serviciosCargados.put("spa", spa);
-
+        serviciosCargados.put(restaurante.getId(), restaurante);
+        serviciosCargados.put(spa.getId(), spa);
         return serviciosCargados;
     }
-	
-	public Hotel cargarHotel() throws Exception {
-		List<Map<String, String>> datosHotel = FileManager.cargarArchivoCSV("caracteristicas_hotel.csv");
-		Map<String, String> datos = datosHotel.get(0);
-		Boolean conParqueaderoIncluido = Boolean.parseBoolean(datos.get("parqueadero"));
-		Boolean conPiscina = Boolean.parseBoolean(datos.get("piscina"));
-		Boolean conZonasHumedas = Boolean.parseBoolean(datos.get("zonas_humedas"));
-		Boolean conBBQ = Boolean.parseBoolean(datos.get("bbq"));
-		Boolean conWifi = Boolean.parseBoolean(datos.get("wifi"));
-		Boolean conRecepcion24Horas = Boolean.parseBoolean(datos.get("recepcion_24hrs"));
-		Boolean admiteMascotas = Boolean.parseBoolean(datos.get("mascotas"));
-		return new Hotel(conParqueaderoIncluido, conPiscina, conZonasHumedas, conBBQ, conWifi, conRecepcion24Horas, admiteMascotas);
-	}
 
 	private Spa cargarServicioSpa() throws Exception {
-        List<Producto> productosSpa = new ArrayList<>();
+        List<Consumible> productosSpa = new ArrayList<>();
         List<Map<String, String>> datosSpa = FileManager.cargarArchivoCSV("productos_spa.csv");
         for (Map<String, String> dato : datosSpa) {
             Long id = Long.parseLong(dato.get("id"));
@@ -256,27 +255,27 @@ public class HotelManagementLoaderData {
             Double precio = Double.parseDouble(dato.get("precio"));
             productosSpa.add(new Producto(id, nombre, precio));
         }
-        return new Spa(384723984L, productosSpa);
+        return new Spa(Utils.generateId(), productosSpa);
 	}
 
 	private Restaurante cargarServicioRestaurante() throws Exception {
-        List<ProductoRestaurante> productosRestaurante = new ArrayList<>();
+        List<Consumible> productosRestaurante = new ArrayList<>();
         List<Map<String, String>> datosRestaurante = FileManager.cargarArchivoCSV("productos_restaurante.csv");
         for (Map<String, String> dato : datosRestaurante) {
             Long id = Long.parseLong(dato.get("id"));
             String nombre = dato.get("nombre");
             Double precio = Double.parseDouble(dato.get("precio"));
-            String fechaInicial = dato.get("fechaInicial");
-            String fechaFinal = dato.get("fechaFinal");
+            String fechaInicial = dato.get("fecha_inicial");
+            String fechaFinal = dato.get("fecha_final");
             List<Date> fechas = new ArrayList<>();
             fechas.add(Utils.stringToDate(fechaInicial));
             fechas.add(Utils.stringToDate(fechaFinal));
-            Boolean alCuarto = Boolean.parseBoolean(dato.get("alCuarto"));
+            Boolean alCuarto = Boolean.parseBoolean(dato.get("al_cuarto"));
             String tipo = dato.get("tipo");
             ProductoRestaurante producto = new ProductoRestaurante(id, nombre, precio, fechas, alCuarto, tipo);
             productosRestaurante.add(producto);
         }
-        return new Restaurante(988374853L, productosRestaurante);
+        return new Restaurante(Utils.generateId(), productosRestaurante);
 	}
 	
 	private Map<String, Titular> cargarTitulares() throws Exception {

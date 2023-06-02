@@ -9,29 +9,49 @@ import hotel_system.models.Consumible;
 import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
 import hotel_system.models.Producto;
+import hotel_system.models.Servicio;
 
 public class HotelManagementConsumibles {
 	
 	Map<Long, Producto> productos;
+	Map<Long, Servicio> servicios;
+	Map<Long, Consumible> consumibles;
 
-	public HotelManagementConsumibles(Map<Long, Producto> productos) {
+	public HotelManagementConsumibles(Map<Long, Producto> productos, Map<Long, Servicio> servicios) {
 		this.productos = productos;
+		this.servicios = servicios;
+		inventarioConsumibles();
+	}
+	
+	private void inventarioConsumibles() {
+		this.consumibles = new HashMap<>();
+		productos.keySet().stream().forEach(key -> consumibles.put(key, productos.get(key)));
+		servicios.keySet().stream()
+			.forEach(key -> servicios.get(key).getConsumibles().stream()
+					.forEach(consumible -> consumibles.put(consumible.getId(), consumible)));
 	}
 	
 	public Map<Long, Producto> getProductos() {
 		return productos;
 	}
 	
-	public Producto getProductoById(Long id) {
-		return productos.get(id);
+	public Consumible getProductoById(Long id) {
+		return consumibles.get(id);
 	}
 
-	public Factura facturarAlaHabitacion(Estadia estadia, Map<Long, Integer> productos) {
-		List<Consumible> consumibles = productos.keySet().stream()
-				.map(k -> (Consumible) this.productos.get(k))
-				.toList();
+	public void facturarAlaHabitacion(Estadia estadia, Map<Long, Integer> productos) {
+		productos.keySet().stream()
+				.forEach(k -> estadia.addConsumible(consumibles.get(k)));
+	}
+	
+	public Factura facturar(Estadia estadia, Map<Long, Integer> productos) {
+		List<Consumible> consumibles = new ArrayList<>();
+		for (Long key : productos.keySet()) {
+			for (int i = 0; i < productos.get(key); i++) {
+				consumibles.add(this.consumibles.get(key));
+			}
+		}
 		Factura factura = new Factura(estadia.getReserva().getTitular(), consumibles);
-		estadia.cargarFactura(factura);
 		return factura;
 	}
 
