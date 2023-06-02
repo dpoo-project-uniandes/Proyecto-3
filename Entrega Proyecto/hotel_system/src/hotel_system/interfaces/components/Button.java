@@ -10,7 +10,9 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.Ellipse2D;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 public class Button extends JButton {
@@ -43,6 +45,14 @@ public class Button extends JButton {
 		this.dimension = dimension;
 		configButton();
 	}
+	
+	public Button(ImageIcon icon) {
+		super(icon);
+		this.text = null;
+		this.radius = 20;
+		this.dimension = getPreferredSize();
+		configButton();
+	}
 
 	private void configButton() {
 		setOpaque(true);
@@ -53,7 +63,7 @@ public class Button extends JButton {
 	    setBorder(new EmptyBorder(10,20,10,20));
 	    setForeground(Color.WHITE);
 	    setFont(new Font(getName(), Font.BOLD, getFont().getSize()));
-	    setSize(dimension);
+	    setPreferredSize(dimension);
 	    setMinimumSize(dimension);
 	}
 

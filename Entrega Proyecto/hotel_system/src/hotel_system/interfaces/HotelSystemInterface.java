@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -18,13 +20,17 @@ import hotel_system.controllers.HotelManagementSystem;
 import hotel_system.interfaces.admin.MenuAdministrador;
 import hotel_system.interfaces.admin.MenuCargaAdministrador;
 import hotel_system.interfaces.admin.MenuModificarAdmin;
+import hotel_system.interfaces.components.FormDataTable;
 import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.recepcionista.BookingManagement;
+import hotel_system.interfaces.recepcionista.EstadiasManagement;
 import hotel_system.interfaces.recepcionista.FormRoomsData;
+import hotel_system.interfaces.recepcionista.GuestsData;
 import hotel_system.interfaces.recepcionista.MenuConsumible;
 import hotel_system.interfaces.recepcionista.MenuProductosServicios;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
 import hotel_system.interfaces.recepcionista.MenuServicios;
+import hotel_system.models.Huesped;
 import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
@@ -49,6 +55,7 @@ public class HotelSystemInterface extends JFrame {
 	private MenuCargaAdministrador menuCargaAdministrador;
 	private MenuConsumible menuConsumible;
 	private BookingManagement bookingManagement;
+	private EstadiasManagement estadiasManagement;
 	private String user;
 	private MenuModificarAdmin menuModificarAdmin;
 	private MenuServicios menuServicios;
@@ -64,9 +71,7 @@ public class HotelSystemInterface extends JFrame {
 		this.user = "Juan Rojas";
 		this.pms = new HotelManagementSystem();
 		configHeaderButtonsActions();
-//		configLogin();
-//		configBookingManagement();
-		configMenuRecepcionista();
+		configEstadiasManagement();
 	}
 	
 	// ============================================================================================================================================================================
@@ -372,9 +377,9 @@ public class HotelSystemInterface extends JFrame {
 	// MENU RECEPCIONISTA
 	// ================================================================================================================================================================================
 	private void configMenuRecepcionista() {
-		// ================================================================================================================================================================================
+		// ============================================================================================================================================================================
 		// ACTION LISTENERS DEL MENU RECEPCIONISTA
-		// ================================================================================================================================================================================
+		// ============================================================================================================================================================================
 		Function<MenuRecepcionista, ActionListener> bookingAction = (panel) -> {
 			return new ActionListener() {
 				@Override
@@ -514,6 +519,80 @@ public class HotelSystemInterface extends JFrame {
 				cancelAction
 		);
 		configMainFrame(bookingManagement);
+	}
+	
+	// ================================================================================================================================================================================
+	
+	// ================================================================================================================================================================================
+	// ESTADIAS
+	// ================================================================================================================================================================================
+	
+	private void configEstadiasManagement() {
+		// ============================================================================================================================================================================
+		// ACTION LISTENERS DE ESTADIAS
+		// ============================================================================================================================================================================
+		Function<Finder, ActionListener> findAction = (finder) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Reserva booking;
+					String text = finder.getValue();
+					booking = pms.getReservaByDNI(text);
+					if (booking == null) 
+						booking = pms.getReservaById(Long.parseLong(text));
+					if (booking == null)
+						bookingManagement.withoutResults();
+					else
+						bookingManagement.injectData(booking);
+				}
+			};
+		};
+		Function<EstadiasManagement, ActionListener> guestsAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+				}
+			};
+		};
+		Function<EstadiasManagement, ActionListener> billingAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+				}
+			};
+		};
+		Function<EstadiasManagement, ActionListener> updateAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+				}
+			};
+		
+		};
+		Function<EstadiasManagement, ActionListener> createAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) { 
+				}
+			};
+		
+		};
+		
+		// ============================================================================================================================================================================
+		// INICIALIZACION DEL PANEL DE ESTADIAS
+		// ============================================================================================================================================================================
+		FormDataTable<Huesped> guestsData = new GuestsData(new ArrayList<>());
+		this.estadiasManagement = new EstadiasManagement(
+				user, 
+				guestsData,
+				headerButtonsActions.withButtons(),
+				findAction, 
+				createAction, 
+				updateAction, 
+				guestsAction, 
+				billingAction
+		);
+		configMainFrame(estadiasManagement);
 	}
 	
 	// ================================================================================================================================================================================

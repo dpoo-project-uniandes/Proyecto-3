@@ -17,17 +17,16 @@ import hotel_system.models.TipoHabitacion;
 import hotel_system.utils.Utils;
 import services.ImagesManager;
 
-public class FormRoomsData implements FormDataTable {
+public class FormRoomsData extends FormDataTable<TipoHabitacion> {
 	
-	private List<String> headers;
-	private List<Double> weights;
 	private List<TipoHabitacion> tipoHabitaciones;
-	private List<List<Object>> data;
 	
 	public FormRoomsData(List<TipoHabitacion> tipoHabitaciones) {
-		super();
-		this.weights = Arrays.asList(0.2, 0.1, 0.2, 0.3, 0.2);
-		this.headers = Arrays.asList("Habitacion", "Capacidad", "Precio", "Caracteristicas", "Opciones");
+		super(
+			Arrays.asList("Habitacion", "Capacidad", "Precio", "Caracteristicas", "Opciones"),
+			Arrays.asList(0.2, 0.1, 0.2, 0.3, 0.2),
+			Arrays.asList()
+		);
 		this.tipoHabitaciones = tipoHabitaciones;
 		buildData();
 	}
@@ -86,17 +85,5 @@ public class FormRoomsData implements FormDataTable {
 		for (List<Object> list : data) {
 			((AddItems) list.get(4)).setValue(0);
 		}
-	}
-
-	public List<String> getHeaders() {
-		return headers;
-	}
-
-	public List<List<Object>> getData() {
-		return data;
-	}
-
-	public List<Double> getWeights() {
-		return weights;
 	}
 }

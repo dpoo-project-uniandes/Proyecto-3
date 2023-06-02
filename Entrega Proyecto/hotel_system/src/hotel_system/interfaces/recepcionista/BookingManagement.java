@@ -292,7 +292,6 @@ public class BookingManagement extends JPanel {
 		this.bookingDataPanel.add(col2, UtilsGUI.getConstraints(0, 0, 1, 1, 0.4, 1, 0, 0, 0, 0, 1, GridBagConstraints.WEST));
 		this.bookingDataPanel.add(col1, UtilsGUI.getConstraints(1, 0, 1, 1, 0.4, 1, 0, 0, 0, 0, 1, GridBagConstraints.WEST));
 		
-		
 		// BUTTONS
 		this.actionsBookingPanel = new VerticalButtons(3);
 		this.updateBookingBtn = new Button("Modificar");
