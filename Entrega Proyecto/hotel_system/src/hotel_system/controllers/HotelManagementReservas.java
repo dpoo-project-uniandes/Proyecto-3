@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import hotel_system.models.Disponibilidad;
 import hotel_system.models.Estadia;
 import hotel_system.models.EstadoReserva;
 import hotel_system.models.Habitacion;
@@ -46,8 +47,11 @@ public class HotelManagementReservas {
 			return;
 		}
 		
-		Reserva reserva = construirReserva(null, nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
+		Reserva reserva = construirReserva(null, nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);		
+		procesarDisponibilidades(reserva, false);
+		
 		reservas.put(reserva.getNumero(), reserva);
+		
 		persistirReserva(reserva);
 	}
 	
@@ -69,6 +73,15 @@ public class HotelManagementReservas {
 			throw new Exception("reserva " + id.toString() + " no encontrada en el registro");
 		
 		Reserva reserva = construirReserva(id, nombre, email, dni, telefono, edad, cantidad, llegada, salida, habitacionesElegidas);
+		
+		// Disponibilidades
+		if (llegada != reservaOriginal.getFechaDeLlegada() || salida != reservaOriginal.getFechaDeSalida()) {
+			// Remover disponibilidad ocupadas
+			procesarDisponibilidades(reservaOriginal, true);
+
+			// Guardar nuevas disponibilidades
+			procesarDisponibilidades(reserva, false);
+		}
 		
 		// Archivo de reservas
 		List<String> datos = reservaToListString(reserva);
@@ -127,6 +140,7 @@ public class HotelManagementReservas {
 		Reserva reserva = reservas.get(id);
 		reserva.setEstado(EstadoReserva.CANCELADA);
 		FileManager.modificarLineaCSV("reservas.csv", "numero", reserva.getNumero().toString(), reservaToListString(reserva));
+		procesarDisponibilidades(reserva, true);
 	}
 	
 	public void eliminarReserva(Long id) throws Exception {
@@ -136,8 +150,9 @@ public class HotelManagementReservas {
 			return;
 		this.reservas.remove(id);
 		FileManager.removerLineaCSV("reservas.csv", "numero_reserva", reserva.getNumero().toString());
+		procesarDisponibilidades(reserva, true);
 		
-		// Archivo de reservas y habitacione
+		// Archivo de reservas y habitaciones
 		for(Habitacion habitacion: reserva.getHabitaciones()) {
 			FileManager.removerLineaCSV("reservas_habitaciones.csv", "numero_reserva", reserva.getNumero().toString());	
 		}
@@ -186,6 +201,30 @@ public class HotelManagementReservas {
 		FileManager.agregarLineasCSV("reservas_habitaciones.csv", reservaHabitacionesToListString(reserva));
 	}
 	
+	private void procesarDisponibilidades(Reserva reserva, Boolean estado) throws Exception {
+		// Archivo Disponibilidades
+		List<List<Disponibilidad>> disponibilidades = new ArrayList<>();
+		for (Habitacion habitacion : reserva.getHabitaciones()) {
+			List<Disponibilidad> disponibilidadesModificadas = habitacion.modificarDisponibilidad(reserva.getFechaDeLlegada(), reserva.getFechaDeSalida(), reserva, estado);
+			disponibilidades.add(disponibilidadesModificadas);
+		}
+		List<List<String>> disponibilidadesCSV = new ArrayList<>();
+		for (List<Disponibilidad> lista : disponibilidades) {
+			for (Disponibilidad disponibilidad : lista) {
+				disponibilidadesCSV.add(disponibilidadToListString(disponibilidad));
+			}
+		}
+		for (List<String> row : disponibilidadesCSV) {
+			FileManager.modificarLineaCSV("disponibilidades.csv", "id", row.get(0), row);
+			// Archivo reservas - disponibilidades
+			if (estado) {
+				FileManager.removerLineaCSV("reservas_disponibilidades", "id_reserva", reserva.getNumero().toString());
+			} else {
+				FileManager.agregarLineasCSV("reservas_disponibilidades.csv", Arrays.asList(Arrays.asList(row.get(0), reserva.getNumero().toString())));
+			}
+		}
+	}
+	
 	private List<List<String>> reservaHabitacionesToListString(Reserva reserva) {		
 		return reserva.getHabitaciones().stream()
 				.map(habitacion -> Arrays.asList(reserva.getNumero().toString(), habitacion.getNumero().toString()))
@@ -213,6 +252,16 @@ public class HotelManagementReservas {
 				titular.getEdad().toString(),
 				titular.getEmail(),
 				titular.getTelefono()
+		);
+	}
+	
+	private List<String> disponibilidadToListString(Disponibilidad disponibilidad) {
+		return Arrays.asList(
+				disponibilidad.getId().toString(),
+				disponibilidad.getHabitacion().toString(),
+				Utils.stringLocalDate(disponibilidad.getFecha()),
+				disponibilidad.getEstado().toString(),
+				disponibilidad.getPrecio().toString()
 		);
 	}
 }

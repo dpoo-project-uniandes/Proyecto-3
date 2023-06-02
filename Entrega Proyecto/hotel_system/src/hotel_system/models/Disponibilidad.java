@@ -5,17 +5,30 @@ import java.util.Objects;
 
 public class Disponibilidad {
 
+	private Long id;
+	private Integer habitacion;
 	private Double precio;
 	private Boolean estado;
 	private Date fecha;
 	private Reserva reserva;
 
-	public Disponibilidad(Double precio, Boolean estado, Date fecha) {
+	public Disponibilidad(Long id, Integer habitacion, Double precio, Boolean estado, Date fecha, Reserva reserva) {
+		super();
+		this.id = id;
+		this.habitacion = habitacion;
+		this.precio = precio;
+		this.estado = estado;
+		this.fecha = fecha;
+		this.reserva = reserva;
+	}
+
+	public Disponibilidad(Integer habitacion, Double precio, Boolean estado, Date fecha) {
+		this.id = fecha.getTime() + habitacion;
 		this.precio = precio;
 		this.estado = estado;
 		this.fecha = fecha;
 	}
-
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (getClass() != obj.getClass()) {
@@ -29,6 +42,14 @@ public class Disponibilidad {
 	public String toString() {
 		return "Disponibilidad [precio=" + precio + ", estado=" + estado + ", fecha=" + fecha + ", reserva=" + reserva
 				+ "]";
+	}
+	
+	public Long getId() {
+		return id;
+	}
+	
+	public Integer getHabitacion() {
+		return habitacion;
 	}
 
 	public Double getPrecio() {

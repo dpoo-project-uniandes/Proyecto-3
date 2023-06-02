@@ -22,7 +22,18 @@ public class Finder extends JPanel {
 	) {
 		configPanel();
 		configInput(text);
-		configButton(findAction);
+		configButton("Buscar", findAction);
+		configComponents();
+	}
+	
+	public Finder(
+		String text,
+		String btnText,
+		Function<Finder, ActionListener> findAction
+	) {
+		configPanel();
+		configInput(text);
+		configButton(btnText, findAction);
 		configComponents();
 	}
 	
@@ -42,8 +53,8 @@ public class Finder extends JPanel {
 		this.input.setAlignmentX(CENTER_ALIGNMENT);
 	}
 	
-	private void configButton(Function<Finder, ActionListener> findAction) {
-		this.button = new Button("Buscar");
+	private void configButton(String text, Function<Finder, ActionListener> findAction) {
+		this.button = new Button(text);
 		this.button.addActionListener(findAction.apply(this));
 		this.button.setAlignmentY(TOP_ALIGNMENT);
 	}

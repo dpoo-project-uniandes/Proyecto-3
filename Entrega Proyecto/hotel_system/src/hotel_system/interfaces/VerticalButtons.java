@@ -17,7 +17,7 @@ public class VerticalButtons extends JPanel {
 	
 	private void configPanel() {
 		this.setOpaque(false);
-        this.setLayout(new GridLayout(quantityButtons, 1, 40, 30));
+        this.setLayout(new GridLayout(quantityButtons, 1, 40, 20));
 	}
 	
 	public void addButton(JButton btn) {

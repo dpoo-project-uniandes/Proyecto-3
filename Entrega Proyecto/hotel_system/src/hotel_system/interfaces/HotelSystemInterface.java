@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -29,7 +30,9 @@ import hotel_system.interfaces.recepcionista.MenuConsumible;
 import hotel_system.interfaces.recepcionista.MenuProductosServicios;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
 import hotel_system.interfaces.recepcionista.MenuServicios;
+import hotel_system.interfaces.recepcionista.ProductsData;
 import hotel_system.models.Estadia;
+import hotel_system.models.Factura;
 import hotel_system.models.Huesped;
 import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
@@ -37,7 +40,6 @@ import hotel_system.models.Rol;
 import hotel_system.models.TipoHabitacion;
 import hotel_system.models.Usuario;
 import hotel_system.utils.Utils;
-import services.Dupla;
 import services.SecValidation;
 
 
@@ -56,10 +58,10 @@ public class HotelSystemInterface extends JFrame {
 	private MenuConsumible menuConsumible;
 	private BookingManagement bookingManagement;
 	private EstadiasManagement estadiasManagement;
-	private String user;
 	private MenuModificarAdmin menuModificarAdmin;
 	private MenuServicios menuServicios;
 	private MenuProductosServicios menuProductosServicios;
+	private String user;
 	
 	// STACK DE VENTANAS
 	private Stack<JPanel> framesStack;
@@ -71,7 +73,8 @@ public class HotelSystemInterface extends JFrame {
 		this.user = "Juan Rojas";
 		this.pms = new HotelManagementSystem();
 		configHeaderButtonsActions();
-		configMenuRecepcionista();
+//		configMenuRecepcionista();
+		configConsumingManagement();
 	}
 	
 	// ============================================================================================================================================================================
@@ -197,9 +200,11 @@ public class HotelSystemInterface extends JFrame {
 			configMenuRecepcionista();
 		}
 		else {
-			configMenuAdmin(user);
+//			configMenuAdmin(user);
 		}
 	}
+	
+	// ================================================================================================================================================================================
 	
 	// ================================================================================================================================================================================
 	// SIGN UP
@@ -237,141 +242,151 @@ public class HotelSystemInterface extends JFrame {
 	    configSmallFrame(registrarse);
 	}
 	
-	// Funciones, configs y paneles para admin
-	private void configMenuAdmin(String user) {
-		// ACTIONS LISTENERS
-		Function<MenuAdministrador, ActionListener> loadAction = (panel) -> {
-			return new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					configLoadingManagement(user);
-				}
-			};
-		};
-		Function<MenuAdministrador, ActionListener> modifyAction = (panel) -> {
-			return new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					configModifingManagement(user);
-
-				}
-			};
-		};
-		
-		Function<MenuAdministrador, ActionListener> searchAction = (panel) -> {
-			return new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					configSearchingManagement(user);
-				}
-			};
-		};
-		
-		// INITIALIZE
-		this.menuAdmin = new MenuAdministrador(user, headerButtonsActions.withButtons(), loadAction, modifyAction, searchAction);
-		configMainFrame(this.menuAdmin);
-		
-	}
-	
-	// Función carga de datos admin
-	private void configLoadingManagement(String user) {
-		Function<MenuCargaAdministrador, ActionListener> RestauranteAction = (panel) -> {
-			return new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(null, "Datos del restaurante cargados con éxito");
-				}
-			};
-		};
-		Function<MenuCargaAdministrador, ActionListener> SpaAction = (panel) -> {
-			return new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(null, "Datos del spa cargados con éxito");
-				}
-			};
-		};
-		
-		Function<MenuCargaAdministrador, ActionListener> HabitacionesAction = (panel) -> {
-			return new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-                    JOptionPane.showMessageDialog(null, "Datos de las habitaciones cargados con éxito");
-				}
-			};
-		};
-		
-		// INITIALIZE
-		this.menuCargaAdministrador = new MenuCargaAdministrador(user, headerButtonsActions.withButtons(), RestauranteAction, SpaAction, HabitacionesAction);
-		configMainFrame(this.menuCargaAdministrador);
-	}
-	
-	private void configModifingManagement(String user) {
-		// ACTIONS LISTENERS
-		Function<Finder, ActionListener> findAction = (finder) -> {
-			return new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					String id = finder.getValue();
-					Dupla<Producto, String> dupla = pms.getProductoByID(id);
-					Producto producto = dupla.getPrimero();
-					String tipo = dupla.getSegundo();
-					if (dupla == null)
-						menuModificarAdmin.withoutResults();
-					else
-						menuModificarAdmin.setTipoProducto(tipo);
-						menuModificarAdmin.injectData(id);
-				}
-			};
-		};
-		Function<Finder, ActionListener> deleteAction = (btn) -> {
-			return new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Producto producto = menuModificarAdmin.getProductoActual();
-					pms.eliminarProducto(producto, menuModificarAdmin.getTipoProducto());
-				}
-			};
-		};
-		Function<Finder, ActionListener> updateAction = (btn) -> {
-			return new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					//TODO
-					
-				}
-			};
-		
-		};
-		Function<Finder, ActionListener> createAction = (btn) -> {
-			return new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					try {
-						//pms.nuevoProducto(,"");
-					} catch (Exception e1) {
-						e1.printStackTrace();
-	                    JOptionPane.showMessageDialog(null, "Se produjo un error creando la reserva");
-
-					}
-				}
-			};
-		
-		};
-				
-		// INITIALIZE
-		this.menuModificarAdmin = new MenuModificarAdmin(user, headerButtonsActions.withButtons(), findAction, deleteAction ,updateAction, createAction);
-		configMainFrame(this.menuModificarAdmin);
-		
-	}
-	private void configSearchingManagement(String user) {
-		// TODO Auto-generated method stub
-		
-	}
+	// ================================================================================================================================================================================
 	
 	// ================================================================================================================================================================================
 	// MENUS DE LA APLICACIONES
 	// ================================================================================================================================================================================
+	
+	// ================================================================================================================================================================================
+	// MENU ADMINISTRADOR
+	// ================================================================================================================================================================================
+	
+//	private void configMenuAdmin(String user) {
+		// ============================================================================================================================================================================
+		// ACTION LISTENERS DEL MENU ADMINISTRADOR
+		// ============================================================================================================================================================================
+//		Function<MenuAdministrador, ActionListener> loadAction = (panel) -> {
+//			return new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					configLoadingManagement(user);
+//				}
+//			};
+//		};
+//		Function<MenuAdministrador, ActionListener> modifyAction = (panel) -> {
+//			return new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					configModifingManagement(user);
+//
+//				}
+//			};
+//		};
+//		
+//		Function<MenuAdministrador, ActionListener> searchAction = (panel) -> {
+//			return new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					configSearchingManagement(user);
+//				}
+//			};
+//		};
+//		
+//		// INITIALIZE
+//		this.menuAdmin = new MenuAdministrador(user, headerButtonsActions.withButtons(), loadAction, modifyAction, searchAction);
+//		configMainFrame(this.menuAdmin);
+//		
+//	}
+	
+	// ================================================================================================================================================================================
+	// CARGA DE DATOS DESDE EL PANEL DE ADMINISTRACION
+	// ================================================================================================================================================================================
+	
+//	private void configLoadingManagement(String user) {
+//		Function<MenuCargaAdministrador, ActionListener> RestauranteAction = (panel) -> {
+//			return new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//                    JOptionPane.showMessageDialog(null, "Datos del restaurante cargados con éxito");
+//				}
+//			};
+//		};
+//		Function<MenuCargaAdministrador, ActionListener> SpaAction = (panel) -> {
+//			return new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//                    JOptionPane.showMessageDialog(null, "Datos del spa cargados con éxito");
+//				}
+//			};
+//		};
+//		
+//		Function<MenuCargaAdministrador, ActionListener> HabitacionesAction = (panel) -> {
+//			return new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//                    JOptionPane.showMessageDialog(null, "Datos de las habitaciones cargados con éxito");
+//				}
+//			};
+//		};
+//		
+//		// INITIALIZE
+//		this.menuCargaAdministrador = new MenuCargaAdministrador(user, headerButtonsActions.withButtons(), RestauranteAction, SpaAction, HabitacionesAction);
+//		configMainFrame(this.menuCargaAdministrador);
+//	}
+	
+	// ================================================================================================================================================================================
+	// ....
+	// ================================================================================================================================================================================
+	
+//	private void configModifingManagement(String user) {
+//		// ACTIONS LISTENERS
+//		Function<Finder, ActionListener> findAction = (finder) -> {
+//			return new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					String id = finder.getValue();
+//					Dupla<Producto, String> dupla = pms.getProductoByID(id);
+//					Producto producto = dupla.getPrimero();
+//					String tipo = dupla.getSegundo();
+//					if (dupla == null)
+//						menuModificarAdmin.withoutResults();
+//					else
+//						menuModificarAdmin.setTipoProducto(tipo);
+//						menuModificarAdmin.injectData(id);
+//				}
+//			};
+//		};
+//		Function<Finder, ActionListener> deleteAction = (btn) -> {
+//			return new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					Producto producto = menuModificarAdmin.getProductoActual();
+//					pms.eliminarProducto(producto, menuModificarAdmin.getTipoProducto());
+//				}
+//			};
+//		};
+//		Function<Finder, ActionListener> updateAction = (btn) -> {
+//			return new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					//TODO
+//					
+//				}
+//			};
+//		
+//		};
+//		Function<Finder, ActionListener> createAction = (btn) -> {
+//			return new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					try {
+//						//pms.nuevoProducto(,"");
+//					} catch (Exception e1) {
+//						e1.printStackTrace();
+//	                    JOptionPane.showMessageDialog(null, "Se produjo un error creando la reserva");
+//
+//					}
+//				}
+//			};
+//		
+//		};
+//				
+//		// INITIALIZE
+//		this.menuModificarAdmin = new MenuModificarAdmin(user, headerButtonsActions.withButtons(), findAction, deleteAction ,updateAction, createAction);
+//		configMainFrame(this.menuModificarAdmin);
+//		
+//	}
 	
 	// ================================================================================================================================================================================
 	// MENU RECEPCIONISTA
@@ -606,6 +621,10 @@ public class HotelSystemInterface extends JFrame {
 		configMainFrame(estadiasManagement);
 	}
 	
+	// ================================================================================================================================================================================
+	// MENUS DE CONSUMIBLES
+	// ================================================================================================================================================================================
+	
 	private void configConsumingManagement() {
 		Function<MenuConsumible, ActionListener> ProductosAction = (panel) -> {
 			return new ActionListener() {
@@ -613,11 +632,7 @@ public class HotelSystemInterface extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/productos.csv");
-					configMainFrame(this.menuProductosServicios);
+					configProductsManagement();
 				}
 			};
 		};
@@ -625,7 +640,7 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					configServices(user);
+//					configServices(user);
 				}
 			};
 		};
@@ -634,56 +649,94 @@ public class HotelSystemInterface extends JFrame {
 		configMainFrame(this.menuConsumible);
 	}
 	
-	// Config Servicios
-	private void configServices(String user) {
-		Function<MenuServicios, ActionListener> restauranteAction = (panel) -> {
-			return new ActionListener() {
-				private MenuProductosServicios menuProductosServicios;
-
+	private void configProductsManagement() {
+		Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+        Function<MenuProductosServicios, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+        Function<MenuProductosServicios, ActionListener> payLaterAction = (panel) -> { 
+        	return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/productos_restaurante.csv");
-					configMainFrame(this.menuProductosServicios);
+					// TODO Auto-generated method stub
+					Integer habitacion = Integer.parseInt(panel.getHabitacion());
+					Map<String, Integer> productsSelected = panel.getProductsMap();
+					Map<Long, Integer> products = new HashMap<>();
+					productsSelected.forEach((k, v) -> products.put(Long.parseLong(k), v));
+					try {
+						Factura factura = pms.facturarAlaHabitacion(habitacion, products);
+						panel.injectDataFactura(factura);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+	                    JOptionPane.showMessageDialog(null, e1.getMessage());
+					}
 				}
 			};
-		};
-		Function<MenuServicios, ActionListener> spaAction = (panel) -> {
-			return new ActionListener() {
-				private MenuProductosServicios menuProductosServicios;
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/productos_spa.csv");
-					configMainFrame(this.menuProductosServicios);
-				}
-			};
-		};
-		
-		Function<MenuServicios, ActionListener> alojamientoAction = (panel) -> {
-			return new ActionListener() {
-				private MenuProductosServicios menuProductosServicios;
-
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/reservas_habitaciones.csv");
-					configMainFrame(this.menuProductosServicios);
-				}
-			};
-		};
-		
-		// INITIALIZE
-		this.menuServicios = new MenuServicios(user, headerButtonsActions.withButtons(), restauranteAction, spaAction, alojamientoAction);
-		configMainFrame(this.menuServicios);
+        };
+        FormDataTable<Producto> data = new ProductsData(new ArrayList<>(pms.getProductos().values()));
+		this.menuProductosServicios = new MenuProductosServicios(
+				user,
+				data,
+				headerButtonsActions.withButtons(),
+				generateAction,
+				payNowAction,
+				payLaterAction
+		);
+		configMainFrame(this.menuProductosServicios);
 	}
+	
+	// ================================================================================================================================================================================
+	// MENUS DE SERVICIOS
+	// ================================================================================================================================================================================
+	
+//	// Config Servicios
+//	private void configServices(String user) {
+//		Function<MenuServicios, ActionListener> restauranteAction = (panel) -> {
+//			return new ActionListener() {
+//				private MenuProductosServicios menuProductosServicios;
+//
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+//	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+//	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+//					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/productos_restaurante.csv");
+//					configMainFrame(this.menuProductosServicios);
+//				}
+//			};
+//		};
+//		Function<MenuServicios, ActionListener> spaAction = (panel) -> {
+//			return new ActionListener() {
+//				private MenuProductosServicios menuProductosServicios;
+//
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+//	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+//	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+//					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/productos_spa.csv");
+//					configMainFrame(this.menuProductosServicios);
+//				}
+//			};
+//		};
+//		
+//		Function<MenuServicios, ActionListener> alojamientoAction = (panel) -> {
+//			return new ActionListener() {
+//				private MenuProductosServicios menuProductosServicios;
+//
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+//	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+//	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+//					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/reservas_habitaciones.csv");
+//					configMainFrame(this.menuProductosServicios);
+//				}
+//			};
+//		};
+//		
+//		// INITIALIZE
+//		this.menuServicios = new MenuServicios(user, headerButtonsActions.withButtons(), restauranteAction, spaAction, alojamientoAction);
+//		configMainFrame(this.menuServicios);
+//	}
 	
 		
 }

@@ -11,7 +11,10 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+
+import hotel_system.interfaces.components.DynamicTable;
 
 public class DataPanel extends JPanel {
 	
@@ -79,6 +82,12 @@ public class DataPanel extends JPanel {
 	public void injectDataPanel(JPanel panel) {
 		this.dataPanel.removeAll();
 		this.dataPanel.add(panel, UtilsGUI.getConstraints(0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
+		this.revalidate();
+	}
+	
+	public void injectScrollPane(JScrollPane scroll) {
+		this.dataPanel.removeAll();
+		this.dataPanel.add(scroll, UtilsGUI.getConstraints(0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, GridBagConstraints.CENTER));
 		this.revalidate();
 	}
 }

@@ -84,8 +84,9 @@ public class HotelManagementEstadias {
 		Optional<Habitacion> habitacion = inventarioHabitaciones.values().stream()
 				.filter(hab -> hab.getNumero().equals(id))
 				.findAny();
-		if (habitacion.isPresent()) 
-			return habitacion.get().getReservaActual().getEstadia();
+		if (habitacion.isPresent()) {
+			return habitacion.get().getReservaActual().getEstadia();	
+		}
 		else 
 			return null;
 	}

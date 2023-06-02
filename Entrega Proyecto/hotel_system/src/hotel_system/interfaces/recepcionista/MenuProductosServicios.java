@@ -5,18 +5,16 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import hotel_system.interfaces.DataPanel;
@@ -24,13 +22,13 @@ import hotel_system.interfaces.Finder;
 import hotel_system.interfaces.MainHeader;
 import hotel_system.interfaces.UtilsGUI;
 import hotel_system.interfaces.VerticalButtons;
+import hotel_system.interfaces.components.AddItems;
 import hotel_system.interfaces.components.Button;
+import hotel_system.interfaces.components.DynamicTable;
+import hotel_system.interfaces.components.FormDataTable;
 import hotel_system.interfaces.components.HeaderButtonsActions;
-import hotel_system.interfaces.components.Tabla;
-
-
-
-//TODO 3. Conectar los botones de esta interfaz con el PMS 
+import hotel_system.models.Factura;
+import hotel_system.models.Producto;
 
 public class MenuProductosServicios extends JPanel {
 	
@@ -43,25 +41,29 @@ public class MenuProductosServicios extends JPanel {
 	private VerticalButtons verticalButtons;
 	private JPanel finderAndButtonsPanel;
 	private String title;
+	private DynamicTable productsTable;
+	private JScrollPane scrollPaneProductsTable;
+	
+	private FormDataTable<Producto> productsData;
 	
 	public MenuProductosServicios(
 		    String user,
+		    FormDataTable<Producto> productsData,
 			HeaderButtonsActions headerButtonsActions,
 		    Function<Finder, ActionListener> generateAction,
-		    Function<Finder, ActionListener> payNowAction,
-		    Function<Finder, ActionListener> payLaterAction,
-		    String filePath
+		    Function<MenuProductosServicios, ActionListener> payNowAction,
+		    Function<MenuProductosServicios, ActionListener> payLaterAction
 		) {
-		    this.title = "Detalles de los productos/servicios";
+		    this.title = "Inventario Productos";
+		    this.productsData = productsData;
 		    configPanel();
-		    configHeader(user, "Factura", headerButtonsActions);
+		    configHeader(user, "Productos", headerButtonsActions);
 		    configFinder("Numero de habitacion", generateAction);
 		    configPayNowButton(payNowAction);
 		    configPayLaterButton(payLaterAction);
 		    configVerticalButtons();
 		    configPanelFinderAndButtons();
-		    configDataPanel(title,filePath);
-		    injectData(filePath);
+		    configTable();
 		    configComponents();
 		}
 
@@ -90,17 +92,16 @@ public class MenuProductosServicios extends JPanel {
 		Function<Finder, ActionListener> generateAction
 	) {
 		this.finder = new Finder(text, generateAction);
-		this.finder.setButtonText("Generar");
 	}
 	
-	private void configPayNowButton(Function<Finder, ActionListener> payNowAction) {
+	private void configPayNowButton(Function<MenuProductosServicios, ActionListener> payNowAction) {
 		this.payNowBtn = new Button("Pagar ahora");
-		this.payNowBtn.addActionListener(payNowAction.apply(finder));
+		this.payNowBtn.addActionListener(payNowAction.apply(this));
 	}
 	
-	private void configPayLaterButton(Function<Finder, ActionListener> payLaterAction) {
+	private void configPayLaterButton(Function<MenuProductosServicios, ActionListener> payLaterAction) {
 		this.payLaterBtn = new Button("Pagar despues");
-		this.payLaterBtn.addActionListener(payLaterAction.apply(finder));
+		this.payLaterBtn.addActionListener(payLaterAction.apply(this));
 	}
 	
 	private void configVerticalButtons() {
@@ -113,49 +114,51 @@ public class MenuProductosServicios extends JPanel {
 		this.finderAndButtonsPanel = new JPanel();
 		this.finderAndButtonsPanel.setLayout(new GridBagLayout());
 		this.finderAndButtonsPanel.setOpaque(false);
-		this.finderAndButtonsPanel.setAlignmentX(LEFT_ALIGNMENT);
-		this.finderAndButtonsPanel.add(this.finder, UtilsGUI.getConstraints(0, 0, 1, 1, 0.2, 1, 0, 0, 0, 50, 1, GridBagConstraints.WEST));
-		this.finderAndButtonsPanel.add(this.verticalButtons, UtilsGUI.getConstraints(1, 0, 1, 1, 0.1, 1, 20, 600, 0, 0, 1, GridBagConstraints.EAST));
-		this.finderAndButtonsPanel.setMaximumSize(new Dimension(5000, 80));
+		this.finderAndButtonsPanel.add(this.finder, UtilsGUI.getConstraints(0, 0, 1, 1, 0.1, 1, 0, 0, 0, 600, 1, GridBagConstraints.WEST));
+		this.finderAndButtonsPanel.add(this.verticalButtons, UtilsGUI.getConstraints(2, 0, 1, 1, 0.1, 1, 0, 0, 0, 0, 1, GridBagConstraints.EAST));
+		this.finderAndButtonsPanel.setMaximumSize(new Dimension(5000, 50));
 	}
-
-	private void configDataPanel(String title, String filePath) {
+	
+	private void configTable() {
+		this.productsTable = new DynamicTable(productsData);
+		this.scrollPaneProductsTable = new JScrollPane(productsTable);
+		this.scrollPaneProductsTable.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		
 	    this.dataPanel = new DataPanel(title);
-	    this.dataPanel.setAlignmentX(LEFT_ALIGNMENT);
-	    injectData(filePath);
+		this.dataPanel.injectScrollPane(scrollPaneProductsTable);
 	}
-
-
-
-	public void withoutResults(String filePath) {
-		configDataPanel(title,filePath);
+	
+	private void cleanUserInputs() {
+		((ProductsData)productsData).clean();
+		this.finder.setValue("");
 	}
-
-	public void injectData(String filePath) {
-	    List<String> headers = new ArrayList<>();
-	    List<List<Object>> data = readCsvData(filePath).stream().map(e->{
-	    	List<Object> rn = new ArrayList<>(e);
-	    	return rn;
-	    	}).collect(Collectors.toList());
-	    if (data.size() > 0) {
-	        headers = data.get(0).stream().map(e->e.toString()).toList();
-	        data.remove(0);
-	    }
-	    Tabla tabla = new Tabla(headers, data);
-	    dataPanel.injectDataPanel(tabla);
+	
+	public void injectDataFactura(Factura factura) {
+		// CLEAN
+		cleanUserInputs();
+		
+		// TODO mejorar presentacion
+		String facturaString = "FACTURA ELECTRONICA\n"
+				+ "Titular: "
+				+ factura.getTitular().getNombre()
+				+ "\nDNI: "
+				+ factura.getTitular().getDni()
+				+ "\nValor Total: "
+				+ factura.getValorTotal();
+        JOptionPane.showMessageDialog(this, facturaString);
 	}
-
-
-	private List<List<String>> readCsvData(String filePath) {
-	    List<List<String>> data = new ArrayList<>();
-	    try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-	        String line;
-	        while ((line = br.readLine()) != null) {
-	            data.add(Arrays.asList(line.split(",")));
-	        }
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
-	    return data;
-	}	
+	
+	public String getHabitacion() {
+		return finder.getValue();
+	}
+	
+	public Map<String, Integer> getProductsMap() {
+		Map<String, Integer> data = new HashMap<>();
+		productsData.getData().stream().forEach(r -> {
+			AddItems addItems = (AddItems) r.get(r.size()-1);
+			if (addItems.getValue() > 0)
+				data.put((String) r.get(0), addItems.getValue());
+		});
+		return data;
+	}
 }

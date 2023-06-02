@@ -31,6 +31,7 @@ public class Reserva {
 	}
 	
 	public Reserva(Long id, Date fechaDeLlegada, Date fechaDeSalida, Titular titular, Integer cantidad,List<Habitacion> habitaciones) {
+		this.estado = EstadoReserva.CONFIRMADA;
 		this.numero = id == null ? Utils.generateId() : id;
 		this.fechaDeLlegada = fechaDeLlegada;
 		this.fechaDeCreacion = Utils.nowDate();
@@ -39,7 +40,6 @@ public class Reserva {
 		this.titular = titular;
 		this.habitaciones = habitaciones;
 		this.tarifaTotal = calcularTarifaTotal();
-		confirmarReserva();
 	}
 
 	public Reserva(Long numero, Double tarifaTotal, EstadoReserva estado, Integer cantidadPersonas, Date fechaDeLlegada,
@@ -56,8 +56,6 @@ public class Reserva {
 		this.estadia = estadia;
 		this.habitaciones = habitaciones;
 	}
-
-
 
 	public Double calcularTarifaTotal() {
 		double valorTotal = 0.0;
@@ -79,6 +77,10 @@ public class Reserva {
 		for (Habitacion hab: habitaciones) {
 			hab.modificarDisponibilidad(fechaDeLlegada, fechaDeSalida, null, true);
 		}
+	}
+	
+	public Boolean estaActiva() {
+		return estado != EstadoReserva.CANCELADA && estado != EstadoReserva.CERRADA;
 	}
 
 	@Override

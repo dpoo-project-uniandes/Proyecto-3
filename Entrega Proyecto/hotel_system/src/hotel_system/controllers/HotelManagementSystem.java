@@ -31,7 +31,7 @@ public class HotelManagementSystem {
 	private Map<String, TipoHabitacion> opcionesHabitacion;
 	private Map<Long, Reserva> reservas;
 	private Map<Long, Estadia> estadias;
-	private List<Producto> inventarioProductos;
+	private Map<Long, Producto> inventarioProductos;
 	private Map<String,Usuario> usuarios;
 	private Map<String, Servicio> inventarioServicios;
 	private Hotel hotel;
@@ -40,6 +40,7 @@ public class HotelManagementSystem {
 	private HotelManagementUsuarios controladorUsuarios;
 	private HotelManagementReservas controladorResevas;
 	private HotelManagementEstadias controladorEstadias;
+	private HotelManagementConsumibles controladorConsumibles;
 
 	public HotelManagementSystem()  {
 		cargarDatos();
@@ -49,7 +50,6 @@ public class HotelManagementSystem {
 	private void cargarDatos() {
 		try {
 			this.loaderData = new HotelManagementLoaderData();
-			this.loaderData.limpiarDisponibilidades();
 			this.hotel = this.loaderData.cargarHotel();
 			this.opcionesHabitacion = this.loaderData.cargarTipoHabitaciones();
 			this.inventarioHabitaciones = this.loaderData.cargarHabitaciones(opcionesHabitacion, hotel);
@@ -58,6 +58,7 @@ public class HotelManagementSystem {
 			this.inventarioProductos = this.loaderData.cargarProductos();
 			this.inventarioServicios = this.loaderData.cargarServicios();
 			this.usuarios = this.loaderData.cargarUsuarios();
+			this.loaderData.cargarDisponibilidades(inventarioHabitaciones, reservas);
 		} catch (Exception e) {
 			System.out.println("La carga de datos no ha sido posible debido a: " + e.getMessage());
 			e.printStackTrace();
@@ -68,6 +69,7 @@ public class HotelManagementSystem {
 		this.controladorUsuarios = new HotelManagementUsuarios(usuarios);
 		this.controladorResevas = new HotelManagementReservas(inventarioHabitaciones, reservas);
 		this.controladorEstadias = new HotelManagementEstadias(inventarioHabitaciones, estadias, controladorResevas);
+		this.controladorConsumibles = new HotelManagementConsumibles(inventarioProductos);
 	}
 	
 	// =====================================================================================================================================================
@@ -144,6 +146,75 @@ public class HotelManagementSystem {
 
 	// =====================================================================================================================================================
 
+	
+	public void finalizarEstadia(String dni) {
+		Estadia estadia = getEstadiaByDNI(dni);
+		estadia.facturarEstadia();
+		Factura factura = estadia.getFacturaTotal();
+		System.out.println(factura.generarFactura());
+	}
+
+	public Integer cantidadReserva(String dni) {
+		return getReservaByDNI(dni).getCantidadPersonas();
+	}
+	
+	// =====================================================================================================================================================
+	// LOGIN 
+	// =====================================================================================================================================================
+	
+	public boolean userExists(String user) {
+		return controladorUsuarios.userExists(user);
+	}
+
+	public Usuario userLogin(String user, String password) {
+		return controladorUsuarios.userLogin(user, password);
+	}
+	
+	public void registrarUsuario(String user, String password, Rol rol) throws Exception {
+		controladorUsuarios.userSignUp(user, password, rol);
+	}
+	
+	// =====================================================================================================================================================
+	
+	// =====================================================================================================================================================
+	// CONSUMIBLES
+	// =====================================================================================================================================================
+	
+	// =====================================================================================================================================================
+	// PRODUCTOS
+	// =====================================================================================================================================================
+	
+	public Map<Long, Producto> getProductos() {
+		return controladorConsumibles.getProductos();
+	}
+	
+	public Producto getProductoByID(Long id) {
+//		Optional<Producto> consumible; 
+//		Optional<ProductoRestaurante> productoRestaurante;
+//		consumible = inventarioProductos.stream()
+//		.filter(cons -> cons.getId().toString().equals(id))
+//		.findAny();
+//		if (consumible.isPresent()) {return new Dupla<Producto, String>(consumible.get(), "hotel");}
+//		productoRestaurante = getServicioRestaurante().getProductos().stream()
+//			.filter(cons -> cons.getId().toString().equals(id))
+//				.findAny();
+//		if (productoRestaurante.isPresent()) {return new Dupla<Producto, String>(productoRestaurante.get(), "restaurante");}
+//		consumible = getServicioSpa().getProductosYServicios().stream()
+//			.filter(cons -> cons.getId().toString().equals(id))
+//				.findAny();
+//		if (consumible.isPresent()) {return new Dupla<Producto, String>(consumible.get(), "spa");}
+//		return null;
+		
+		return controladorConsumibles.getProductoById(id);
+	}
+	
+	public Factura facturarAlaHabitacion(Integer habitacion, Map<Long, Integer> productos) throws Exception {
+		Estadia estadia = getEstadiaByHabitacion(habitacion);
+		if (estadia == null)
+			throw new Exception("No se encontraron estadias en la habitacion " + habitacion);
+		return controladorConsumibles.facturarAlaHabitacion(estadia, productos);
+	}
+	
 	public Spa getServicioSpa(){
 		Spa spa = (Spa)inventarioServicios.get("spa");
 		return spa;
@@ -152,14 +223,6 @@ public class HotelManagementSystem {
 	public Restaurante getServicioRestaurante(){
 		Restaurante res = (Restaurante)inventarioServicios.get("restaurante");
 		return res;
-	}
-
-	public List<Producto> getInventarioProductos() {
-		return inventarioProductos;
-	}
-
-	public void setInventarioProductos(List<Producto> inventarioProductos) {
-		this.inventarioProductos = inventarioProductos;
 	}
 
 
@@ -216,52 +279,6 @@ public class HotelManagementSystem {
 			}
 		}
 	}
-
-	public Dupla<Producto, String> getProductoByID(String id) {
-		Optional<Producto> consumible; 
-		Optional<ProductoRestaurante> productoRestaurante;
-		consumible = inventarioProductos.stream()
-		.filter(cons -> cons.getId().toString().equals(id))
-		.findAny();
-		if (consumible.isPresent()) {return new Dupla<Producto, String>(consumible.get(), "hotel");}
-		productoRestaurante = getServicioRestaurante().getProductos().stream()
-			.filter(cons -> cons.getId().toString().equals(id))
-				.findAny();
-		if (productoRestaurante.isPresent()) {return new Dupla<Producto, String>(productoRestaurante.get(), "restaurante");}
-		consumible = getServicioSpa().getProductosYServicios().stream()
-			.filter(cons -> cons.getId().toString().equals(id))
-				.findAny();
-		if (consumible.isPresent()) {return new Dupla<Producto, String>(consumible.get(), "spa");}
-		return null;
-	}
-	public void finalizarEstadia(String dni) {
-		Estadia estadia = getEstadiaByDNI(dni);
-		estadia.facturarEstadia();
-		Factura factura = estadia.getFacturaTotal();
-		System.out.println(factura.generarFactura());
-	}
-
-	public Integer cantidadReserva(String dni) {
-		return getReservaByDNI(dni).getCantidadPersonas();
-	}
-	
-	// =====================================================================================================================================================
-	// LOGIN 
-	// =====================================================================================================================================================
-	
-	public boolean userExists(String user) {
-		return controladorUsuarios.userExists(user);
-	}
-
-	public Usuario userLogin(String user, String password) {
-		return controladorUsuarios.userLogin(user, password);
-	}
-	
-	public void registrarUsuario(String user, String password, Rol rol) throws Exception {
-		controladorUsuarios.userSignUp(user, password, rol);
-	}
-	
-	// =====================================================================================================================================================
 	
 	public void eliminarProducto(Producto producto, String tipo) {
 		if (tipo.equals("hotel")) {

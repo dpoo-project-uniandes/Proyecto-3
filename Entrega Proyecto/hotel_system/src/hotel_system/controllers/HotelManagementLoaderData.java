@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import hotel_system.models.Disponibilidad;
 import hotel_system.models.Estadia;
@@ -32,9 +35,8 @@ public class HotelManagementLoaderData {
 	
 	public void limpiarDisponibilidades() throws Exception {
 		FileManager.eliminarArchivo("disponibilidades.csv");
-		FileManager.agregarLineasCSV("disponibilidades.csv", List.of(List.of("numero_habitacion","fecha","estado","precio")));
+		FileManager.agregarLineasCSV("disponibilidades.csv", List.of(List.of("id","numero_habitacion","fecha","estado","precio")));
 	}
-	
 	
 	public Map<String, TipoHabitacion> cargarTipoHabitaciones() throws Exception {
 		Map<String, TipoHabitacion> opcionesHabitaciones = new HashMap<>();
@@ -91,18 +93,21 @@ public class HotelManagementLoaderData {
 		return opcionesHabitaciones;
 	}
 	
-	public List<Disponibilidad> cargarDisponibilidad(Integer numeroHabitacion, Double precio) throws Exception {
-		List<Disponibilidad> disponibilidad = new ArrayList<>();
-		List<List<String>> datos = new ArrayList<>();
-		Date hoy = Utils.nowDate();
-		for(int d = 0; d <= 365; d++) {
-			LocalDate tomorrow = hoy.toLocalDate().plusDays(d);
-			List<String> lista = List.of(numeroHabitacion.toString(), Utils.stringLocalDate(Date.valueOf(tomorrow)), "true", precio.toString());
-			datos.add(lista);
-			disponibilidad.add(new Disponibilidad(precio, true, Date.valueOf(tomorrow)));
+	public Map<Long, Disponibilidad> cargarDisponibilidades(Map<Integer, Habitacion> habitaciones, Map<Long, Reserva> reservas) throws Exception {
+		Map<Long, Disponibilidad> disponibilidades = new HashMap<>();
+		List<Map<String, String>> disponibilidadesCSV = FileManager.cargarArchivoCSV("disponibilidades.csv");
+		Map<Long, Long> disponibilidadesReservas = cargarDisponibilidadesReservas();
+		for (Map<String, String> row : disponibilidadesCSV) {
+			Long id = Long.parseLong(row.get("id"));
+			Integer habitacion = Integer.parseInt(row.get("numero_habitacion"));
+			Date fecha = Utils.stringToDate(row.get("fecha"));
+			Boolean estado = Boolean.parseBoolean(row.get("estado"));
+			Double precio = Double.parseDouble(row.get("precio"));
+			Reserva reserva = reservas.get(disponibilidadesReservas.get(id));
+			Disponibilidad disponibilidad = new Disponibilidad(id, habitacion, precio, estado, fecha, reserva);
+			habitaciones.get(habitacion).agregarDisponibilidad(disponibilidad);
 		}
-		FileManager.agregarLineasCSV("disponibilidades.csv", datos);
-		return disponibilidad;
+		return disponibilidades;
 	}
 	
 	public Map<Integer, Habitacion> cargarHabitaciones(Map<String, TipoHabitacion> opcionesHabitacion, Hotel hotel) throws Exception{
@@ -111,7 +116,7 @@ public class HotelManagementLoaderData {
 		for(Map<String, String> dato : datos) {
 			Integer numeroHabitacion = Integer.parseInt(dato.get("numero_habitacion"));
 			TipoHabitacion tipo = opcionesHabitacion.get(dato.get("tipo_habitacion"));
-			List<Disponibilidad> disponibilidad = cargarDisponibilidad(numeroHabitacion, tipo.getPrecio());
+			List<Disponibilidad> disponibilidad = new ArrayList<>();
 			Habitacion habitacion = new Habitacion(numeroHabitacion, tipo, disponibilidad, hotel);
 			habitaciones.put(numeroHabitacion, habitacion);
 		}
@@ -196,7 +201,7 @@ public class HotelManagementLoaderData {
 					fechaIngreso,
 					fechaSalida,
 					facturaTotal,
-					Arrays.asList(),
+					new ArrayList<>(),
 					huespedesEstadia
 			);
 			estadias.put(id, estadia);
@@ -205,15 +210,15 @@ public class HotelManagementLoaderData {
 		return estadias;
 	}
 	
-	public List<Producto> cargarProductos() throws Exception {
-		List<Producto> productosCargados = new ArrayList<>();
+	public Map<Long, Producto> cargarProductos() throws Exception {
+		Map<Long, Producto> productosCargados = new HashMap<>();
 		List<Map<String, String>> datos = FileManager.cargarArchivoCSV("productos.csv");
 		for (Map<String, String> dato : datos) {
 			Long id = Long.parseLong(dato.get("id"));
 		    String nombre = dato.get("nombre");
 		    Double precio = Double.parseDouble(dato.get("precio"));
 		    Producto producto = new Producto(id, nombre, precio);
-		    productosCargados.add(producto);
+		    productosCargados.put(id, producto);
 		}
 		return productosCargados;
 	}
@@ -299,5 +304,16 @@ public class HotelManagementLoaderData {
 			reservasHabitaciones.get(reserva).add(habitacion);
 		}
 		return reservasHabitaciones;
+	}
+	
+	private Map<Long, Long> cargarDisponibilidadesReservas() throws Exception {
+		Map<Long, Long> disponibilidadesReservas = new HashMap<>();
+		List<Map<String, String>> data = FileManager.cargarArchivoCSV("reservas_disponibilidades.csv");
+		for (Map<String, String> dato : data) {
+			Long disponibilidad = Long.parseLong(dato.get("id_disponibilidad"));
+			Long reserva = Long.parseLong(dato.get("id_reserva"));
+			disponibilidadesReservas.put(disponibilidad, reserva);
+		}
+		return disponibilidadesReservas;
 	}
 }
