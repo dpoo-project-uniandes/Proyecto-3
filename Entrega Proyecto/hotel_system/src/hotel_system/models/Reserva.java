@@ -56,6 +56,11 @@ public class Reserva {
 		this.estadia = estadia;
 		this.habitaciones = habitaciones;
 	}
+	
+	public void cerrar() {
+		this.estado = EstadoReserva.CERRADA;
+		this.tarifaTotal = calcularTarifaTotal();
+	}
 
 	public Double calcularTarifaTotal() {
 		double valorTotal = 0.0;

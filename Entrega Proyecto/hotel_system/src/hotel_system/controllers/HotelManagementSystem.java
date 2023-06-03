@@ -143,9 +143,14 @@ public class HotelManagementSystem {
 		return controladorEstadias.getEstadiaByDNI(dni);
 	}
 
-	
 	public Estadia getEstadiaByHabitacion(Integer id) {
 		return controladorEstadias.getEstadiaByHabitacion(id);
+	}
+	
+	public Estadia cerrarEstadia(Estadia estadia) throws Exception {
+		controladorReservas.cerrarReserva(estadia.getReserva());
+		controladorEstadias.actualizarEstadia(estadia);
+		return estadia;
 	}
 
 	// =====================================================================================================================================================
@@ -184,6 +189,11 @@ public class HotelManagementSystem {
 		if (estadia == null)
 			throw new Exception("No se encontraron estadias en la habitacion " + habitacion);
 		return controladorConsumibles.facturar(estadia, consumibles);
+	}
+	
+	public Factura facturarEstadia(Estadia estadia) throws Exception {
+		Factura factura = controladorConsumibles.facturarEstadia(estadia);
+		return factura;
 	}
 	
 	// =====================================================================================================================================================

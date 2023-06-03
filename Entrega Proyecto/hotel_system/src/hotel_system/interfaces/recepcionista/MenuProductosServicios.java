@@ -107,7 +107,7 @@ public class MenuProductosServicios extends JPanel implements Facturador {
 	}
 	
 	private void configPayLaterButton(Function<MenuProductosServicios, ActionListener> payLaterAction) {
-		this.payLaterBtn = new Button("Pagar despues");
+		this.payLaterBtn = new Button("Cargar a la Habitacion");
 		this.payLaterBtn.addActionListener(payLaterAction.apply(this));
 	}
 	
@@ -140,6 +140,7 @@ public class MenuProductosServicios extends JPanel implements Facturador {
 		this.finder.setValue("");
 	}
 	
+	@Override
 	public void injectFactura(Factura factura) {
 		// CLEAN
 		cleanUserInputs();

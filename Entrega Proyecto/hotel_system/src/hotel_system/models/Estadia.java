@@ -41,6 +41,12 @@ public class Estadia extends Servicio {
 		this.facturas = new ArrayList<>();
 	}
 	
+	public void cerrar() {
+		this.reserva.cerrar();
+		this.fechaSalida = Utils.nowDate();
+		this.facturaTotal = facturar(this.reserva.getTitular());
+	}
+	
 	@Override
 	public Factura facturar(Huesped titular) {
 		this.productosConsumidos.addAll(getConsumoHabitaciones());
@@ -58,6 +64,12 @@ public class Estadia extends Servicio {
 							habitacion.calcularTarifa(estadia.getFechaIngreso(), estadia.getFechaSalida()));
 				}).toList());
     }
+	
+	@Override
+	public void addConsumible(Consumible consumible) {
+		if (this.reserva.estaActiva())
+			super.addConsumible(consumible);
+	}
 
 	public void cargarFactura(Factura factura) {
 		this.facturas.add(factura);

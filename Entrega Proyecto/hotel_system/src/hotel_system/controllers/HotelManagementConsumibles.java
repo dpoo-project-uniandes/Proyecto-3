@@ -50,19 +50,28 @@ public class HotelManagementConsumibles {
 	}
 
 	public void facturarAlaHabitacion(Estadia estadia, Map<Long, Integer> productos) {
-		productos.keySet().stream()
-				.forEach(k -> estadia.addConsumible(consumibles.get(k)));
+		List<Consumible> consumibles = mapConsumibles(productos);
+		consumibles.stream().forEach(c -> estadia.addConsumible(c));
 	}
 	
 	public Factura facturar(Estadia estadia, Map<Long, Integer> productos) {
+		List<Consumible> consumibles = mapConsumibles(productos);
+		Factura factura = new Factura(estadia.getReserva().getTitular(), consumibles);
+		return factura;
+	}
+
+	public Factura facturarEstadia(Estadia estadia) {
+		estadia.cerrar();
+		return estadia.getFacturaTotal();
+	}
+	
+	private List<Consumible> mapConsumibles(Map<Long, Integer> productos) {
 		List<Consumible> consumibles = new ArrayList<>();
 		for (Long key : productos.keySet()) {
 			for (int i = 0; i < productos.get(key); i++) {
 				consumibles.add(this.consumibles.get(key));
 			}
 		}
-		Factura factura = new Factura(estadia.getReserva().getTitular(), consumibles);
-		return factura;
+		return consumibles;
 	}
-
 }

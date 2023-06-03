@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -22,20 +23,23 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import hotel_system.interfaces.DataPanel;
+import hotel_system.interfaces.DialogFactura;
 import hotel_system.interfaces.Finder;
 import hotel_system.interfaces.MainHeader;
 import hotel_system.interfaces.UtilsGUI;
 import hotel_system.interfaces.VerticalButtons;
 import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.DynamicTable;
+import hotel_system.interfaces.components.Facturador;
 import hotel_system.interfaces.components.FormDataTable;
 import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.components.Input;
 import hotel_system.models.Estadia;
+import hotel_system.models.Factura;
 import hotel_system.models.Huesped;
 import hotel_system.utils.Utils;
 
-public class EstadiasManagement extends JPanel {
+public class EstadiasManagement extends JPanel implements Facturador {
 
 	// BASIC
 	private MainHeader header;
@@ -67,6 +71,10 @@ public class EstadiasManagement extends JPanel {
 	private Button billingEstadiaBtn;
 	private Estadia estadiaInjected;
 	
+	// FACTURA
+	DialogFactura dialogFactura;
+	Window frame;
+	
 	// ACTIONS LISTENER
 	Function<EstadiasManagement, ActionListener> createAction;
 	Function<EstadiasManagement, ActionListener> updateAction;
@@ -75,6 +83,7 @@ public class EstadiasManagement extends JPanel {
 	
 	public EstadiasManagement(
 			String user,
+			Window frame,
 			FormDataTable<Huesped> guestsData,
 			HeaderButtonsActions headerButtonsActions,
 			Function<Finder, ActionListener> findAction,
@@ -84,6 +93,7 @@ public class EstadiasManagement extends JPanel {
 			Function<EstadiasManagement, ActionListener> billingAction
 	) {
 		this.title = "Detalles de la Estadia";
+		this.frame = frame;
 		this.guestsData = guestsData;
 		this.createAction = createAction;
 		this.updateAction = updateAction;
@@ -339,7 +349,7 @@ public class EstadiasManagement extends JPanel {
 				estadia.getReserva().getTitular().getNombre().toString(),
 				estadia.getReserva().getNumero().toString(),
 				String.valueOf(estadia.getHuespedes().size()),
-				String.valueOf(estadia.getFacturas().size())
+				String.valueOf(estadia.calcularTotal().toString())
 		);
 		
 		// COLUMNS DATA
@@ -363,7 +373,7 @@ public class EstadiasManagement extends JPanel {
 		this.updateEstadiaBtn.addActionListener(this.updateAction.apply(this));
 		this.guestsEstadiaBtn = new Button("Huespedes");
 		this.guestsEstadiaBtn.addActionListener(this.guestsAction.apply(this));
-		this.billingEstadiaBtn = new Button("Facturacion");
+		this.billingEstadiaBtn = new Button("Facturar");
 		this.billingEstadiaBtn.addActionListener(this.billingAction.apply(this));
 		
 		this.actionsEstadiasPanel.add(this.updateEstadiaBtn);
@@ -390,5 +400,11 @@ public class EstadiasManagement extends JPanel {
 	
 	public Estadia getEstadiaInjected() {
 		return estadiaInjected;
+	}
+
+	@Override
+	public void injectFactura(Factura factura) {
+		// TODO Auto-generated method stub
+		this.dialogFactura = new DialogFactura(frame, "Factura Electronica", factura);
 	}
 }

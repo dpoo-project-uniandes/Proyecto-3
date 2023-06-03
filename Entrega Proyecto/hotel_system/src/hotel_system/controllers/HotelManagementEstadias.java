@@ -55,6 +55,10 @@ public class HotelManagementEstadias {
 		
 		return estadia;
 	}
+	
+	public void actualizarEstadia(Estadia estadia) throws Exception {
+		FileManager.modificarLineaCSV("estadias.csv", "id", estadia.getId().toString(), estadiaToListString(estadia));
+	}
 
 	public Estadia getEstadiaById(Long id) {		
 		return estadias.get(id);

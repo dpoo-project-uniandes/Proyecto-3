@@ -86,6 +86,7 @@ public class CreditCardPay extends JDialog {
 	private void configPasarelas(Map<String, String> pasarelas) {
 		
 		// RADIO BUTTONS
+		Boolean defaultSelect = false;
 		this.pasarelasButtonGroup = new ButtonGroup();
 		this.pasarelasButtonsPanel = new JPanel();
 		this.pasarelasButtonsPanel.setOpaque(false);
@@ -106,6 +107,11 @@ public class CreditCardPay extends JDialog {
 					pasarelaSelected = b;
 				}
 			});
+			
+			if (!defaultSelect) {
+				radioButton.setSelected(true);
+				defaultSelect = true;
+			}
 			
 			this.pasarelasButtonsPanel.add(iconLabel);
 			this.pasarelasButtonsPanel.add(radioButton);

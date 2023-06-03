@@ -76,8 +76,7 @@ public class HotelSystemInterface extends JFrame {
 		this.user = "My User";
 		this.pms = new HotelManagementSystem();
 		configHeaderButtonsActions();
-//		configMenuRecepcionista();
-		configConsumingManagement();
+		configMenuRecepcionista();
 	}
 	
 	// ============================================================================================================================================================================
@@ -578,6 +577,15 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					Estadia estadia = panel.getEstadiaInjected();
+					try {
+						Factura factura = pms.facturarEstadia(estadia);
+						configCreditCardPay(factura, estadiasManagement);
+						panel.injectData(pms.cerrarEstadia(estadia));
+					} catch (Exception e1) {
+						e1.printStackTrace();
+						JOptionPane.showMessageDialog(null, "Lo sentimos no se pudo facturar la estadia, intente nuevamente\n" + e1.getMessage());
+					}
 				}
 			};
 		};
@@ -613,6 +621,7 @@ public class HotelSystemInterface extends JFrame {
 		FormDataTable<Huesped> guestsData = new GuestsData(new ArrayList<>(), null);
 		this.estadiasManagement = new EstadiasManagement(
 				user, 
+				this,
 				guestsData,
 				headerButtonsActions.withButtons(),
 				findAction, 
@@ -700,11 +709,18 @@ public class HotelSystemInterface extends JFrame {
         	return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Integer habitacion = Integer.parseInt(panel.getHabitacion());
-					Map<String, Integer> productsSelected = panel.getProductsMap();
-					Map<Long, Integer> productos = new HashMap<>();
-					productsSelected.forEach((k, v) -> productos.put(Long.parseLong(k), v));
-					configCreditCardPay(habitacion, productos, menuProductosServicios);
+					try {
+						Integer habitacion = Integer.parseInt(panel.getHabitacion());
+						Map<String, Integer> productsSelected = panel.getProductsMap();
+						Map<Long, Integer> productos = new HashMap<>();
+						productsSelected.forEach((k, v) -> productos.put(Long.parseLong(k), v));
+						Factura factura = pms.facturar(habitacion, productos);
+						configCreditCardPay(factura, menuProductosServicios);
+					} catch (NumberFormatException en) {
+						JOptionPane.showMessageDialog(null, "numero de habitacion no valido");
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(null, "Lo sentimos, intente nuevamente\n" + e1.getMessage());
+					}
 				}
 			};
         };
@@ -712,16 +728,17 @@ public class HotelSystemInterface extends JFrame {
         	return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Integer habitacion = Integer.parseInt(panel.getHabitacion());
-					Map<String, Integer> productsSelected = panel.getProductsMap();
-					Map<Long, Integer> products = new HashMap<>();
-					productsSelected.forEach((k, v) -> products.put(Long.parseLong(k), v));
 					try {
+						Integer habitacion = Integer.parseInt(panel.getHabitacion());
+						Map<String, Integer> productsSelected = panel.getProductsMap();
+						Map<Long, Integer> products = new HashMap<>();
+						productsSelected.forEach((k, v) -> products.put(Long.parseLong(k), v));
 						pms.facturarAlaHabitacion(habitacion, products);
 						JOptionPane.showMessageDialog(null, "Facturacion Exitosa");
+					} catch (NumberFormatException en) {
+						JOptionPane.showMessageDialog(null, "numero de habitacion no valido");
 					} catch (Exception e1) {
-						e1.printStackTrace();
-	                    JOptionPane.showMessageDialog(null, e1.getMessage());
+						JOptionPane.showMessageDialog(null, "Lo sentimos, intente nuevamente\n" + e1.getMessage());
 					}
 				}
 			};
@@ -745,14 +762,13 @@ public class HotelSystemInterface extends JFrame {
 	// PANEL DE PAGO CON TARJETA CREDITO
 	// ================================================================================================================================================================================
 	
-	private void configCreditCardPay(Integer habitacion, Map<Long, Integer> productos, Facturador owner) {
+	private void configCreditCardPay(Factura factura,Facturador owner) {
 		Function<CreditCardPay, ActionListener> payAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					try {
 						Map<String, String> data = panel.getDataMap();
-						Factura factura = pms.facturar(habitacion, productos);
 						Factura facturaPagada = pms.procesarPagoConTarjetaCredito(
 								factura, 
 								data.get("pasarela"),
@@ -764,7 +780,7 @@ public class HotelSystemInterface extends JFrame {
 						owner.injectFactura(facturaPagada);
 					} catch (Exception e1) {
 						e1.printStackTrace();
-						JOptionPane.showMessageDialog(null, "Lo sentimos el pago no ha sido procesado, intente nuevamente");
+						JOptionPane.showMessageDialog(null, "Lo sentimos el pago no ha sido procesado, intente nuevamente\n" + e1.getMessage());
 					}
 				}
 			};

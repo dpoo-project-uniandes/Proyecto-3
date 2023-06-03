@@ -143,6 +143,12 @@ public class HotelManagementReservas {
 		procesarDisponibilidades(reserva, true);
 	}
 	
+	public void cerrarReserva(Reserva reserva) throws Exception {
+		reserva.setEstado(EstadoReserva.CERRADA);
+		FileManager.modificarLineaCSV("reservas.csv", "numero", reserva.getNumero().toString(), reservaToListString(reserva));
+	}
+		
+	
 	public void eliminarReserva(Long id) throws Exception {
 		// Archivo de reservas
 		Reserva reserva = this.reservas.get(id);
