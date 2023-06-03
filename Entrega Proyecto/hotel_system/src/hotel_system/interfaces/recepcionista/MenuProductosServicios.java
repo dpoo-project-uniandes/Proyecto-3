@@ -27,8 +27,8 @@ import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.DynamicTable;
 import hotel_system.interfaces.components.FormDataTable;
 import hotel_system.interfaces.components.HeaderButtonsActions;
+import hotel_system.models.Consumible;
 import hotel_system.models.Factura;
-import hotel_system.models.Producto;
 
 public class MenuProductosServicios extends JPanel {
 	
@@ -46,19 +46,20 @@ public class MenuProductosServicios extends JPanel {
 	private DialogFactura dialogFactura;
 	private Window frame;
 	
-	private FormDataTable<Producto> productsData;
+	private FormDataTable<Consumible> consumiblesDataTable;
 	
 	public MenuProductosServicios(
+			String title,
 		    String user,
 		    Window frame,
-		    FormDataTable<Producto> productsData,
+		    FormDataTable<Consumible> consumiblesDataTable,
 			HeaderButtonsActions headerButtonsActions,
 		    Function<Finder, ActionListener> generateAction,
 		    Function<MenuProductosServicios, ActionListener> payNowAction,
 		    Function<MenuProductosServicios, ActionListener> payLaterAction
 		) {
-		    this.title = "Inventario Productos";
-		    this.productsData = productsData;
+		    this.title = title;
+		    this.consumiblesDataTable = consumiblesDataTable;
 		    this.frame = frame;
 		    configPanel();
 		    configHeader(user, "Productos", headerButtonsActions);
@@ -124,7 +125,7 @@ public class MenuProductosServicios extends JPanel {
 	}
 	
 	private void configTable() {
-		this.productsTable = new DynamicTable(productsData);
+		this.productsTable = new DynamicTable(consumiblesDataTable);
 		this.scrollPaneProductsTable = new JScrollPane(productsTable);
 		this.scrollPaneProductsTable.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		
@@ -133,7 +134,7 @@ public class MenuProductosServicios extends JPanel {
 	}
 	
 	private void cleanUserInputs() {
-		((ProductsData)productsData).clean();
+		((ProductsDataTable)consumiblesDataTable).clean();
 		this.finder.setValue("");
 	}
 	
@@ -151,7 +152,7 @@ public class MenuProductosServicios extends JPanel {
 	
 	public Map<String, Integer> getProductsMap() {
 		Map<String, Integer> data = new HashMap<>();
-		productsData.getData().stream().forEach(r -> {
+		consumiblesDataTable.getData().stream().forEach(r -> {
 			AddItems addItems = (AddItems) r.get(r.size()-1);
 			if (addItems.getValue() > 0)
 				data.put((String) r.get(0), addItems.getValue());

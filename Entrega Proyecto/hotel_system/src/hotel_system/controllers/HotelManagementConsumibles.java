@@ -9,7 +9,9 @@ import hotel_system.models.Consumible;
 import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
 import hotel_system.models.Producto;
+import hotel_system.models.Restaurante;
 import hotel_system.models.Servicio;
+import hotel_system.models.Spa;
 
 public class HotelManagementConsumibles {
 	
@@ -33,6 +35,14 @@ public class HotelManagementConsumibles {
 	
 	public Map<Long, Producto> getProductos() {
 		return productos;
+	}
+	
+	public Restaurante getRestaurante() {
+		return (Restaurante) servicios.values().stream().filter(service -> service instanceof Restaurante).findAny().get();
+	}
+	
+	public Spa getSpa() {
+		return (Spa) servicios.values().stream().filter(service -> service instanceof Spa).findAny().get();
 	}
 	
 	public Consumible getProductoById(Long id) {

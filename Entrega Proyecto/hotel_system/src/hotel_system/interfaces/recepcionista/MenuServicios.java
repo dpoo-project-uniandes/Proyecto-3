@@ -17,30 +17,25 @@ public class MenuServicios extends MainMenu {
     		String user,
     		HeaderButtonsActions headerButtonsActions,
     		Function<MenuServicios, ActionListener> restauranteAction,
-    		Function<MenuServicios, ActionListener> spaAction,
-    		Function<MenuServicios, ActionListener> alojamientoAction
+    		Function<MenuServicios, ActionListener> spaAction
 	) {
     	super(user, "Menu Principal", 3, headerButtonsActions);
-        configMenu(restauranteAction, spaAction, alojamientoAction);
+        configMenu(restauranteAction, spaAction);
     }
     
     private void configMenu(
     		Function<MenuServicios, ActionListener> restauranteAction,
-    		Function<MenuServicios, ActionListener> spaAction,
-    		Function<MenuServicios, ActionListener> alojamientoAction
+    		Function<MenuServicios, ActionListener> spaAction
 	) {    	
     	// BUTTONS
     	this.restauranteBtn = new MenuButton("Restaurante", "rest");
     	this.spaBtn = new MenuButton("Spa", "spa");
-    	this.alojamientoBtn = new MenuButton("Alojamiento", "room");
     	
     	// ACTIONS LISTENERS
     	this.restauranteBtn.addActionListener(restauranteAction.apply(this));
     	this.spaBtn.addActionListener(spaAction.apply(this));
-    	this.alojamientoBtn.addActionListener(alojamientoAction.apply(this));
     	
     	addButton(this.restauranteBtn);
     	addButton(this.spaBtn);
-    	addButton(this.alojamientoBtn);
     }
 }

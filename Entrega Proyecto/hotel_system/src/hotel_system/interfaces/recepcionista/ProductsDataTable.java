@@ -6,13 +6,13 @@ import java.util.List;
 
 import hotel_system.interfaces.components.AddItems;
 import hotel_system.interfaces.components.FormDataTable;
-import hotel_system.models.Producto;
+import hotel_system.models.Consumible;
 
-public class ProductsData extends FormDataTable<Producto> {
+public class ProductsDataTable extends FormDataTable<Consumible> {
 	
-	List<Producto> productos;
+	List<Consumible> productos;
 
-	public ProductsData(List<Producto> productos) {
+	public ProductsDataTable(List<Consumible> productos) {
 		super(
 			Arrays.asList("Numero","Item","Precio","Carrito"),
 			Arrays.asList(0.2,0.3,0.2,0.3), 

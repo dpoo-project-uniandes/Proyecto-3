@@ -30,7 +30,8 @@ import hotel_system.interfaces.recepcionista.MenuConsumible;
 import hotel_system.interfaces.recepcionista.MenuProductosServicios;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
 import hotel_system.interfaces.recepcionista.MenuServicios;
-import hotel_system.interfaces.recepcionista.ProductsData;
+import hotel_system.interfaces.recepcionista.ProductsDataTable;
+import hotel_system.models.Consumible;
 import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
 import hotel_system.models.Huesped;
@@ -70,11 +71,11 @@ public class HotelSystemInterface extends JFrame {
 	
 	
 	public HotelSystemInterface() throws IOException {
-		this.user = "Juan Rojas";
+		this.user = "My User";
 		this.pms = new HotelManagementSystem();
 		configHeaderButtonsActions();
-//		configMenuRecepcionista();
-		configConsumingManagement();
+		configMenuRecepcionista();
+//		configConsumingManagement();
 	}
 	
 	// ============================================================================================================================================================================
@@ -632,7 +633,8 @@ public class HotelSystemInterface extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					configProductsManagement();
+					List<Consumible> consumibles = new ArrayList<>(pms.getProductos().values());
+					configMenuProductosService(consumibles, "Productos Consumibles");
 				}
 			};
 		};
@@ -640,7 +642,7 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-//					configServices(user);
+					configServices();
 				}
 			};
 		};
@@ -649,8 +651,49 @@ public class HotelSystemInterface extends JFrame {
 		configMainFrame(this.menuConsumible);
 	}
 	
-	private void configProductsManagement() {
-		Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
+	// ================================================================================================================================================================================
+	// MENUS DE SERVICIOS
+	// ================================================================================================================================================================================
+	
+	private void configServices() {
+		Function<MenuServicios, ActionListener> restauranteAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					List<Consumible> consumibles = pms.getRestaurante().getConsumibles();
+					configMenuProductosService(consumibles, "Productos Restaurante");
+				}
+			};
+		};
+		Function<MenuServicios, ActionListener> spaAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					List<Consumible> consumibles  = pms.getSpa().getConsumibles();
+					configMenuProductosService(consumibles, "Productos Spa");
+				}
+			};
+		};
+		
+		// INITIALIZE
+		this.menuServicios = new MenuServicios(user, headerButtonsActions.withButtons(), restauranteAction, spaAction);
+		configMainFrame(this.menuServicios);
+	}
+	
+	// ================================================================================================================================================================================
+	// PANEL DEL SERVICIOS O PRODUCTOS
+	// ================================================================================================================================================================================
+
+	
+	private void configMenuProductosService(List<Consumible> consumibles, String title) {
+		Function<Finder, ActionListener> generateAction = finder -> { 
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					
+				}
+			};
+		};
         Function<MenuProductosServicios, ActionListener> payNowAction = (panel) -> { 
         	return new ActionListener() {
 				@Override
@@ -687,11 +730,13 @@ public class HotelSystemInterface extends JFrame {
 				}
 			};
         };
-        FormDataTable<Producto> data = new ProductsData(new ArrayList<>(pms.getProductos().values()));
+        
+        FormDataTable<Consumible> consumiblesData = new ProductsDataTable(consumibles);
 		this.menuProductosServicios = new MenuProductosServicios(
+				title,
 				user,
 				this,
-				data,
+				consumiblesData,
 				headerButtonsActions.withButtons(),
 				generateAction,
 				payNowAction,
@@ -699,61 +744,4 @@ public class HotelSystemInterface extends JFrame {
 		);
 		configMainFrame(this.menuProductosServicios);
 	}
-	
-	// ================================================================================================================================================================================
-	// MENUS DE SERVICIOS
-	// ================================================================================================================================================================================
-	
-//	// Config Servicios
-//	private void configServices(String user) {
-//		Function<MenuServicios, ActionListener> restauranteAction = (panel) -> {
-//			return new ActionListener() {
-//				private MenuProductosServicios menuProductosServicios;
-//
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-//	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-//	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-//					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/productos_restaurante.csv");
-//					configMainFrame(this.menuProductosServicios);
-//				}
-//			};
-//		};
-//		Function<MenuServicios, ActionListener> spaAction = (panel) -> {
-//			return new ActionListener() {
-//				private MenuProductosServicios menuProductosServicios;
-//
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-//	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-//	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-//					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/productos_spa.csv");
-//					configMainFrame(this.menuProductosServicios);
-//				}
-//			};
-//		};
-//		
-//		Function<MenuServicios, ActionListener> alojamientoAction = (panel) -> {
-//			return new ActionListener() {
-//				private MenuProductosServicios menuProductosServicios;
-//
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					Function<Finder, ActionListener> generateAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-//	                Function<Finder, ActionListener> payNowAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-//	                Function<Finder, ActionListener> payLaterAction = finder -> { return (ActionEvent event) -> { /* Empty function */ }; };
-//					this.menuProductosServicios = new MenuProductosServicios(user,headerButtonsActions.withButtons(),generateAction,payNowAction,payLaterAction,"data/reservas_habitaciones.csv");
-//					configMainFrame(this.menuProductosServicios);
-//				}
-//			};
-//		};
-//		
-//		// INITIALIZE
-//		this.menuServicios = new MenuServicios(user, headerButtonsActions.withButtons(), restauranteAction, spaAction, alojamientoAction);
-//		configMainFrame(this.menuServicios);
-//	}
-	
-		
 }

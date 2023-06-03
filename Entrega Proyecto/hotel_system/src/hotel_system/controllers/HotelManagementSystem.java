@@ -12,8 +12,10 @@ import hotel_system.models.Hotel;
 import hotel_system.models.Huesped;
 import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
+import hotel_system.models.Restaurante;
 import hotel_system.models.Rol;
 import hotel_system.models.Servicio;
+import hotel_system.models.Spa;
 import hotel_system.models.TipoHabitacion;
 import hotel_system.models.Usuario;
 
@@ -193,6 +195,14 @@ public class HotelManagementSystem {
 	// =====================================================================================================================================================
 	// SERVICIOS
 	// =====================================================================================================================================================
+	
+	public Restaurante getRestaurante() {
+		return controladorConsumibles.getRestaurante();
+	}
+	
+	public Spa getSpa() {
+		return controladorConsumibles.getSpa();
+	}
 	
 //	public Spa getServicioSpa(){
 //		Spa spa = (Spa)inventarioServicios.get("spa");
