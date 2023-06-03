@@ -29,6 +29,7 @@ public class MainHeader extends JPanel {
 	private JPanel headerButtonsPanel;
 	private JButton backBtn;
 	private JButton homeMenuBtn;
+	private JButton logoutBtn;
 	
 	private HeaderButtonsActions actions;
 
@@ -98,22 +99,30 @@ public class MainHeader extends JPanel {
 	}
 	
 	private void configHeaderButtons() {
-		if (actions.showButtons()) { 
-			// BACK BUTTON
+		// PANEL
+		this.headerButtonsPanel = new JPanel();
+		this.headerButtonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 20, 0));
+		this.headerButtonsPanel.setOpaque(false);
+		
+		// BACK BUTTON
+		if (actions.showBackAction()) {
 			this.backBtn = headerButton("back");
 			this.backBtn.addActionListener(actions.getBackAction().apply(this));
-			
-			// HOME BUTTON
+			this.headerButtonsPanel.add(backBtn);
+		}
+		
+		// HOME BUTTON
+		if (actions.showHomeAction()) {
 			this.homeMenuBtn = headerButton("home");
 			this.homeMenuBtn.addActionListener(actions.getHomeAction().apply(this));
-			
-			// PANEL
-			this.headerButtonsPanel = new JPanel();
-			this.headerButtonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 20, 0));
-			this.headerButtonsPanel.setOpaque(false);
-			
-			this.headerButtonsPanel.add(backBtn);
 			this.headerButtonsPanel.add(homeMenuBtn);
+		}
+		
+		// LOGOUT BUTTON
+		if (actions.showLogoutAction()) {
+			this.logoutBtn = headerButton("logout");
+			this.logoutBtn.addActionListener(actions.getLogoutAction().apply(this));
+			this.headerButtonsPanel.add(logoutBtn);
 		}
 	}
 	

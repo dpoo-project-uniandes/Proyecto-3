@@ -18,10 +18,11 @@ import javax.swing.JPanel;
 import hotel_system.controllers.HotelManagementSystem;
 import hotel_system.interfaces.CreditCardPay;
 import hotel_system.interfaces.Login;
+import hotel_system.interfaces.MainHeader;
 import hotel_system.interfaces.Registrarse;
 import hotel_system.interfaces.components.Facturador;
+import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.recepcionista.FormRoomsData;
-import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
 import hotel_system.models.PasarelaPago;
 import hotel_system.models.Reserva;
@@ -43,11 +44,33 @@ public class HotelSystemInterfaceUsuarios extends JFrame {
 	private BookingManagementUsuario bookingManagementUsuario;
 	private String user;
 	
+	private HeaderButtonsActions headerButtonsActions;
+	
 	public HotelSystemInterfaceUsuarios() throws IOException {
 		this.user = "My User";
 		this.pms = new HotelManagementSystem();
-//		configLogin();
-		configBookingManagementUsuario();
+		configHeaderButtonsActions();
+		configLogin();
+	}
+	
+	// ============================================================================================================================================================================
+	// HEADER ACTIONS
+	// ============================================================================================================================================================================
+	
+	private void configHeaderButtonsActions() {
+		// ============================================================================================================================================================================
+		// ACTIONS LISTENERS DEL HEADER
+		// ============================================================================================================================================================================
+		Function<MainHeader, ActionListener> logout = (header) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configLogin();
+				}
+			};
+		};
+		
+		this.headerButtonsActions = new HeaderButtonsActions(null, null, null, logout);
 	}
 	
 	// ================================================================================================================================================================================
@@ -166,7 +189,7 @@ public class HotelSystemInterfaceUsuarios extends JFrame {
 		// ============================================================================================================================================================================
 		// INICIALIZACION DEL SIGN UP
 		// ============================================================================================================================================================================
-	    String[] roles = List.of(Rol.values()).stream().map(r -> r.toString()).toArray(String[]::new);
+	    String[] roles = new String[]{Rol.USUARIO.toString()};
 	    this.registrarse = new Registrarse(roles, registerAction);
 	    configSmallFrame(registrarse);
 	}
@@ -273,6 +296,7 @@ public class HotelSystemInterfaceUsuarios extends JFrame {
 				user,
 				this,
 				formRoomsData,
+				headerButtonsActions,
 				createAction,
 				deleteAction,
 				updateAction,

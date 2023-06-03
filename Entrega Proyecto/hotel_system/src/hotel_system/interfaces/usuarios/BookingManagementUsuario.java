@@ -89,6 +89,7 @@ public class BookingManagementUsuario extends JPanel implements Facturador {
 		String user,
 		Window frame,
 		FormRoomsData formRoomsData,
+		HeaderButtonsActions headerButtonsActions,
 		Function<BookingManagementUsuario, ActionListener> createAction,
 		Function<BookingManagementUsuario, ActionListener> deleteAction,
 		Function<BookingManagementUsuario, ActionListener> updateAction,
@@ -104,7 +105,7 @@ public class BookingManagementUsuario extends JPanel implements Facturador {
 		this.cancelAction = cancelAction;
 		this.payAction = payAction;
 		configPanel();
-		configHeader(user, "Mi Reserva", new HeaderButtonsActions(null, null, null).withoutButtons());
+		configHeader(user, "Mi Reserva", headerButtonsActions);
 		configNewBookingButton();
 		configVerticalButtons();
 		configPanelNewBooking();

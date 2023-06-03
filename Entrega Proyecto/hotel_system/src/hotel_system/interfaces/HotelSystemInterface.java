@@ -105,11 +105,19 @@ public class HotelSystemInterface extends JFrame {
 				}
 			};
 		};
+		Function<MainHeader, ActionListener> logout = (header) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configLogin();
+				}
+			};
+		};
 		
 		// ============================================================================================================================================================================
 		// INICIALIZACION
 		// ============================================================================================================================================================================
-		this.headerButtonsActions = new HeaderButtonsActions(home, back, home);
+		this.headerButtonsActions = new HeaderButtonsActions(home, back, home, logout);
 	}
 	
 	// ================================================================================================================================================================================
