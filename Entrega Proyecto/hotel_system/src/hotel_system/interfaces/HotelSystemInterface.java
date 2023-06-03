@@ -40,6 +40,7 @@ import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
 import hotel_system.models.Huesped;
 import hotel_system.models.PasarelaPago;
+import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
 import hotel_system.models.TipoHabitacion;
@@ -365,8 +366,9 @@ public class HotelSystemInterface extends JFrame {
 					producto = pms.getProductoSpaByID(Long.parseLong(id));
 					if (producto == null){
 						producto = pms.getProductoByID(Long.parseLong(id));
-						if (producto == null)
-							menuModificarAdmin.withoutResults();
+						if (producto == null){
+							JOptionPane.showMessageDialog(null, "No se encontró el producto");
+							menuModificarAdmin.withoutResults();}
 						else{
 							menuModificarAdmin.setTipoProducto(producto.getClass().getSimpleName());
 							menuModificarAdmin.injectData(producto);}}
@@ -391,8 +393,8 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					//TODO
-					
+					Producto producto = panel.getProductoActual();
+					panel.formNewBookingInjectData(producto);					
 				}
 			};
 		

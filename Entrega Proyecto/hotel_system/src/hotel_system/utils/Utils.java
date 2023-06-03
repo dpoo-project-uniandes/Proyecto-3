@@ -1,6 +1,7 @@
 package hotel_system.utils;
 
 import java.sql.Date;
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -36,5 +37,10 @@ public class Utils {
 
 	public static final Long generateId() {
 		return System.currentTimeMillis();
+	}
+
+	public static final Long generateId4Length() {
+		DecimalFormat df = new DecimalFormat("#####");
+		return Long.parseLong(df.format(generateId()));
 	}
 }

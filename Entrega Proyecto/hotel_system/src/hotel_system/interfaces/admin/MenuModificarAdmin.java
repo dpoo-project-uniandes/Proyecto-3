@@ -77,6 +77,7 @@ public class MenuModificarAdmin extends JPanel{
 			Function<MenuModificarAdmin, ActionListener> newProductAction
 			
 		) {
+			this.productInjected = null;
 			this.title = "Detalles del consumible";
 			configPanel();
 			configHeader(user, "Modificar Productos o Servicios", headerButtonsActions);
@@ -215,8 +216,16 @@ public class MenuModificarAdmin extends JPanel{
 			// Set information from booking data
 			if (tipoProducto.equals("Producto") || tipoProducto.equals("ProductoSpa")) {
 				this.nombre.getInput().setText(producto.getNombre());
-				
+				this.precio.getInput().setText(producto.getPrecio().toString());
 			} else {
+				ProductoRestaurante productoRestaurante = (ProductoRestaurante) producto;
+				this.nombre.getInput().setText(productoRestaurante.getNombre());
+				this.precio.getInput().setText(productoRestaurante.getPrecio().toString());
+				this.tipo.getInput().setText(productoRestaurante.getTipo());
+				this.alCuarto.getInput().setText(productoRestaurante.getAlCuarto() ? "Si" : "No");
+				this.rangoHorario1.getInput().setText(Utils.stringLocalDate(productoRestaurante.getRangoHorario().get(0))) ;
+				this.rangoHorario2.getInput().setText(Utils.stringLocalDate(productoRestaurante.getRangoHorario().get(productoRestaurante.getRangoHorario().size()-1)));
+
 				
 			}
 		}
@@ -225,13 +234,13 @@ public class MenuModificarAdmin extends JPanel{
 		public Map<String, String> getDataMap() {
 			if (tipoProducto.equals("Producto") || tipoProducto.equals("ProductoSpa")) {
 				return Map.of(
-					"id", Utils.generateId().toString(),
+					"id", productInjected == null ? Utils.generateId4Length().toString() : productInjected.getId().toString(),
 					"nombre", this.nombre.getValue(),
 					"precio", this.precio.getValue()
 				);
 			} else {
 				return Map.of(
-					"id", Utils.generateId().toString(),
+					"id", productInjected == null ? Utils.generateId4Length().toString() : productInjected.getId().toString(),
 					"nombre", this.nombre.getValue(),
 					"precio", this.precio.getValue(),
 					"tipo", this.tipo.getValue().toLowerCase().equals("producto") ? "producto" : "productoRestaurante",
