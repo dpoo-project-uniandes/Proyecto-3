@@ -232,7 +232,6 @@ public class MenuModificarAdmin extends JPanel{
 
 
 		public Map<String, String> getDataMap() {
-			System.out.println(Utils.generateId4Length());
 			if (tipoProducto.equals("Producto") || tipoProducto.equals("ProductoSpa")) {
 				return Map.of(
 					"id", productInjected == null ? Utils.generateId4Length().toString() : productInjected.getId().toString(),
@@ -283,13 +282,11 @@ public class MenuModificarAdmin extends JPanel{
 			this.productDataPanel.setLayout(new GridBagLayout());
 			this.productDataPanel.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
 			this.productDataPanel.setOpaque(false);
-			System.out.println(getTipoProducto());
 
 			List<String> titles;
 			List<String> values;
 			if (getTipoProducto().equals("Producto") || getTipoProducto().equals("ProductoSpa")){
 				titles = List.of("ID", "Nombre", "Precio", "Tipo");
-				System.out.println(getTipoProducto());
 				values = List.of(
 					this.productInjected.getId().toString(),
 					this.productInjected.getNombre(),
