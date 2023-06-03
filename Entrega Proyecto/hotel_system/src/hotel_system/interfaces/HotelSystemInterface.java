@@ -216,7 +216,7 @@ public class HotelSystemInterface extends JFrame {
 	
 	private void login(Usuario usuario) {
 		this.user = usuario.getAlias();
-		if (usuario.getRol() == Rol.RECEPCIONISTA) { 
+		if (usuario.getRol() == Rol.RECEPCIONISTA || usuario.getRol() == Rol.USUARIO) { 
 			configMenuRecepcionista();
 		}
 		else {
