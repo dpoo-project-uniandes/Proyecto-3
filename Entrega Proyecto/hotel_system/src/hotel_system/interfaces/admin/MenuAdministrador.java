@@ -12,7 +12,7 @@ import hotel_system.interfaces.components.MenuButton;
 public class MenuAdministrador extends MainMenu {
 	private MenuButton loadBtn;
     private MenuButton modifyBtn;
-    private MenuButton searchBtn;
+    // private MenuButton searchBtn;
 
     public MenuAdministrador(
     		String user,
@@ -21,7 +21,8 @@ public class MenuAdministrador extends MainMenu {
     		Function<MenuAdministrador, ActionListener> modifyAction,
     		Function<MenuAdministrador, ActionListener> searchAction
 	) {
-    	super(user, "Menu Principal", 3, headerButtonsActions);
+    	super(user, "Menu Principal", 2, headerButtonsActions);
+
         configMenu(loadAction, modifyAction, searchAction);
     }
     
@@ -33,15 +34,15 @@ public class MenuAdministrador extends MainMenu {
     	// BUTTONS
     	this.loadBtn = new MenuButton("Cargar", "loading");
     	this.modifyBtn = new MenuButton("Modificar", "modifying");
-    	this.searchBtn = new MenuButton("Consultar", "searching");
+    	// this.searchBtn = new MenuButton("Consultar", "searching");
     	
     	// ACTIONS LISTENERS
     	this.loadBtn.addActionListener(loadAction.apply(this));
     	this.modifyBtn.addActionListener(modifyAction.apply(this));
-    	this.searchBtn.addActionListener(searchAction.apply(this));
+    	// this.searchBtn.addActionListener(searchAction.apply(this));
     	addButton(this.loadBtn);  
     	addButton(this.modifyBtn);
-    	addButton(this.searchBtn);
+    	// addButton(this.searchBtn);
     }
 }
 	  

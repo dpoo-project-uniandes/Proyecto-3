@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import javax.swing.text.html.Option;
 
 import hotel_system.models.Consumible;
 import hotel_system.models.Estadia;
@@ -18,6 +21,7 @@ import hotel_system.models.Restaurante;
 import hotel_system.models.Servicio;
 import hotel_system.models.Spa;
 import hotel_system.utils.Utils;
+import services.Dupla;
 import services.FileManager;
 
 public class HotelManagementConsumibles {
@@ -56,6 +60,11 @@ public class HotelManagementConsumibles {
 		return consumibles.get(id);
 	}
 
+	public Consumible getProductoSpa(Long id){
+		Optional<Consumible> consumible = getSpa().getConsumibles().stream().filter(c -> c.getId().equals(id)).findFirst();
+		return consumible.isPresent() ? consumible.get() : null;
+	}
+
 	public void facturarAlaHabitacion(Estadia estadia, Map<Long, Integer> productos) {
 		List<Consumible> consumibles = mapConsumibles(productos);
 		consumibles.stream().forEach(c -> estadia.addConsumible(c));
@@ -87,10 +96,14 @@ public class HotelManagementConsumibles {
 	}
 
     public void eliminarProducto(Consumible producto, String tipoProducto) {
-		if (tipoProducto.equals("producto")) {
+		if (tipoProducto.equals("Producto")) {
 			productos.remove(producto.getId());
-		} else {
-			servicios.remove(producto.getId());
+		} else if (tipoProducto.equals("ProductoSpa")){
+			Spa spa = getSpa();
+			spa.getConsumibles().remove(producto);
+		} else{
+			Restaurante restaurante = getRestaurante();
+			restaurante.getConsumibles().remove(producto);
 		}
 		consumibles.remove(producto.getId());
     }
@@ -130,7 +143,7 @@ public class HotelManagementConsumibles {
 		consumibles.put(producto.getId(), producto);
 		List<List<String>> listaDataProducto = Arrays.asList(productoAsList(producto));
 		if (tipo.equals("Producto")) {
-			FileManager.agregarLineasCSV("prodcutos.csv", listaDataProducto);
+			FileManager.agregarLineasCSV("productos.csv", listaDataProducto);
 		} else {
 			Spa spa = (Spa) servicios.values().stream()
 				.filter(servicio -> servicio instanceof Spa)

@@ -2,16 +2,21 @@ package hotel_system.interfaces.admin;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -25,6 +30,8 @@ import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.interfaces.components.Input;
 import hotel_system.models.Consumible;
 import hotel_system.models.Producto;
+import hotel_system.models.ProductoRestaurante;
+import hotel_system.utils.Utils;
 
 public class MenuModificarAdmin extends JPanel{
 	
@@ -37,9 +44,12 @@ public class MenuModificarAdmin extends JPanel{
 	private JPanel finderAndNewBookingPanel;
 	private String title;
 	private Button newProductBtn;
-	private Producto bookingInjected;
+	private Producto productInjected;
 	private Function<MenuModificarAdmin, ActionListener> newProductAction;
-	
+	private Function<MenuModificarAdmin, ActionListener> updateAction;
+	private Function<MenuModificarAdmin, ActionListener> deleteAction;
+	private Button updateProductBtn;
+	private Button deleteProductBtn;
 	// FORM NEW PRODUCT
 	private JPanel formNewProduct;
 	private JPanel inputsPanel;
@@ -52,6 +62,8 @@ public class MenuModificarAdmin extends JPanel{
 	private Input rangoHorario1;
 	private String tipoProducto;
 	private Input rangoHorario2;
+	private JPanel productDataPanel;
+	private VerticalButtons actionsProductPanel;
 
 
 
@@ -59,8 +71,8 @@ public class MenuModificarAdmin extends JPanel{
 			String user,
 			HeaderButtonsActions headerButtonsActions,
 			Function<Finder, ActionListener> findAction,
-			Function<Finder, ActionListener> deleteAction,
-			Function<Finder, ActionListener> updateAction,
+			Function<MenuModificarAdmin, ActionListener> deleteAction,
+			Function<MenuModificarAdmin, ActionListener> updateAction,
 			Function<MenuModificarAdmin, ActionListener> createAction, 
 			Function<MenuModificarAdmin, ActionListener> newProductAction
 			
@@ -74,6 +86,8 @@ public class MenuModificarAdmin extends JPanel{
 			configPanelFinderAndNewBooking();
 			configDataPanel(title);
 			configComponents();
+			this.deleteAction = deleteAction;
+			this.updateAction = updateAction;
 			this.newProductAction = newProductAction;
 		}
 		  
@@ -146,11 +160,11 @@ public class MenuModificarAdmin extends JPanel{
 				this.inputsPanel.setOpaque(false);
 				this.inputsPanel.setAlignmentY(TOP_ALIGNMENT);
 				// this.inputsPanel.setAlignmentX(LEFT_ALIGNMENT);
-				this.id = Input.Instance("ID", "text");
+				// this.id = Input.Instance("ID", "text");
 				this.nombre = Input.Instance("Nombre del Producto", "text");
 				this.precio = Input.Instance("Precio", "text");
 				// this.tipo = Input.Instance("Tipo", "text");
-				this.inputsPanel.add(this.id);
+				// this.inputsPanel.add(this.id);
 				this.inputsPanel.add(this.nombre);
 				this.inputsPanel.add(this.precio);
 				// this.inputsPanel.add(this.tipo);
@@ -161,14 +175,14 @@ public class MenuModificarAdmin extends JPanel{
 				this.inputsPanel.setLayout(new GridLayout(4, 2, 230, 20));
 				this.inputsPanel.setOpaque(false);
 				this.inputsPanel.setAlignmentX(LEFT_ALIGNMENT);
-				this.id = Input.Instance("ID", "text");
+				// this.id = Input.Instance("ID", "text");
 				this.nombre = Input.Instance("Nombre", "text");
 				this.precio = Input.Instance("Precio", "text");
 				this.tipo = Input.Instance("Tipo", "text");
 				this.alCuarto = Input.Instance("Al Cuarto (Si/No)", "text");
 				this.rangoHorario1 = Input.Instance("Horario Inicio en formato yyyy/MM/dd", "text");
 				this.rangoHorario2 = Input.Instance("Horario Fin en formato yyyy/MM/dd", "text");
-				this.inputsPanel.add(this.id);
+				// this.inputsPanel.add(this.id);
 				this.inputsPanel.add(this.nombre);
 				this.inputsPanel.add(this.precio);
 				this.inputsPanel.add(this.tipo);
@@ -184,18 +198,40 @@ public class MenuModificarAdmin extends JPanel{
 
 		public void cleanUserInputs() {
 			this.finder.setValue("");
+			// PANEL
+			this.productDataPanel = new JPanel();
+			this.productDataPanel.setLayout(new GridBagLayout());
+			this.productDataPanel.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+			this.productDataPanel.setOpaque(false);
+			// REFRESH
+			this.dataPanel.injectDataPanel(this.productDataPanel);
+			this.revalidate();
 		}
 		
+		public void formNewBookingInjectData(Producto producto) {
+			// Restart form panel
+			configNewFormProduct();
+			
+			// Set information from booking data
+			if (tipoProducto.equals("Producto") || tipoProducto.equals("ProductoSpa")) {
+				this.nombre.getInput().setText(producto.getNombre());
+				
+			} else {
+				
+			}
+		}
+
+
 		public Map<String, String> getDataMap() {
 			if (tipoProducto.equals("Producto") || tipoProducto.equals("ProductoSpa")) {
 				return Map.of(
-					"id", this.id.getValue(),
+					"id", Utils.generateId().toString(),
 					"nombre", this.nombre.getValue(),
 					"precio", this.precio.getValue()
 				);
 			} else {
 				return Map.of(
-					"id", this.id.getValue(),
+					"id", Utils.generateId().toString(),
 					"nombre", this.nombre.getValue(),
 					"precio", this.precio.getValue(),
 					"tipo", this.tipo.getValue().toLowerCase().equals("producto") ? "producto" : "productoRestaurante",
@@ -226,14 +262,98 @@ public class MenuModificarAdmin extends JPanel{
 		
 		public void withoutResults() {
 			this.dataPanel.emptyResults();
-			this.bookingInjected = null;
+			this.productInjected = null;
 		}
 		
 		public void injectData(Consumible producto) {
-			setTipoProducto(producto.getClass().getSimpleName());
-			System.out.println(producto);
-		}
 
+			this.productInjected = (Producto) producto;
+
+			this.productDataPanel = new JPanel();
+			this.productDataPanel.setLayout(new GridBagLayout());
+			this.productDataPanel.setBorder(BorderFactory.createEmptyBorder(30,30,30,30));
+			this.productDataPanel.setOpaque(false);
+			System.out.println(getTipoProducto());
+
+			List<String> titles;
+			List<String> values;
+			if (getTipoProducto().equals("Producto") || getTipoProducto().equals("ProductoSpa")){
+				titles = List.of("ID", "Nombre", "Precio", "Tipo");
+				System.out.println(getTipoProducto());
+				values = List.of(
+					this.productInjected.getId().toString(),
+					this.productInjected.getNombre(),
+					this.productInjected.getPrecio().toString(),
+					getTipoProducto()
+				);
+			} else {
+				titles = List.of("ID", "Nombre", "Precio", "Tipo", "Al Cuarto", "Rango Horario Inicio", "Rango Horario Fin");
+				ProductoRestaurante productoRestaurante = (ProductoRestaurante) producto;
+				String fecha1 = Utils.stringLocalDate(productoRestaurante.getRangoHorario().get(0));
+				String fecha2 = Utils.stringLocalDate(productoRestaurante.getRangoHorario().get(productoRestaurante.getRangoHorario().size() - 1));
+				values = List.of(
+					this.productInjected.getId().toString(),
+					this.productInjected.getNombre(),
+					this.productInjected.getPrecio().toString(),
+					getTipoProducto(),
+					productoRestaurante.getAlCuarto() ? "Si" : "No",
+					fecha1,
+					fecha2
+				);
+			}
+			// COLUMNS DATA
+			Integer middle = (titles.size() / 2);
+			JPanel col1 = getColumnPanelDataBooking();
+			JPanel col2 = getColumnPanelDataBooking();
+			
+			for(int i = 0; i < titles.size(); i++) {
+				if (middle < i)
+					col1.add(getLabelDataBooking(titles.get(i), values.get(i)));
+				else
+					col2.add(getLabelDataBooking(titles.get(i), values.get(i)));
+			}
+			this.productDataPanel.add(col2, UtilsGUI.getConstraints(0, 0, 1, 1, 0.4, 1, 0, 0, 0, 0, 1, GridBagConstraints.WEST));
+			this.productDataPanel.add(col1, UtilsGUI.getConstraints(1, 0, 1, 1, 0.4, 1, 0, 0, 0, 0, 1, GridBagConstraints.WEST));
+
+
+			// BUTTONS
+			this.actionsProductPanel = new VerticalButtons(2);
+			this.updateProductBtn = new Button("Modificar");
+			this.updateProductBtn.addActionListener(this.updateAction.apply(this));
+			this.deleteProductBtn = new Button("Eliminar");
+			this.deleteProductBtn.addActionListener(this.deleteAction.apply(this));
+			this.actionsProductPanel.addButton(this.updateProductBtn);
+			this.actionsProductPanel.addButton(this.deleteProductBtn);
+			
+			this.productDataPanel.add(this.actionsProductPanel, UtilsGUI.getConstraints(2, 0, 1, 1, 0.2, 1, 60, 0, 60, 0, 1, GridBagConstraints.EAST));
+		
+		// REFRESH
+		this.dataPanel.injectDataPanel(this.productDataPanel);
+		this.revalidate();
+
+	}
+	private JPanel getLabelDataBooking(String title, String value) {
+		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel titleLabel = new JLabel(title + ":");
+		JLabel valueLabel = new JLabel(value);
+		
+		// CUSTOMOZATION
+		titleLabel.setFont(new Font(getName(), Font.BOLD, 20));
+		valueLabel.setFont(new Font(getName(), Font.PLAIN, 20));
+		
+		panel.add(titleLabel);
+		panel.add(valueLabel);
+		panel.setOpaque(false);
+		
+		return panel;
+	}
+
+		private JPanel getColumnPanelDataBooking() {
+			JPanel panel = new JPanel();
+			panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+			panel.setOpaque(false);
+			return panel; 
+		}
 
 		public void setTipoProducto(String tipo) {
 			this.tipoProducto = tipo;
@@ -245,7 +365,7 @@ public class MenuModificarAdmin extends JPanel{
 		}
 		
 		public Producto getProductoActual() {
-			return null;
+			return this.productInjected;
 			
 		}
 		

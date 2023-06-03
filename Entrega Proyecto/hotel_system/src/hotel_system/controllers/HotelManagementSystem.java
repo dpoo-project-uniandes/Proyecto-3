@@ -153,7 +153,6 @@ public class HotelManagementSystem {
 		controladorEstadias.actualizarEstadia(estadia);
 		return estadia;
 	}
-
 	// =====================================================================================================================================================
 	
 	// =====================================================================================================================================================
@@ -223,6 +222,9 @@ public class HotelManagementSystem {
 	
 	public Consumible getProductoByID(Long id) {		
 		return controladorConsumibles.getProductoById(id);
+	}
+	public Consumible getProductoSpaByID(Long id) {		
+		return controladorConsumibles.getProductoSpa(id);
 	}
 		
 	// =====================================================================================================================================================

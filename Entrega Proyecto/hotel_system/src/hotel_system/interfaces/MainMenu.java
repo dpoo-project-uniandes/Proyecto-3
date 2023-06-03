@@ -38,6 +38,8 @@ public abstract class MainMenu extends JPanel {
     	this.header = new MainHeader(user, title, headerButtonsActions);
     }
     
+    
+
     private void configButtonsPanel(Integer quantityButtons) {
     	// BUTTONS PANEL
     	Integer rows = quantityButtons / 3;

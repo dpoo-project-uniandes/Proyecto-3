@@ -297,7 +297,7 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					configSearchingManagement(user); 
+					// configSearchingManagement(user); 
 				}
 			};
 		};
@@ -308,10 +308,10 @@ public class HotelSystemInterface extends JFrame {
 		configMainFrame(this.menuAdmin);
 		
 	}
-	private void configSearchingManagement(String user2) {
-		// TODO Auto-generated method stub
+	// private void configSearchingManagement(String user2) {
+	// 	// TODO Auto-generated method stub
 		
-	}
+	// }
 	
 	// ================================================================================================================================================================================
 	// CARGA DE DATOS DESDE EL PANEL DE ADMINISTRACION
@@ -361,23 +361,24 @@ public class HotelSystemInterface extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					String id = finder.getValue();
-					Consumible producto = pms.getProductoByID(Long.parseLong(id));
-					if (producto == null)
-						menuModificarAdmin.withoutResults();
-					else
+					Consumible producto; 
+					producto = pms.getProductoSpaByID(Long.parseLong(id));
+					if (producto == null){
+						producto = pms.getProductoByID(Long.parseLong(id));
+						if (producto == null)
+							menuModificarAdmin.withoutResults();
+						else{
+							menuModificarAdmin.setTipoProducto(producto.getClass().getSimpleName());
+							menuModificarAdmin.injectData(producto);}}
+					else{
+						menuModificarAdmin.setTipoProducto("ProductoSpa");
 						menuModificarAdmin.injectData(producto);
-					// Dupla<Producto, String> dupla = pms.getProductoByID(id);
-				// 	Producto producto = dupla.getPrimero();
-				// 	String tipo = dupla.getSegundo();
-				// 	if (dupla == null)
-				// 		menuModificarAdmin.withoutResults();
-				// 	else
-				// 		menuModificarAdmin.setTipoProducto(tipo);
-				// 		menuModificarAdmin.injectData(id);
+					}
+					
 				 }
 			};
 		};
-		Function<Finder, ActionListener> deleteAction = (btn) -> {
+		Function<MenuModificarAdmin, ActionListener> deleteAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -386,7 +387,7 @@ public class HotelSystemInterface extends JFrame {
 				}
 			};
 		};
-		Function<Finder, ActionListener> updateAction = (btn) -> {
+		Function<MenuModificarAdmin, ActionListener> updateAction = (panel) -> {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -421,9 +422,10 @@ public class HotelSystemInterface extends JFrame {
 						data.get("rangoHorario1"),
 						data.get("rangoHorario2")
 					);
-					JOptionPane.showMessageDialog(null, "Se creó el producto con éxito");
-					panel.cleanUserInputs();
-				}} catch (Exception e1) {
+				}
+				JOptionPane.showMessageDialog(null, "Se creó el producto con éxito");
+				panel.cleanUserInputs();
+			} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, "Se produjo un error creando el producto");
 					e1.printStackTrace();
 				}
