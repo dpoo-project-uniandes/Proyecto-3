@@ -385,7 +385,12 @@ public class HotelSystemInterface extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					Consumible producto = menuModificarAdmin.getProductoActual();
-					pms.eliminarProducto(producto, menuModificarAdmin.getTipoProducto());
+					try {
+						pms.eliminarProducto(producto, menuModificarAdmin.getTipoProducto());
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(null, "No se pudo eliminar el producto");
+						e1.printStackTrace();
+					}
 				}
 			};
 		};

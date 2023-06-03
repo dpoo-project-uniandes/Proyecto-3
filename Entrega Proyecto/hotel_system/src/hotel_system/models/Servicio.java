@@ -54,4 +54,8 @@ public abstract class Servicio implements Facturable {
 	public Long getId() {
 		return id;
 	}
+
+	public void deleteById(Long id) {
+		this.productosConsumidos.removeIf(consumible -> consumible.getId() == id);
+	}
 }

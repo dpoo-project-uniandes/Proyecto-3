@@ -94,15 +94,18 @@ public class HotelManagementConsumibles {
 		return consumibles;
 	}
 
-    public void eliminarProducto(Consumible producto, String tipoProducto) {
+    public void eliminarProducto(Consumible producto, String tipoProducto) throws Exception {
 		if (tipoProducto.equals("Producto")) {
 			productos.remove(producto.getId());
+			FileManager.removerLineaCSV("productos.csv", "id", producto.getId().toString());
 		} else if (tipoProducto.equals("ProductoSpa")){
 			Spa spa = getSpa();
 			spa.getConsumibles().remove(producto);
+			FileManager.removerLineaCSV("productos_spa.csv", "id", producto.getId().toString());
 		} else{
 			Restaurante restaurante = getRestaurante();
 			restaurante.getConsumibles().remove(producto);
+			FileManager.removerLineaCSV("productos_restaurante.csv", "id", producto.getId().toString());
 		}
 		consumibles.remove(producto.getId());
     }
@@ -114,15 +117,21 @@ public class HotelManagementConsumibles {
 		fechas.add(Utils.stringToDate(rangoHorario2));
 		ProductoRestaurante producto = new ProductoRestaurante(Long.parseLong(id), nombre, Double.parseDouble(precio), fechas
 				, Boolean.parseBoolean(alCuarto), tipo);
+		Restaurante restaurante = (Restaurante) servicios.values().stream()
+			.filter(servicio -> servicio instanceof Restaurante).findAny()
+			.orElseThrow(() -> new RuntimeException("No existe un servicio de restaurante"));
+		List<List<String>> listaDataProducto = Arrays.asList(productoRestAsList(producto, rangoHorario1, rangoHorario2));
+		if (consumibles.containsKey(producto.getId())) {
+			restaurante.deleteById(producto.getId());
+			restaurante.addConsumible(producto);
+			FileManager.modificarLineaCSV("productos_restaurante.csv", "id", producto.getId().toString(), listaDataProducto.get(0));
+		}else{
+			restaurante.addConsumible(producto);
+			FileManager.agregarLineasCSV("productos_restaurante.csv", listaDataProducto);
+	}
 		productos.put(producto.getId(), producto);
 		consumibles.put(producto.getId(), producto);
-		Restaurante restaurante = (Restaurante) servicios.values().stream()
-		.filter(servicio -> servicio instanceof Restaurante).findAny()
-		.orElseThrow(() -> new RuntimeException("No existe un servicio de restaurante"));
-		restaurante.addConsumible(producto);
-		List<List<String>> listaDataProducto = Arrays.asList(productoRestAsList(producto, rangoHorario1, rangoHorario2));
-		FileManager.agregarLineasCSV("productos_restaurante.csv", listaDataProducto);
-	}
+			}
 
     private List<String> productoRestAsList(ProductoRestaurante producto, String rangoHorario1, String rangoHorario2) {
 		return Arrays.asList(
@@ -137,20 +146,34 @@ public class HotelManagementConsumibles {
 	}
 
 	public void crearProducto(String id, String nombre, String precio, String tipo) throws Exception {
+		
 		Producto producto = new Producto(Long.parseLong(id), nombre, Double.parseDouble(precio));
-		productos.put(producto.getId(), producto);
-		consumibles.put(producto.getId(), producto);
 		List<List<String>> listaDataProducto = Arrays.asList(productoAsList(producto));
-		if (tipo.equals("Producto")) {
-			FileManager.agregarLineasCSV("productos.csv", listaDataProducto);
-		} else {
-			Spa spa = (Spa) servicios.values().stream()
+		if (consumibles.containsKey(producto.getId())) {
+			if (tipo.equals("Producto")) {
+				FileManager.modificarLineaCSV("Productos.csv", "id", producto.getId().toString(), listaDataProducto.get(0));
+			} else {
+				Spa spa = (Spa) servicios.values().stream()
 				.filter(servicio -> servicio instanceof Spa)
 				.findFirst()
 				.orElseThrow(() -> new Exception("No existe un servicio de spa"));
-			spa.addConsumible(producto);
-			FileManager.agregarLineasCSV("productos_spa.csv", listaDataProducto);
-    }}
+				spa.deleteById(producto.getId());
+				spa.addConsumible(producto);
+				FileManager.modificarLineaCSV("Productos_spa.csv", "id", producto.getId().toString(), listaDataProducto.get(0));
+			}
+		}else{
+			if (tipo.equals("Producto")) {
+				FileManager.agregarLineasCSV("productos.csv", listaDataProducto);
+			} else {
+				Spa spa = (Spa) servicios.values().stream()
+				.filter(servicio -> servicio instanceof Spa)
+				.findFirst()
+				.orElseThrow(() -> new Exception("No existe un servicio de spa"));
+				spa.addConsumible(producto);
+				FileManager.agregarLineasCSV("productos_spa.csv", listaDataProducto);
+			}}
+			productos.put(producto.getId(), producto);
+			consumibles.put(producto.getId(), producto);}
 
 	private List<String> productoAsList(Producto producto) {
 		return Arrays.asList(

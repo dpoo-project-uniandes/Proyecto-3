@@ -191,7 +191,7 @@ public class HotelManagementSystem {
 		return controladorConsumibles.facturar(estadia, consumibles);
 	}
 
-    public void eliminarProducto(Consumible producto, String tipoProducto) {
+    public void eliminarProducto(Consumible producto, String tipoProducto) throws Exception {
 		controladorConsumibles.eliminarProducto(producto, tipoProducto);
     }
 
