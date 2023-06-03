@@ -421,6 +421,8 @@ public class HotelSystemInterface extends JFrame {
 						data.get("rangoHorario1"),
 						data.get("rangoHorario2")
 					);
+					JOptionPane.showMessageDialog(null, "Se creó el producto con éxito");
+					panel.cleanUserInputs();
 				}} catch (Exception e1) {
 					JOptionPane.showMessageDialog(null, "Se produjo un error creando el producto");
 					e1.printStackTrace();
