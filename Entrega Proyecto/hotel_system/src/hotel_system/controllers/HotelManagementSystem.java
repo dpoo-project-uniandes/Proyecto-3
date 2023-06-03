@@ -143,6 +143,7 @@ public class HotelManagementSystem {
 		return controladorEstadias.getEstadiaByDNI(dni);
 	}
 
+
 	public Estadia getEstadiaByHabitacion(Integer id) {
 		return controladorEstadias.getEstadiaByHabitacion(id);
 	}
@@ -190,6 +191,19 @@ public class HotelManagementSystem {
 			throw new Exception("No se encontraron estadias en la habitacion " + habitacion);
 		return controladorConsumibles.facturar(estadia, consumibles);
 	}
+
+    public void eliminarProducto(Consumible producto, String tipoProducto) {
+		controladorConsumibles.eliminarProducto(producto, tipoProducto);
+    }
+
+    public void crearProducto(String id, String nombre, String precio, String tipo, String alCuarto,
+            String rangoHorario1, String rangoHorario2) throws Exception {
+		controladorConsumibles.crearProducto(id, nombre, precio, tipo, alCuarto, rangoHorario1, rangoHorario2);
+    }
+
+    public void crearProducto(String id, String nombre, String precio, String tipo) throws Exception {
+		controladorConsumibles.crearProducto(id, nombre, precio, tipo);
+    }
 	
 	public Factura facturarEstadia(Estadia estadia) throws Exception {
 		return controladorConsumibles.facturarEstadia(estadia);

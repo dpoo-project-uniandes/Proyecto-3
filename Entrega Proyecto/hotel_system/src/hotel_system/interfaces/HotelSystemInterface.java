@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import hotel_system.controllers.HotelManagementSystem;
 import hotel_system.interfaces.admin.MenuAdministrador;
 import hotel_system.interfaces.admin.MenuCargaAdministrador;
+import hotel_system.interfaces.admin.MenuCrearProducto;
 import hotel_system.interfaces.admin.MenuModificarAdmin;
 import hotel_system.interfaces.components.Facturador;
 import hotel_system.interfaces.components.FormDataTable;
@@ -33,6 +34,7 @@ import hotel_system.interfaces.recepcionista.MenuProductosServicios;
 import hotel_system.interfaces.recepcionista.MenuRecepcionista;
 import hotel_system.interfaces.recepcionista.MenuServicios;
 import hotel_system.interfaces.recepcionista.ProductsDataTable;
+import hotel_system.models.Consumible;
 import hotel_system.models.Consumible;
 import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
@@ -63,6 +65,8 @@ public class HotelSystemInterface extends JFrame {
 	private EstadiasManagement estadiasManagement;
 	private MenuModificarAdmin menuModificarAdmin;
 	private MenuServicios menuServicios;
+	private MenuCrearProducto menuCrearProducto;
+	
 	private MenuProductosServicios menuProductosServicios;
 	private String user;
 	
@@ -76,7 +80,10 @@ public class HotelSystemInterface extends JFrame {
 		this.user = "My User";
 		this.pms = new HotelManagementSystem();
 		configHeaderButtonsActions();
-		configLogin();
+		// configLogin();
+		configMenuAdmin();
+		// configMenuRecepcionista();
+		// configConsumingManagement();
 	}
 	
 	// ============================================================================================================================================================================
@@ -100,9 +107,11 @@ public class HotelSystemInterface extends JFrame {
 			return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					if (framesStack.size() > 1){
 					framesStack.pop();
 					configMainFrame(framesStack.pop());
 				}
+			}
 			};
 		};
 		Function<MainHeader, ActionListener> logout = (header) -> {
@@ -210,7 +219,7 @@ public class HotelSystemInterface extends JFrame {
 			configMenuRecepcionista();
 		}
 		else {
-//			configMenuAdmin(user);
+			configMenuAdmin();
 		}
 	}
 	
@@ -262,142 +271,240 @@ public class HotelSystemInterface extends JFrame {
 	// MENU ADMINISTRADOR
 	// ================================================================================================================================================================================
 	
-//	private void configMenuAdmin(String user) {
+	private void configMenuAdmin() {
 		// ============================================================================================================================================================================
 		// ACTION LISTENERS DEL MENU ADMINISTRADOR
 		// ============================================================================================================================================================================
-//		Function<MenuAdministrador, ActionListener> loadAction = (panel) -> {
-//			return new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					configLoadingManagement(user);
-//				}
-//			};
-//		};
-//		Function<MenuAdministrador, ActionListener> modifyAction = (panel) -> {
-//			return new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					configModifingManagement(user);
-//
-//				}
-//			};
-//		};
-//		
-//		Function<MenuAdministrador, ActionListener> searchAction = (panel) -> {
-//			return new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					configSearchingManagement(user);
-//				}
-//			};
-//		};
-//		
-//		// INITIALIZE
-//		this.menuAdmin = new MenuAdministrador(user, headerButtonsActions.withButtons(), loadAction, modifyAction, searchAction);
-//		configMainFrame(this.menuAdmin);
-//		
-//	}
+		Function<MenuAdministrador, ActionListener> loadAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configLoadingManagement(user);
+				}
+			};
+		};
+		Function<MenuAdministrador, ActionListener> modifyAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configModifingManagement(user);
+
+				}
+			};
+		};
+		
+		Function<MenuAdministrador, ActionListener> searchAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configSearchingManagement(user); 
+				}
+			};
+		};
+		
+		// INITIALIZE
+		this.menuAdmin = new MenuAdministrador(user, headerButtonsActions.withButtons(), loadAction, modifyAction, searchAction);
+		this.currentHome = this.menuAdmin;
+		configMainFrame(this.menuAdmin);
+		
+	}
+	private void configSearchingManagement(String user2) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	// ================================================================================================================================================================================
 	// CARGA DE DATOS DESDE EL PANEL DE ADMINISTRACION
 	// ================================================================================================================================================================================
 	
-//	private void configLoadingManagement(String user) {
-//		Function<MenuCargaAdministrador, ActionListener> RestauranteAction = (panel) -> {
-//			return new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//                    JOptionPane.showMessageDialog(null, "Datos del restaurante cargados con éxito");
-//				}
-//			};
-//		};
-//		Function<MenuCargaAdministrador, ActionListener> SpaAction = (panel) -> {
-//			return new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//                    JOptionPane.showMessageDialog(null, "Datos del spa cargados con éxito");
-//				}
-//			};
-//		};
-//		
-//		Function<MenuCargaAdministrador, ActionListener> HabitacionesAction = (panel) -> {
-//			return new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//                    JOptionPane.showMessageDialog(null, "Datos de las habitaciones cargados con éxito");
-//				}
-//			};
-//		};
-//		
-//		// INITIALIZE
-//		this.menuCargaAdministrador = new MenuCargaAdministrador(user, headerButtonsActions.withButtons(), RestauranteAction, SpaAction, HabitacionesAction);
-//		configMainFrame(this.menuCargaAdministrador);
-//	}
+
+	private void configLoadingManagement(String user) {
+		Function<MenuCargaAdministrador, ActionListener> RestauranteAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+                   JOptionPane.showMessageDialog(null, "Datos del restaurante cargados con éxito");
+				}
+			};
+		};
+		Function<MenuCargaAdministrador, ActionListener> SpaAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+                   JOptionPane.showMessageDialog(null, "Datos del spa cargados con éxito");
+				}
+			};
+		};
+		
+		Function<MenuCargaAdministrador, ActionListener> HabitacionesAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+                   JOptionPane.showMessageDialog(null, "Datos de las habitaciones cargados con éxito");
+				}
+			};
+		};
+		
+		// INITIALIZE
+		this.menuCargaAdministrador = new MenuCargaAdministrador(user, headerButtonsActions.withButtons(), RestauranteAction, SpaAction, HabitacionesAction);
+		configMainFrame(this.menuCargaAdministrador);
+	}
 	
 	// ================================================================================================================================================================================
 	// ....
 	// ================================================================================================================================================================================
 	
-//	private void configModifingManagement(String user) {
-//		// ACTIONS LISTENERS
-//		Function<Finder, ActionListener> findAction = (finder) -> {
-//			return new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					String id = finder.getValue();
-//					Dupla<Producto, String> dupla = pms.getProductoByID(id);
-//					Producto producto = dupla.getPrimero();
-//					String tipo = dupla.getSegundo();
-//					if (dupla == null)
-//						menuModificarAdmin.withoutResults();
-//					else
-//						menuModificarAdmin.setTipoProducto(tipo);
-//						menuModificarAdmin.injectData(id);
-//				}
-//			};
-//		};
-//		Function<Finder, ActionListener> deleteAction = (btn) -> {
-//			return new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					Producto producto = menuModificarAdmin.getProductoActual();
-//					pms.eliminarProducto(producto, menuModificarAdmin.getTipoProducto());
-//				}
-//			};
-//		};
-//		Function<Finder, ActionListener> updateAction = (btn) -> {
-//			return new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					//TODO
-//					
-//				}
-//			};
-//		
-//		};
-//		Function<Finder, ActionListener> createAction = (btn) -> {
-//			return new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					try {
-//						//pms.nuevoProducto(,"");
-//					} catch (Exception e1) {
-//						e1.printStackTrace();
-//	                    JOptionPane.showMessageDialog(null, "Se produjo un error creando la reserva");
-//
-//					}
-//				}
-//			};
-//		
-//		};
-//				
-//		// INITIALIZE
-//		this.menuModificarAdmin = new MenuModificarAdmin(user, headerButtonsActions.withButtons(), findAction, deleteAction ,updateAction, createAction);
-//		configMainFrame(this.menuModificarAdmin);
-//		
-//	}
+	private void configModifingManagement(String user) {
+		// ACTIONS LISTENERS
+		Function<Finder, ActionListener> findAction = (finder) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String id = finder.getValue();
+					Consumible producto = pms.getProductoByID(Long.parseLong(id));
+					if (producto == null)
+						menuModificarAdmin.withoutResults();
+					else
+						menuModificarAdmin.injectData(producto);
+					// Dupla<Producto, String> dupla = pms.getProductoByID(id);
+				// 	Producto producto = dupla.getPrimero();
+				// 	String tipo = dupla.getSegundo();
+				// 	if (dupla == null)
+				// 		menuModificarAdmin.withoutResults();
+				// 	else
+				// 		menuModificarAdmin.setTipoProducto(tipo);
+				// 		menuModificarAdmin.injectData(id);
+				 }
+			};
+		};
+		Function<Finder, ActionListener> deleteAction = (btn) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Consumible producto = menuModificarAdmin.getProductoActual();
+					pms.eliminarProducto(producto, menuModificarAdmin.getTipoProducto());
+				}
+			};
+		};
+		Function<Finder, ActionListener> updateAction = (btn) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					//TODO
+					
+				}
+			};
+		
+		};
+		Function<MenuModificarAdmin, ActionListener> newProductAction = (panel) -> {
+			return new ActionListener() {
+			
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					Map<String, String> data = panel.getDataMap();
+				try {
+					if (panel.getTipoProducto().equals("Producto") || panel.getTipoProducto().equals("ProductoSpa")){
+						pms.crearProducto(
+							data.get("id"),
+							data.get("nombre"),
+							data.get("precio"),
+							panel.getTipoProducto()
+						);
+					
+				} else {
+					pms.crearProducto(
+						data.get("id"),
+						data.get("nombre"),
+						data.get("precio"),
+						data.get("tipo"),
+						data.get("alCuarto"),
+						data.get("rangoHorario1"),
+						data.get("rangoHorario2")
+					);
+				}} catch (Exception e1) {
+					JOptionPane.showMessageDialog(null, "Se produjo un error creando el producto");
+					e1.printStackTrace();
+				}
+			}
+			};
+		
+		};
+		Function<MenuModificarAdmin, ActionListener> createAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					configCreateProductManagement(user, panel);
+				}
+			};
+		
+		};
+				
+		// INITIALIZE
+		this.menuModificarAdmin = new MenuModificarAdmin(user, headerButtonsActions.withButtons(), findAction, deleteAction ,updateAction, createAction, newProductAction);
+		configMainFrame(this.menuModificarAdmin);
+		
+	}
 	
+	private void configCreateProductManagement(String user2, MenuModificarAdmin panel) {
+		try {
+			Function<MenuCrearProducto, ActionListener> productoRest = (btn) -> {
+				return new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						configRestManagement(user, panel);
+					}
+				};
+			};
+			Function<MenuCrearProducto, ActionListener> producto = (btn) -> {
+				return new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						configProductManagement(user, panel);
+					}
+				};
+			};
+			Function<MenuCrearProducto, ActionListener> spa = (btn) -> {
+				return new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						configSpaManagement(user, panel);
+					}
+
+					
+				};
+			};
+
+
+			this.menuCrearProducto = new MenuCrearProducto(user, headerButtonsActions.withButtons(), productoRest, producto, spa);
+			configMainFrame(menuCrearProducto);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Se produjo un error creando el producto");
+
+		}
+	}
+
+	private void configSpaManagement(String user2, MenuModificarAdmin panel) {
+		configMainFrame(panel);
+		panel.cleanUserInputs();
+		panel.setTipoProducto("ProductoSpa");
+		panel.configNewFormProduct();
+	}
+
+	private void configProductManagement(String user, MenuModificarAdmin panel) {
+		configMainFrame(panel);
+		panel.cleanUserInputs();
+		panel.setTipoProducto("Producto");
+		panel.configNewFormProduct();
+	}
+
+	private void configRestManagement(String user2, MenuModificarAdmin panel) {
+		configMainFrame(panel);
+		panel.cleanUserInputs();
+		panel.setTipoProducto("ProductoRestaurante");
+		panel.configNewFormProduct();
+	}
+
 	// ================================================================================================================================================================================
 	// MENU RECEPCIONISTA
 	// ================================================================================================================================================================================

@@ -1,4 +1,4 @@
-package hotel_system.interfaces.recepcionista;
+package hotel_system.interfaces.admin;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -36,7 +36,7 @@ import hotel_system.models.Reserva;
 import hotel_system.models.TipoHabitacion;
 import hotel_system.utils.Utils;
 
-public class BookingManagement extends JPanel {
+public class ProductManagement extends JPanel {
 	
 	// BASIC
 	private MainHeader header;
@@ -60,7 +60,7 @@ public class BookingManagement extends JPanel {
 	private Input phone;
 	private DynamicTable selectRoomsTable;
 	private Button booking;
-	private FormRoomsData formRoomsData;
+	private FormProductData formRoomsData;
 	
 	// DATA BOOKING
 	private JPanel bookingDataPanel;
@@ -71,20 +71,20 @@ public class BookingManagement extends JPanel {
 	private Reserva bookingInjected;
 	
 	// ACTIONS LISTENER
-	Function<BookingManagement, ActionListener> createAction;
-	Function<BookingManagement, ActionListener> deleteAction;
-	Function<BookingManagement, ActionListener> updateAction;
-	Function<BookingManagement, ActionListener> cancelAction;
+	Function<ProductManagement, ActionListener> createAction;
+	Function<ProductManagement, ActionListener> deleteAction;
+	Function<ProductManagement, ActionListener> updateAction;
+	Function<ProductManagement, ActionListener> cancelAction;
 	
-	public BookingManagement(
+	public ProductManagement(
 		String user,
-		FormRoomsData formRoomsData,
+		FormProductData formRoomsData,
 		HeaderButtonsActions headerButtonsActions,
 		Function<Finder, ActionListener> findAction,
-		Function<BookingManagement, ActionListener> createAction,
-		Function<BookingManagement, ActionListener> deleteAction,
-		Function<BookingManagement, ActionListener> updateAction,
-		Function<BookingManagement, ActionListener> cancelAction
+		Function<ProductManagement, ActionListener> createAction,
+		Function<ProductManagement, ActionListener> deleteAction,
+		Function<ProductManagement, ActionListener> updateAction,
+		Function<ProductManagement, ActionListener> cancelAction
 	) {
 		this.title = "Detalles de la Reserva";
 		this.formRoomsData = formRoomsData;

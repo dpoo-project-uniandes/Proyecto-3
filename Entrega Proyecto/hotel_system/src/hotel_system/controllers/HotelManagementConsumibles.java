@@ -1,6 +1,8 @@
 package hotel_system.controllers;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +11,14 @@ import hotel_system.models.Consumible;
 import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
 import hotel_system.models.Producto;
+import hotel_system.models.ProductoRestaurante;
+import hotel_system.models.Restaurante;
 import hotel_system.models.Reserva;
 import hotel_system.models.Restaurante;
 import hotel_system.models.Servicio;
 import hotel_system.models.Spa;
+import hotel_system.utils.Utils;
+import services.FileManager;
 
 public class HotelManagementConsumibles {
 	
@@ -79,4 +85,67 @@ public class HotelManagementConsumibles {
 		}
 		return consumibles;
 	}
+
+    public void eliminarProducto(Consumible producto, String tipoProducto) {
+		if (tipoProducto.equals("producto")) {
+			productos.remove(producto.getId());
+		} else {
+			servicios.remove(producto.getId());
+		}
+		consumibles.remove(producto.getId());
+    }
+
+    public void crearProducto(String id, String nombre, String precio, String tipo, String alCuarto,
+            String rangoHorario1, String rangoHorario2) throws Exception {
+		List<Date> fechas = new ArrayList<>();
+		fechas.add(Utils.stringToDate(rangoHorario1));
+		fechas.add(Utils.stringToDate(rangoHorario2));
+		ProductoRestaurante producto = new ProductoRestaurante(Long.parseLong(id), nombre, Double.parseDouble(precio), fechas
+				, Boolean.parseBoolean(alCuarto), tipo);
+		productos.put(producto.getId(), producto);
+		consumibles.put(producto.getId(), producto);
+		Restaurante restaurante = (Restaurante) servicios.values().stream()
+		.filter(servicio -> servicio instanceof Restaurante).findAny()
+		.orElseThrow(() -> new RuntimeException("No existe un servicio de restaurante"));
+		restaurante.addConsumible(producto);
+		List<List<String>> listaDataProducto = Arrays.asList(productoRestAsList(producto, rangoHorario1, rangoHorario2));
+		FileManager.agregarLineasCSV("productos_restaurante.csv", listaDataProducto);
+	}
+
+    private List<String> productoRestAsList(ProductoRestaurante producto, String rangoHorario1, String rangoHorario2) {
+		return Arrays.asList(
+			producto.getId().toString(),
+			producto.getNombre(),
+			producto.getPrecio().toString(),
+			rangoHorario1,
+			rangoHorario2,
+			producto.getAlCuarto().toString(),
+			producto.getTipo()
+		);
+	}
+
+	public void crearProducto(String id, String nombre, String precio, String tipo) throws Exception {
+		Producto producto = new Producto(Long.parseLong(id), nombre, Double.parseDouble(precio));
+		productos.put(producto.getId(), producto);
+		consumibles.put(producto.getId(), producto);
+		List<List<String>> listaDataProducto = Arrays.asList(productoAsList(producto));
+		if (tipo.equals("Producto")) {
+			FileManager.agregarLineasCSV("prodcutos.csv", listaDataProducto);
+		} else {
+			Spa spa = (Spa) servicios.values().stream()
+				.filter(servicio -> servicio instanceof Spa)
+				.findFirst()
+				.orElseThrow(() -> new Exception("No existe un servicio de spa"));
+			spa.addConsumible(producto);
+			FileManager.agregarLineasCSV("productos_spa.csv", listaDataProducto);
+    }}
+
+	private List<String> productoAsList(Producto producto) {
+		return Arrays.asList(
+			producto.getId().toString(),
+			producto.getNombre(),
+			producto.getPrecio().toString()
+		);
+	}
+
 }
