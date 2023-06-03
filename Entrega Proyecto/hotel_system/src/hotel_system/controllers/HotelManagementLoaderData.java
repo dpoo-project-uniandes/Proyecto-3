@@ -1,15 +1,10 @@
 package hotel_system.controllers;
 
 import java.sql.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import hotel_system.models.Consumible;
 import hotel_system.models.Disponibilidad;
@@ -19,6 +14,7 @@ import hotel_system.models.Factura;
 import hotel_system.models.Habitacion;
 import hotel_system.models.Hotel;
 import hotel_system.models.Huesped;
+import hotel_system.models.PasarelaPago;
 import hotel_system.models.Producto;
 import hotel_system.models.ProductoRestaurante;
 import hotel_system.models.Reserva;
@@ -222,6 +218,17 @@ public class HotelManagementLoaderData {
 		Boolean conRecepcion24Horas = Boolean.parseBoolean(datos.get("recepcion_24hrs"));
 		Boolean admiteMascotas = Boolean.parseBoolean(datos.get("mascotas"));
 		return new Hotel(conParqueaderoIncluido, conPiscina, conZonasHumedas, conBBQ, conWifi, conRecepcion24Horas, admiteMascotas);
+	}
+	
+	public Map<String, PasarelaPago> cargarPasarelas() throws Exception {
+		Map<String, PasarelaPago> pasarelas = new HashMap<>();
+		List<Map<String, String>> datos = FileManager.cargarArchivoCSV("pasarelas.csv");
+		for (Map<String, String> row : datos) {
+			Class clazz = Class.forName(row.get("class_name"));
+			PasarelaPago pasarela = (PasarelaPago) clazz.getDeclaredConstructor(null).newInstance();
+			pasarelas.put(pasarela.getName(), pasarela);
+		}
+		return pasarelas;
 	}
 	
 	public Map<Long, Producto> cargarProductos() throws Exception {

@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.function.Function;
@@ -14,7 +15,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -33,6 +33,7 @@ public class CreditCardPay extends JDialog {
 	JPanel pasarelasPanel;
 	JLabel pasarelasLabel;
 	JPanel pasarelasButtonsPanel;
+	JRadioButton pasarelaSelected;
 	ButtonGroup pasarelasButtonGroup;
 	JPanel creditCardInfo;
 	Input nameInput;
@@ -94,7 +95,18 @@ public class CreditCardPay extends JDialog {
 			ImageIcon icon = ImagesManager.resizeIcon(ImagesManager.ImageIcon(pasarelas.get(key)), 50, 50);
 			JLabel iconLabel = new JLabel(icon);
 			JRadioButton radioButton = new JRadioButton();
+			radioButton.setName(key);
 			iconLabel.setLabelFor(radioButton);
+			
+			// ACTION LISTENER
+			radioButton.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					JRadioButton b = (JRadioButton) e.getSource();
+					pasarelaSelected = b;
+				}
+			});
+			
 			this.pasarelasButtonsPanel.add(iconLabel);
 			this.pasarelasButtonsPanel.add(radioButton);
 			this.pasarelasButtonsPanel.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -135,6 +147,16 @@ public class CreditCardPay extends JDialog {
 	private void configPayButton() {
 		this.payButton = new Button("Pagar");
 		this.payButton.addActionListener(payAction.apply(this));
+	}
+	
+	public Map<String, String> getDataMap() {
+		return Map.of(
+				"pasarela", pasarelaSelected.getName(),
+				"card-number", numberInput.getValue(),
+				"card-owner", nameInput.getValue(),
+				"expiration", expirationDate.getValue(),
+				"cvv", cvvInput.getValue()
+		);
 	}
 
 }

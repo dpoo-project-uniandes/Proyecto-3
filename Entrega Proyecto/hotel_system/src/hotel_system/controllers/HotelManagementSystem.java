@@ -10,6 +10,8 @@ import hotel_system.models.Factura;
 import hotel_system.models.Habitacion;
 import hotel_system.models.Hotel;
 import hotel_system.models.Huesped;
+import hotel_system.models.Pago;
+import hotel_system.models.PasarelaPago;
 import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
 import hotel_system.models.Restaurante;
@@ -28,6 +30,7 @@ public class HotelManagementSystem {
 	private Map<Long, Producto> inventarioProductos;
 	private Map<Long, Servicio> inventarioServicios;
 	private Map<String, Usuario> usuarios;
+	private Map<String, PasarelaPago> pasarelasPago;
 	private Hotel hotel;
 	
 	private HotelManagementLoaderData loaderData;
@@ -35,6 +38,7 @@ public class HotelManagementSystem {
 	private HotelManagementReservas controladorReservas;
 	private HotelManagementEstadias controladorEstadias;
 	private HotelManagementConsumibles controladorConsumibles;
+	private HotelManagementPagos controladorPagos;
 
 	public HotelManagementSystem()  {
 		cargarDatos();
@@ -52,6 +56,7 @@ public class HotelManagementSystem {
 			this.inventarioProductos = this.loaderData.cargarProductos();
 			this.inventarioServicios = this.loaderData.cargarServicios();
 			this.usuarios = this.loaderData.cargarUsuarios();
+			this.pasarelasPago = this.loaderData.cargarPasarelas();
 			this.loaderData.cargarDisponibilidades(inventarioHabitaciones, reservas);
 		} catch (Exception e) {
 			System.out.println("La carga de datos no ha sido posible debido a: " + e.getMessage());
@@ -64,6 +69,7 @@ public class HotelManagementSystem {
 		this.controladorReservas = new HotelManagementReservas(inventarioHabitaciones, reservas);
 		this.controladorEstadias = new HotelManagementEstadias(inventarioHabitaciones, estadias, controladorReservas);
 		this.controladorConsumibles = new HotelManagementConsumibles(inventarioProductos, inventarioServicios);
+		this.controladorPagos = new HotelManagementPagos(pasarelasPago);
 	}
 	
 	// =====================================================================================================================================================
@@ -166,18 +172,6 @@ public class HotelManagementSystem {
 	// CONSUMIBLES
 	// =====================================================================================================================================================
 	
-	// =====================================================================================================================================================
-	// PRODUCTOS
-	// =====================================================================================================================================================
-	
-	public Map<Long, Producto> getProductos() {
-		return controladorConsumibles.getProductos();
-	}
-	
-	public Consumible getProductoByID(Long id) {		
-		return controladorConsumibles.getProductoById(id);
-	}
-	
 	public void facturarAlaHabitacion(Integer habitacion, Map<Long, Integer> productos) throws Exception {
 		Estadia estadia = getEstadiaByHabitacion(habitacion);
 		if (estadia == null)
@@ -190,6 +184,18 @@ public class HotelManagementSystem {
 		if (estadia == null)
 			throw new Exception("No se encontraron estadias en la habitacion " + habitacion);
 		return controladorConsumibles.facturar(estadia, consumibles);
+	}
+	
+	// =====================================================================================================================================================
+	// PRODUCTOS
+	// =====================================================================================================================================================
+	
+	public Map<Long, Producto> getProductos() {
+		return controladorConsumibles.getProductos();
+	}
+	
+	public Consumible getProductoByID(Long id) {		
+		return controladorConsumibles.getProductoById(id);
 	}
 		
 	// =====================================================================================================================================================
@@ -204,68 +210,15 @@ public class HotelManagementSystem {
 		return controladorConsumibles.getSpa();
 	}
 	
-//	public Spa getServicioSpa(){
-//		Spa spa = (Spa)inventarioServicios.get("spa");
-//		return spa;
-//	}
-//
-//	public Restaurante getServicioRestaurante(){
-//		Restaurante res = (Restaurante)inventarioServicios.get("restaurante");
-//		return res;
-//	}
-//
-//
-//	public Map<String, Servicio> getInventarioServicios() {
-//		return inventarioServicios;
-//	}
-//
-//	public void setInventarioServicios(HashMap<String, Servicio> inventarioServicios) {
-//		this.inventarioServicios = inventarioServicios;
-//	}
-//
-//	public Map<String, TipoHabitacion> getOpcionesHabitacion() {
-//		return opcionesHabitacion;
-//	}
-
-//	public void seleccionarProductoSpa(List<Producto> consumos, String hab, Boolean pagar) {
-//		Estadia estadia = controladorEstadias.getEstadiaByHabitacion(Integer.parseInt(hab));
-//		if (pagar) {
-//			for (Producto consumible : consumos) {
-//				getServicioSpa().agregarConsumo(consumible);
-//			}
-//			estadia.cargarFactura(getServicioSpa().facturar(estadia.getReserva().getTitular()));
-//		}
-//		else {
-//			for (Producto consumible : consumos) {
-//				estadia.cargarConsumo(consumible);
-//			}
-//		}
-//	}
-//
-//	public void seleccionarProductoRestaurante(List<Producto> consumos, String hab, Boolean pagar) {
-//		Estadia estadia = controladorEstadias.getEstadiaByHabitacion(Integer.parseInt(hab));
-//		if (pagar) {
-//			for (Producto consumible : consumos) {
-//				getServicioRestaurante().agregarConsumo(consumible);
-//			}
-//			estadia.cargarFactura(getServicioRestaurante().facturar(estadia.getReserva().getTitular()));
-//		}
-//		else {
-//			for (Producto consumible : consumos) {
-//				estadia.cargarConsumo(consumible);
-//			}
-//		}
-//	}
-//
-//	public void seleccionarProducto(List<Consumible> consumos, String hab, Boolean pagar) {
-//		Estadia estadia = controladorEstadias.getEstadiaByHabitacion(Integer.parseInt(hab));
-//		if (pagar) {
-//			estadia.cargarFactura(new Factura(estadia.getReserva().getTitular(), consumos));
-//		}
-//		else {
-//			for (Consumible consumible : consumos) {
-//				estadia.cargarConsumo(consumible);
-//			}
-//		}
-//	}
+	// =====================================================================================================================================================
+	// PAGOS
+	// =====================================================================================================================================================
+	
+	public Map<String, PasarelaPago> getPasarelas() {
+		return controladorPagos.getPlataformas();
+	}
+	
+	public Factura procesarPagoConTarjetaCredito(Factura factura, String pasarela, String owner, Long number, Integer cvv, String expiration) throws Exception {
+		return controladorPagos.procesarPagoConTarjetaCredito(factura, pasarela, owner, number, cvv, expiration);
+	}
 }

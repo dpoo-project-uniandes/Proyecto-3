@@ -1,8 +1,12 @@
 package hotel_system.utils;
 
 import java.sql.Date;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.concurrent.TimeUnit;
 
 public class Utils {
@@ -13,8 +17,9 @@ public class Utils {
 
 	public static final String stringDate(Date date) {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-		return dtf.format(date.toLocalDate());
+		return dtf.format(Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()));
 	}
+	
 	public static Date stringToDate(String fecha) {
 	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 	    LocalDate localDate = LocalDate.parse(fecha, dtf);

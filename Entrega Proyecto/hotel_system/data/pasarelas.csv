@@ -1,0 +1,4 @@
+class_name
+hotel_system.pasarelas_pago.Visa
+hotel_system.pasarelas_pago.Mastercard
+hotel_system.pasarelas_pago.AmericanExpress

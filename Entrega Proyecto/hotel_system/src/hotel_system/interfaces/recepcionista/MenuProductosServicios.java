@@ -26,12 +26,13 @@ import hotel_system.interfaces.VerticalButtons;
 import hotel_system.interfaces.components.AddItems;
 import hotel_system.interfaces.components.Button;
 import hotel_system.interfaces.components.DynamicTable;
+import hotel_system.interfaces.components.Facturador;
 import hotel_system.interfaces.components.FormDataTable;
 import hotel_system.interfaces.components.HeaderButtonsActions;
 import hotel_system.models.Consumible;
 import hotel_system.models.Factura;
 
-public class MenuProductosServicios extends JPanel {
+public class MenuProductosServicios extends JPanel implements Facturador {
 	
 
 	private MainHeader header;
@@ -139,7 +140,7 @@ public class MenuProductosServicios extends JPanel {
 		this.finder.setValue("");
 	}
 	
-	public void injectDataFactura(Factura factura) {
+	public void injectFactura(Factura factura) {
 		// CLEAN
 		cleanUserInputs();
 		

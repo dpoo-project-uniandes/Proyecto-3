@@ -98,7 +98,7 @@ public class DialogFactura extends JDialog {
 		this.billigPanel.add(new JSeparator());
 		
 		// TOTAL
-		JLabel text = defaultBillingTitleLabel("Total a Pagar", 20);
+		JLabel text = defaultBillingTitleLabel("Valor", 20);
 		JLabel value = defaultBillingTitleLabel(factura.calcularValorTotal().toString() + " USD", 20);
 		
 		this.totalAPagar = new JPanel();
