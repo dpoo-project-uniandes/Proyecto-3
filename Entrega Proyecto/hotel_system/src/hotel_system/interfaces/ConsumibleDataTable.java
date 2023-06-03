@@ -1,4 +1,4 @@
-package hotel_system.interfaces.recepcionista;
+package hotel_system.interfaces;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 
 import hotel_system.interfaces.DataPanel;
+import hotel_system.interfaces.DialogFactura;
 import hotel_system.interfaces.Finder;
 import hotel_system.interfaces.MainHeader;
 import hotel_system.interfaces.UtilsGUI;

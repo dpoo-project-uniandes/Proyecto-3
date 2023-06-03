@@ -35,7 +35,6 @@ import hotel_system.models.Consumible;
 import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
 import hotel_system.models.Huesped;
-import hotel_system.models.Producto;
 import hotel_system.models.Reserva;
 import hotel_system.models.Rol;
 import hotel_system.models.TipoHabitacion;
@@ -74,8 +73,8 @@ public class HotelSystemInterface extends JFrame {
 		this.user = "My User";
 		this.pms = new HotelManagementSystem();
 		configHeaderButtonsActions();
-		configMenuRecepcionista();
-//		configConsumingManagement();
+//		configMenuRecepcionista();
+		configConsumingManagement();
 	}
 	
 	// ============================================================================================================================================================================
@@ -698,17 +697,18 @@ public class HotelSystemInterface extends JFrame {
         	return new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					Integer habitacion = Integer.parseInt(panel.getHabitacion());
-					Map<String, Integer> productsSelected = panel.getProductsMap();
-					Map<Long, Integer> products = new HashMap<>();
-					productsSelected.forEach((k, v) -> products.put(Long.parseLong(k), v));
-					try {
-						Factura factura = pms.facturar(habitacion, products);
-						panel.injectDataFactura(factura);
-					} catch (Exception e1) {
-						e1.printStackTrace();
-	                    JOptionPane.showMessageDialog(null, e1.getMessage());
-					}
+//					Integer habitacion = Integer.parseInt(panel.getHabitacion());
+//					Map<String, Integer> productsSelected = panel.getProductsMap();
+//					Map<Long, Integer> products = new HashMap<>();
+//					productsSelected.forEach((k, v) -> products.put(Long.parseLong(k), v));
+//					try {
+//						Factura factura = pms.facturar(habitacion, products);
+//						panel.injectDataFactura(factura);
+//					} catch (Exception e1) {
+//						e1.printStackTrace();
+//	                    JOptionPane.showMessageDialog(null, e1.getMessage());
+//					}
+					configCreditCardPay();
 				}
 			};
         };
@@ -743,5 +743,23 @@ public class HotelSystemInterface extends JFrame {
 				payLaterAction
 		);
 		configMainFrame(this.menuProductosServicios);
+	}
+	
+	// ================================================================================================================================================================================
+	// PANEL DE PAGO CON TARJETA CREDITO
+	// ================================================================================================================================================================================
+	
+	private void configCreditCardPay() {
+		Function<CreditCardPay, ActionListener> payAction = (panel) -> {
+			return new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					System.out.println("Pago exitoso");
+				}
+			};
+		};
+		
+		Map<String, String> pasarelas = Map.of("Visa", "visa", "Mastercard", "mastercard", "AMEX", "amex");
+		CreditCardPay pay = new CreditCardPay(this, pasarelas, payAction);
 	}
 }

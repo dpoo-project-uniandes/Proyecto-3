@@ -1,4 +1,4 @@
-package hotel_system.interfaces.recepcionista;
+package hotel_system.interfaces;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 
-import hotel_system.interfaces.UtilsGUI;
 import hotel_system.interfaces.components.DynamicTable;
 import hotel_system.models.Factura;
 import hotel_system.utils.Utils;

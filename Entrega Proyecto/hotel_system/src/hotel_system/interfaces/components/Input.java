@@ -18,9 +18,9 @@ public class Input extends JPanel {
 			return new Input(title, new RoundJPasswordField());
 		case "text":
 			return new Input(title, new RoundJTextField());
-		//case "number": {
-		//	return new Input(title, new RoundJNumberField());
-		//}
+		case "number": {
+			return new Input(title, new RoundJNumberField());
+		}
 		default:
 			return new Input(title, new RoundJTextField());
 		}
