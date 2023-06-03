@@ -23,13 +23,13 @@ public class Habitacion {
 
 	private List<Integer> rangoDeFechasAIndices(Date desde, Date hasta) {
 		List<Integer> indexes = new ArrayList<>();
-		try {
-			Integer desdeIndex = this.disponibilidad.indexOf(new Disponibilidad(numero, 0.0, true, desde));
-			int hastaIndex = Utils.sustractDates(desde, hasta) + desdeIndex;
-			for(int i = desdeIndex; i < hastaIndex; i++) {
+		Long idDesde = desde.getTime() + numero;
+		Long idHasta = hasta.getTime() + numero;
+		for (int i = 0; i < this.disponibilidad.size(); i++) {
+			Disponibilidad disponibilidad = this.disponibilidad.get(i);
+			if (disponibilidad.getId() >= idDesde && disponibilidad.getId() < idHasta)
 				indexes.add(i);
-			}
-		} catch(Exception e) {}
+		}
 		return indexes;
 	}
 
@@ -44,7 +44,7 @@ public class Habitacion {
 	}
 
 	public List<Disponibilidad> modificarDisponibilidad(Date desde, Date hasta, Reserva reserva, Boolean estado) {
-		if (consultarDisponibilidad(desde, hasta)) {
+		if (consultarDisponibilidad(desde, hasta) || estado) {
 			List<Disponibilidad> disponibilidades = new ArrayList<>();
 			for(Integer i : rangoDeFechasAIndices(desde, hasta)) {
 				Disponibilidad disponibilidad = this.disponibilidad.get(i);
@@ -52,7 +52,7 @@ public class Habitacion {
 				disponibilidad.setReserva(reserva);
 				disponibilidades.add(disponibilidad);
 			}
-			return disponibilidades;
+			return disponibilidades.isEmpty()? null : disponibilidades;
 		}
 		return null;
 	}

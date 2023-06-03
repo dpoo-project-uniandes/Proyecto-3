@@ -110,6 +110,7 @@ public class CreditCardPay extends JDialog {
 			
 			if (!defaultSelect) {
 				radioButton.setSelected(true);
+				this.pasarelaSelected = radioButton;
 				defaultSelect = true;
 			}
 			

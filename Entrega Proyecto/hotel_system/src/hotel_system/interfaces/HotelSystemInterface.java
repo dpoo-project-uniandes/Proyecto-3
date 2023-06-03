@@ -76,7 +76,7 @@ public class HotelSystemInterface extends JFrame {
 		this.user = "My User";
 		this.pms = new HotelManagementSystem();
 		configHeaderButtonsActions();
-		configMenuRecepcionista();
+		configLogin();
 	}
 	
 	// ============================================================================================================================================================================
@@ -460,6 +460,7 @@ public class HotelSystemInterface extends JFrame {
 				public void actionPerformed(ActionEvent e) {
 					try {
 						pms.eliminarReserva(panel.getBookingInjected().getNumero());
+						panel.withoutResults();
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

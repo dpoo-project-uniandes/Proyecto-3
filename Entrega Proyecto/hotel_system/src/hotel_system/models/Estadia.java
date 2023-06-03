@@ -49,7 +49,8 @@ public class Estadia extends Servicio {
 	
 	@Override
 	public Factura facturar(Huesped titular) {
-		this.productosConsumidos.addAll(getConsumoHabitaciones());
+		if (!reserva.estaPaga())
+			this.productosConsumidos.addAll(getConsumoHabitaciones());
 		return super.facturar(titular);
 	}
 	

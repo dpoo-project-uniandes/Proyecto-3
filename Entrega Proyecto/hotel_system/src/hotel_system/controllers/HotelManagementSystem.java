@@ -192,8 +192,11 @@ public class HotelManagementSystem {
 	}
 	
 	public Factura facturarEstadia(Estadia estadia) throws Exception {
-		Factura factura = controladorConsumibles.facturarEstadia(estadia);
-		return factura;
+		return controladorConsumibles.facturarEstadia(estadia);
+	}
+	
+	public Factura facturarReserva(Reserva reserva) throws Exception {
+		return controladorConsumibles.facturarReserva(reserva);
 	}
 	
 	// =====================================================================================================================================================

@@ -1,11 +1,12 @@
 package hotel_system.models;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 import hotel_system.utils.Utils;
 
-public class Reserva {
+public class Reserva extends Servicio {
 
 	private Long numero;
 	private Double tarifaTotal;
@@ -17,9 +18,11 @@ public class Reserva {
 	private Titular titular;
 	private Estadia estadia;
 	private List<Habitacion> habitaciones;
+	private Factura factura;
 
-	public Reserva(Date fechaDeLlegada, Date fechaDeSalida, Titular titular, Integer cantidad,List<Habitacion> habitaciones) {
-		this.numero = Utils.generateId();
+	public Reserva(Date fechaDeLlegada, Date fechaDeSalida, Titular titular, Integer cantidad, List<Habitacion> habitaciones) {
+		super(Utils.generateId());
+		this.numero = this.id;
 		this.fechaDeLlegada = fechaDeLlegada;
 		this.fechaDeCreacion = Utils.nowDate();
 		this.cantidadPersonas = cantidad;
@@ -27,12 +30,12 @@ public class Reserva {
 		this.titular = titular;
 		this.habitaciones = habitaciones;
 		this.tarifaTotal = calcularTarifaTotal();
-		confirmarReserva();
+		this.estado = EstadoReserva.CONFIRMADA;
 	}
 	
-	public Reserva(Long id, Date fechaDeLlegada, Date fechaDeSalida, Titular titular, Integer cantidad,List<Habitacion> habitaciones) {
-		this.estado = EstadoReserva.CONFIRMADA;
-		this.numero = id == null ? Utils.generateId() : id;
+	public Reserva(Long id, Date fechaDeLlegada, Date fechaDeSalida, Titular titular, Integer cantidad, List<Habitacion> habitaciones) {
+		super(id == null ? Utils.generateId() : id);
+		this.numero = this.id;
 		this.fechaDeLlegada = fechaDeLlegada;
 		this.fechaDeCreacion = Utils.nowDate();
 		this.cantidadPersonas = cantidad;
@@ -40,12 +43,13 @@ public class Reserva {
 		this.titular = titular;
 		this.habitaciones = habitaciones;
 		this.tarifaTotal = calcularTarifaTotal();
+		this.estado = EstadoReserva.CONFIRMADA;
 	}
 
 	public Reserva(Long numero, Double tarifaTotal, EstadoReserva estado, Integer cantidadPersonas, Date fechaDeLlegada,
 			Date fechaDeSalida, Date fechaDeCreacion, Titular titular, Estadia estadia, List<Habitacion> habitaciones) {
-		super();
-		this.numero = numero;
+		super(numero);
+		this.numero = this.id;
 		this.tarifaTotal = tarifaTotal;
 		this.estado = estado;
 		this.cantidadPersonas = cantidadPersonas;
@@ -173,5 +177,32 @@ public class Reserva {
 
 	public void setHabitaciones(List<Habitacion> habitaciones) {
 		this.habitaciones = habitaciones;
+	}
+	
+	public Boolean estaPaga() {
+		return factura != null ? (factura.getPago() != null) : false;
+	}
+	
+	public void setFactura(Factura factura) {
+		this.factura = factura;
+	}
+	
+	@Override
+	public Factura facturar(Huesped huesped) {
+		this.productosConsumidos.addAll(getConsumibles());
+		return super.facturar(titular);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Consumible> getConsumibles() {
+		if (habitaciones.isEmpty())
+			return new ArrayList<>();
+		return (List<Consumible>) ((List<?>)habitaciones.stream()
+				.map(habitacion -> {
+					return new Producto(
+							Integer.toUnsignedLong(habitacion.getNumero()), 
+							habitacion.getTipo().getAlias(), 
+							habitacion.calcularTarifa(fechaDeLlegada, fechaDeSalida));
+				}).toList());
 	}
 }

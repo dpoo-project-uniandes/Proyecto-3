@@ -139,8 +139,8 @@ public class HotelManagementReservas {
 	public void cancelarReserva(Long id) throws Exception {
 		Reserva reserva = reservas.get(id);
 		reserva.setEstado(EstadoReserva.CANCELADA);
-		FileManager.modificarLineaCSV("reservas.csv", "numero", reserva.getNumero().toString(), reservaToListString(reserva));
 		procesarDisponibilidades(reserva, true);
+		FileManager.modificarLineaCSV("reservas.csv", "numero", reserva.getNumero().toString(), reservaToListString(reserva));
 	}
 	
 	public void cerrarReserva(Reserva reserva) throws Exception {
@@ -155,8 +155,8 @@ public class HotelManagementReservas {
 		if (reserva == null) 
 			return;
 		this.reservas.remove(id);
-		FileManager.removerLineaCSV("reservas.csv", "numero_reserva", reserva.getNumero().toString());
 		procesarDisponibilidades(reserva, true);
+		FileManager.removerLineaCSV("reservas.csv", "numero", reserva.getNumero().toString());
 		
 		// Archivo de reservas y habitaciones
 		for(Habitacion habitacion: reserva.getHabitaciones()) {
@@ -224,7 +224,7 @@ public class HotelManagementReservas {
 			FileManager.modificarLineaCSV("disponibilidades.csv", "id", row.get(0), row);
 			// Archivo reservas - disponibilidades
 			if (estado) {
-				FileManager.removerLineaCSV("reservas_disponibilidades", "id_reserva", reserva.getNumero().toString());
+				FileManager.removerLineaCSV("reservas_disponibilidades.csv", "id_reserva", reserva.getNumero().toString());
 			} else {
 				FileManager.agregarLineasCSV("reservas_disponibilidades.csv", Arrays.asList(Arrays.asList(row.get(0), reserva.getNumero().toString())));
 			}

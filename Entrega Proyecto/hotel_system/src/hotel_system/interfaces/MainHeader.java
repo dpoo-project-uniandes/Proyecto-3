@@ -98,21 +98,23 @@ public class MainHeader extends JPanel {
 	}
 	
 	private void configHeaderButtons() {
-		// BACK BUTTON
-		this.backBtn = headerButton("back");
-		this.backBtn.addActionListener(actions.getBackAction().apply(this));
-		
-		// HOME BUTTON
-		this.homeMenuBtn = headerButton("home");
-		this.homeMenuBtn.addActionListener(actions.getHomeAction().apply(this));
-		
-		// PANEL
-		this.headerButtonsPanel = new JPanel();
-		this.headerButtonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 20, 0));
-		this.headerButtonsPanel.setOpaque(false);
-		
-		this.headerButtonsPanel.add(backBtn);
-		this.headerButtonsPanel.add(homeMenuBtn);
+		if (actions.showButtons()) { 
+			// BACK BUTTON
+			this.backBtn = headerButton("back");
+			this.backBtn.addActionListener(actions.getBackAction().apply(this));
+			
+			// HOME BUTTON
+			this.homeMenuBtn = headerButton("home");
+			this.homeMenuBtn.addActionListener(actions.getHomeAction().apply(this));
+			
+			// PANEL
+			this.headerButtonsPanel = new JPanel();
+			this.headerButtonsPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 20, 0));
+			this.headerButtonsPanel.setOpaque(false);
+			
+			this.headerButtonsPanel.add(backBtn);
+			this.headerButtonsPanel.add(homeMenuBtn);
+		}
 	}
 	
 	private JButton headerButton(String image) {

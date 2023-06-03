@@ -9,6 +9,7 @@ import hotel_system.models.Consumible;
 import hotel_system.models.Estadia;
 import hotel_system.models.Factura;
 import hotel_system.models.Producto;
+import hotel_system.models.Reserva;
 import hotel_system.models.Restaurante;
 import hotel_system.models.Servicio;
 import hotel_system.models.Spa;
@@ -63,6 +64,10 @@ public class HotelManagementConsumibles {
 	public Factura facturarEstadia(Estadia estadia) {
 		estadia.cerrar();
 		return estadia.getFacturaTotal();
+	}
+	
+	public Factura facturarReserva(Reserva reserva) {
+		return reserva.facturar(reserva.getTitular());
 	}
 	
 	private List<Consumible> mapConsumibles(Map<Long, Integer> productos) {
