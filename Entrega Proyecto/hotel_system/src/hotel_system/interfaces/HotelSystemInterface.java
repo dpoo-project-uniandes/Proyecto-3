@@ -387,6 +387,7 @@ public class HotelSystemInterface extends JFrame {
 					Consumible producto = menuModificarAdmin.getProductoActual();
 					try {
 						pms.eliminarProducto(producto, menuModificarAdmin.getTipoProducto());
+						JOptionPane.showMessageDialog(null, "Producto eliminado con éxito");
 					} catch (Exception e1) {
 						JOptionPane.showMessageDialog(null, "No se pudo eliminar el producto");
 						e1.printStackTrace();

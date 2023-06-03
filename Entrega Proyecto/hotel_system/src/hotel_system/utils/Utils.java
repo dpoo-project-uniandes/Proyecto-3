@@ -40,7 +40,8 @@ public class Utils {
 	}
 
 	public static final Long generateId4Length() {
-		DecimalFormat df = new DecimalFormat("#####");
-		return Long.parseLong(df.format(generateId()));
+		DecimalFormat df = new DecimalFormat("00000");
+		String formattedId = df.format(generateId() % 100000); // Limitar a 5 dígitos
+		return Long.parseLong(formattedId);
 	}
 }

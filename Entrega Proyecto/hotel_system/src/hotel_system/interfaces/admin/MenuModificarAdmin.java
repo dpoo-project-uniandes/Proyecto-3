@@ -232,6 +232,7 @@ public class MenuModificarAdmin extends JPanel{
 
 
 		public Map<String, String> getDataMap() {
+			System.out.println(Utils.generateId4Length());
 			if (tipoProducto.equals("Producto") || tipoProducto.equals("ProductoSpa")) {
 				return Map.of(
 					"id", productInjected == null ? Utils.generateId4Length().toString() : productInjected.getId().toString(),
