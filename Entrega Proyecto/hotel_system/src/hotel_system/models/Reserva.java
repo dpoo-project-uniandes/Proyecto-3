@@ -20,42 +20,42 @@ public class Reserva extends Servicio {
 	private List<Habitacion> habitaciones;
 	private Factura factura;
 
-	public Reserva(Date fechaDeLlegada, Date fechaDeSalida, Titular titular, Integer cantidad, List<Habitacion> habitaciones) {
+	public Reserva(java.util.Date fechaDeLlegada2, java.util.Date fechaDeSalida2, Titular titular, Integer cantidad, List<Habitacion> habitaciones) {
 		super(Utils.generateId());
 		this.numero = this.id;
-		this.fechaDeLlegada = fechaDeLlegada;
+		this.fechaDeLlegada = (Date) fechaDeLlegada2;
 		this.fechaDeCreacion = Utils.nowDate();
 		this.cantidadPersonas = cantidad;
-		this.fechaDeSalida = fechaDeSalida;
+		this.fechaDeSalida = (Date) fechaDeSalida2;
 		this.titular = titular;
 		this.habitaciones = habitaciones;
 		this.tarifaTotal = calcularTarifaTotal();
 		this.estado = EstadoReserva.CONFIRMADA;
 	}
 	
-	public Reserva(Long id, Date fechaDeLlegada, Date fechaDeSalida, Titular titular, Integer cantidad, List<Habitacion> habitaciones) {
+	public Reserva(Long id, java.util.Date fechaDeLlegada2, java.util.Date fechaDeSalida2, Titular titular, Integer cantidad, List<Habitacion> habitaciones) {
 		super(id == null ? Utils.generateId() : id);
 		this.numero = this.id;
-		this.fechaDeLlegada = fechaDeLlegada;
+		this.fechaDeLlegada = (Date) fechaDeLlegada2;
 		this.fechaDeCreacion = Utils.nowDate();
 		this.cantidadPersonas = cantidad;
-		this.fechaDeSalida = fechaDeSalida;
+		this.fechaDeSalida = (Date) fechaDeSalida2;
 		this.titular = titular;
 		this.habitaciones = habitaciones;
 		this.tarifaTotal = calcularTarifaTotal();
 		this.estado = EstadoReserva.CONFIRMADA;
 	}
 
-	public Reserva(Long numero, Double tarifaTotal, EstadoReserva estado, Integer cantidadPersonas, Date fechaDeLlegada,
-			Date fechaDeSalida, Date fechaDeCreacion, Titular titular, Estadia estadia, List<Habitacion> habitaciones) {
+	public Reserva(Long numero, Double tarifaTotal, EstadoReserva estado, Integer cantidadPersonas, java.util.Date fechaDeLlegada2,
+			java.util.Date fechaDeSalida2, java.util.Date fechaDeCreacion2, Titular titular, Estadia estadia, List<Habitacion> habitaciones) {
 		super(numero);
 		this.numero = this.id;
 		this.tarifaTotal = tarifaTotal;
 		this.estado = estado;
 		this.cantidadPersonas = cantidadPersonas;
-		this.fechaDeLlegada = fechaDeLlegada;
-		this.fechaDeSalida = fechaDeSalida;
-		this.fechaDeCreacion = fechaDeCreacion;
+		this.fechaDeLlegada = (Date) fechaDeLlegada2;
+		this.fechaDeSalida = (Date) fechaDeSalida2;
+		this.fechaDeCreacion = (Date) fechaDeCreacion2;
 		this.titular = titular;
 		this.estadia = estadia;
 		this.habitaciones = habitaciones;

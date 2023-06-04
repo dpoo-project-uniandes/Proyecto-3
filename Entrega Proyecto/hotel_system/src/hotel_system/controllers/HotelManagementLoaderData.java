@@ -253,7 +253,7 @@ public class HotelManagementLoaderData {
         return serviciosCargados;
     }
 
-	private Spa cargarServicioSpa() throws Exception {
+	public Spa cargarServicioSpa() throws Exception {
         List<Consumible> productosSpa = new ArrayList<>();
         List<Map<String, String>> datosSpa = FileManager.cargarArchivoCSV("productos_spa.csv");
         for (Map<String, String> dato : datosSpa) {
@@ -265,7 +265,7 @@ public class HotelManagementLoaderData {
         return new Spa(Utils.generateId(), productosSpa);
 	}
 
-	private Restaurante cargarServicioRestaurante() throws Exception {
+	public Restaurante cargarServicioRestaurante() throws Exception {
         List<Consumible> productosRestaurante = new ArrayList<>();
         List<Map<String, String>> datosRestaurante = FileManager.cargarArchivoCSV("productos_restaurante.csv");
         for (Map<String, String> dato : datosRestaurante) {
@@ -285,7 +285,7 @@ public class HotelManagementLoaderData {
         return new Restaurante(Utils.generateId(), productosRestaurante);
 	}
 	
-	private Map<String, Titular> cargarTitulares() throws Exception {
+	public Map<String, Titular> cargarTitulares() throws Exception {
 		Map<String, Titular> titulares = new HashMap<>();
 		List<Map<String, String>> data = FileManager.cargarArchivoCSV("huespedes.csv");
 		for (Map<String, String> dato : data) {
@@ -299,7 +299,7 @@ public class HotelManagementLoaderData {
 		return titulares;
 	}
 	
-	private Map<Long, List<Integer>> cargarReservasHabitaciones() throws Exception {
+	public Map<Long, List<Integer>> cargarReservasHabitaciones() throws Exception {
 		Map<Long, List<Integer>> reservasHabitaciones = new HashMap<>();
 		List<Map<String, String>> data = FileManager.cargarArchivoCSV("reservas_habitaciones.csv");
 		for (Map<String, String> dato : data) {
@@ -312,7 +312,7 @@ public class HotelManagementLoaderData {
 		return reservasHabitaciones;
 	}
 	
-	private Map<Long, Long> cargarDisponibilidadesReservas() throws Exception {
+	public Map<Long, Long> cargarDisponibilidadesReservas() throws Exception {
 		Map<Long, Long> disponibilidadesReservas = new HashMap<>();
 		List<Map<String, String>> data = FileManager.cargarArchivoCSV("reservas_disponibilidades.csv");
 		for (Map<String, String> dato : data) {
