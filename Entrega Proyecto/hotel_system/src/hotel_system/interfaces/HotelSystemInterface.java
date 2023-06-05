@@ -81,10 +81,7 @@ public class HotelSystemInterface extends JFrame {
 		this.user = "My User";
 		this.pms = new HotelManagementSystem();
 		configHeaderButtonsActions();
-		// configLogin();
-		configMenuAdmin();
-		// configMenuRecepcionista();
-		// configConsumingManagement();
+		 configLogin();
 	}
 	
 	// ============================================================================================================================================================================
